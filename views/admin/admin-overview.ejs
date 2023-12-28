@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Overview</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome CSS for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Add any additional custom styles here */
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row p-3">
+        <button class="btn btn-dark">
+          <a href="/admin/dashboard" class="text-white">Back</a>
+        </button>
+        <h1 class="h1 text-dark col-10">Overview</h1>
+      </div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="section1-tab"
+            data-toggle="tab"
+            href="#section1"
+            role="tab"
+            aria-controls="section1"
+            aria-selected="true"
+            >Award Titles and Contestant Votes</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="section2-tab"
+            data-toggle="tab"
+            href="#section2"
+            role="tab"
+            aria-controls="section2"
+            aria-selected="false"
+            >Transaction Details</a
+          >
+        </li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content mt-2">
+        <!-- Section 1: Award Titles and Contestant Votes -->
+        <div
+          class="tab-pane fade show active"
+          id="section1"
+          role="tabpanel"
+          aria-labelledby="section1-tab"
+        >
+          <h2>Award Titles and Contestant Votes</h2>
+          <% awards.forEach((award, index) => { %>
+          <div class="card mb-4">
+            <div
+              class="card-header"
+              id="award<%= index %>Header"
+              data-toggle="collapse"
+              data-target="#award<%= index %>Collapse"
+              aria-expanded="true"
+              aria-controls="award<%= index %>Collapse"
+            >
+              <%= award.title %>
+              <!-- Add up and down icons -->
+              <span class="float-right">
+                <i
+                  class="fas fa-chevron-up"
+                  id="award<%= index %>CollapseIcon"
+                ></i>
+                <i
+                  class="fas fa-chevron-down"
+                  id="award<%= index %>ExpandIcon"
+                  style="display: none"
+                ></i>
+              </span>
+            </div>
+            <div
+              id="award<%= index %>Collapse"
+              class="collapse"
+              aria-labelledby="award<%= index %>Header"
+            >
+              <ul class="list-group list-group-flush">
+                <% award.contestants.sort((a, b) => b.votes -
+                a.votes).forEach((contestant) => { %>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <%= contestant.nickname %>
+                  <div class="progress" style="width: 50%">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      style="
+                        width: <%= (contestant.votes / award.totalVotes) * 100
+                          %>%;
+                      "
+                      aria-valuenow="<%= contestant.votes %>"
+                      aria-valuemin="0"
+                      aria-valuemax="<%= award.totalVotes %>"
+                    ></div>
+                  </div>
+                  <span class="badge badge-primary badge-pill"
+                    ><%= contestant.votes %></span
+                  >
+                </li>
+                <% }) %>
+              </ul>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+
+        <!-- Section 2: Transaction Details -->
+        <div
+          class="tab-pane fade"
+          id="section2"
+          role="tabpanel"
+          aria-labelledby="section2-tab"
+        >
+          <h2>Transaction Details</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% payments.forEach((payment, index) => { %>
+              <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= payment.user %></td>
+                <td>$<%= payment.amount.toFixed(2) %></td>
+                <td><%= new Date(payment.date).toLocaleString() %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Your additional scripts or customization can go here -->
+    <script>
+      $(document).ready(function () {
+        // Toggle up and down icons when accordion is shown or hidden
+        $(".collapse").on("show.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "CollapseIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("CollapseIcon", "ExpandIcon")).show();
+        });
+
+        $(".collapse").on("hide.bs.collapse", function () {
+          const iconId = $(this)
+            .attr("aria-labelledby")
+            .replace("Header", "ExpandIcon");
+          $("#" + iconId).hide();
+          $("#" + iconId.replace("ExpandIcon", "CollapseIcon")).show();
+        });
+      });
+    </script>
+  </body>
+</html>
