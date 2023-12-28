@@ -5,8 +5,8 @@ const router = express.Router();
 const adminController = require("../../controllers/adminController");
 const authMiddleware = require("../../middlewares/authMiddleware");
 
-// Middleware to check if the user is authenticated
-router.use(authMiddleware);
+// // Middleware to check if the user is authenticated
+// router.use(authMiddleware);
 
 // Admin show awards route
 router.get("/add-contestant", async (req, res) => {
@@ -33,7 +33,6 @@ router.post("/add-contestant", async (req, res) => {
 
 // Admin login route
 router.get("/login", (req, res) => {
-  console.log("Handling /admin/login request");
   const error = req.flash("error")[0];
   res.render("admin/admin-login", { error });
 });
@@ -58,8 +57,6 @@ router.post("/authenticate", async (req, res) => {
           req.session.admin = true;
           res.redirect("/admin/dashboard");
         }
-
-        console.log("Session Data:", req.session);
       });
     } else {
       // Authentication failed
