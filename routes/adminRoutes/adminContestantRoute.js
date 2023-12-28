@@ -5,8 +5,8 @@ const router = express.Router();
 const adminController = require("../../controllers/adminController");
 const authMiddleware = require("../../middlewares/authMiddleware");
 
-// // Middleware to check if the user is authenticated
-// router.use(authMiddleware);
+// Middleware to check if the user is authenticated
+router.use(authMiddleware);
 
 // Admin show awards route
 router.get("/add-contestant", async (req, res) => {
