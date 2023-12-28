@@ -7,19 +7,18 @@ const flash = require("express-flash");
 const connection = require("./models/connection");
 const path = require("path");
 const validator = require("validator");
-// const cors = require("cors"); // Add this line
 const app = express();
-const port = 3000;
 
-// Set the NODE_ENV variable to "development"
-process.env.NODE_ENV = "development";
+// Set the port using an environment variable or default to 3000
+const port = process.env.PORT || 3000;
 
 // Configure session middleware
+const sessionSecret = process.env.SESSION_SECRET || "keyboard cat";
 const sessionStore = new MySQLStore({}, connection);
 app.use(
   session({
     key: "keyboard cat",
-    secret: "keyboard cat",
+    secret: sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -29,15 +28,14 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(flash());
 app.set("view engine", "ejs");
+
+// Serve static files
 app.use(express.static("public"));
 app.use(fileUpload({ tempFileDir: "/temp" }));
 app.use(express.static("uploads"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// // Use the cors middleware
-// app.use(cors()); // Enable CORS for all routes
-
-// Add validator to res.locals
+// Add validator tores.locals
 app.use((req, res, next) => {
   res.locals.validator = validator;
   next();
@@ -53,6 +51,13 @@ app.use("/admin", adminRoutes);
 // Use other routes as needed
 app.use("/", clientRoutes);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
+
+// Start the server
 app.listen(port, () => {
   console.log(
     `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
