@@ -1,13 +1,15 @@
-// connection.js
-
 const mysql = require("mysql2");
 
-// create the connection pool to the database
+// Retrieve the database password from the environment variable
+const dbPassword = process.env.DB_PASSWORD;
+
+// Create the connection pool to the database
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "bashvote",
+  host: "fdb1033.awardspace.net", // Database Host
+  user: "4421128_bashvote", // Database User
+  password: dbPassword, // Use the environment variable or default to "L1NCSSABASH"
+  database: "4421128_bashvote", // Database Name
+  port: 3306, // Database Port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
