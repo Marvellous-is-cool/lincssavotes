@@ -48,7 +48,7 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
       INSERT INTO payments (contestant_id, transaction_reference, amount, currency, status)
       VALUES (?, ?, ?, ?, ?);
     `;
-    await connection.promise().query(savePaymentQuery, [
+    await connection.query(savePaymentQuery, [
       selectedContestant.id,
       response.data.tx_ref,
       flutterwavePaymentDetails.amount,
@@ -75,6 +75,22 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
   }
 });
 
+function generateRandomMacAddress() {
+  const characters = "0123456789ABCDEF";
+  let macAddress = "";
+
+  for (let i = 0; i < 12; i++) {
+    if (i > 0 && i % 2 === 0) {
+      macAddress += "-";
+    }
+
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    macAddress += characters[randomIndex];
+  }
+
+  return macAddress;
+}
+
 router.get("/:nickname/votenow/payment/callback", async (req, res) => {
   try {
     const transactionReference = req.query.transaction_id;
@@ -99,21 +115,17 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
       // Update the payment status in the database
       const updatePaymentQuery =
         "UPDATE payments SET status = 'success' WHERE transaction_reference = ?";
-      await connection
-        .promise()
-        .query(updatePaymentQuery, [transactionReference]);
+      await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Fetch additional transaction details from the database
       const fetchPaymentQuery =
         "SELECT * FROM payments WHERE transaction_reference = ?";
-      const [paymentDetails] = await connection
-        .promise()
-        .query(fetchPaymentQuery, [transactionReference]);
+      const [paymentDetails] = await connection.query(fetchPaymentQuery, [
+        transactionReference,
+      ]);
 
       // Proceed with your logic based on the payment details
       if (paymentDetails.length > 0) {
-        const selectedContestant =
-          await clientController.getContestantByNickname(req.params.nickname);
         res.render("voteNowSuccess", {
           selectedContestant,
           paymentSuccess: true,
@@ -126,9 +138,7 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
       // Update the payment status in the database
       const updatePaymentQuery =
         "UPDATE payments SET status = 'failed' WHERE transaction_reference = ?";
-      await connection
-        .promise()
-        .query(updatePaymentQuery, [transactionReference]);
+      await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Inform the customer that their payment was unsuccessful
       res.render("voteNowSuccess", {
