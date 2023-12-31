@@ -129,6 +129,11 @@
             // Continue with the remaining logic
             var email = document.getElementById("email").value;
 
+            // Change button text to indicate redirection
+            document.getElementById("continueButton").innerText =
+              "Redirecting to Paystack... Please wait";
+            document.getElementById("continueButton").disabled = true;
+
             // Send a POST request using Fetch API
             fetch(
               "/<%= selectedContestant.nickname %>/votenow/payment/process",
@@ -147,11 +152,23 @@
                 return response.json();
               })
               .then((data) => {
-                // Handle the response data as needed
-                console.log(data);
+                // Check for Paystack authorization URL in the response
+                if (data && data.authorization_url) {
+                  // Extract the authorization URL from the JSON response
+                  var authorizationUrl = data.authorization_url;
+
+                  // Perform client-side redirection to Paystack
+                  window.location.href = authorizationUrl;
+                } else {
+                  console.error("Invalid response from server:", data);
+                }
               })
               .catch((error) => {
                 console.error("Error during POST request:", error);
+                // Reset button text and enable the button on error
+                document.getElementById("continueButton").innerText =
+                  "Continue";
+                document.getElementById("continueButton").disabled = false;
               });
           });
       });

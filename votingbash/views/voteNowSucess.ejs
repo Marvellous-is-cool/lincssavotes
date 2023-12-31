@@ -86,16 +86,27 @@
         // Retrieve email from local storage
         var storedEmail = localStorage.getItem("userEmail");
 
-        // Handle "Vote Again" and "Try Again" button clicks
+        // Handle "Vote Again" button click
         document
           .getElementById("voteAgainButton")
           .addEventListener("click", function () {
+            // Change button text to indicate redirection
+            document.getElementById("voteAgainButton").innerText =
+              "Redirecting to Paystack... Please wait";
+            document.getElementById("voteAgainButton").disabled = true;
+
             redirectToPayment(storedEmail);
           });
 
+        // Handle "Try Again" button click
         document
           .getElementById("tryAgainButton")
           .addEventListener("click", function () {
+            // Change button text to indicate redirection
+            document.getElementById("tryAgainButton").innerText =
+              "Redirecting to Paystack... Please wait";
+            document.getElementById("tryAgainButton").disabled = true;
+
             redirectToPayment(storedEmail);
           });
 
