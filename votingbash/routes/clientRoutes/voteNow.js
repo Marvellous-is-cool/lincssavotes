@@ -4,7 +4,7 @@ const clientController = require("../../controllers/clientController");
 const connection = require("../../models/connection");
 
 // Replace with your Paystack Secret Key
-const paystackSecretKey = process.env.PST_SECRETKEY;
+const paystackSecretKey = "sk_test_820e317fbabe37837e53b5e7bb54f34c6da49d91";
 const paystack = require("paystack")(paystackSecretKey); // Explicitly require Paystack module
 
 // Function to retrieve selected contestant based on nickname

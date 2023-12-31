@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 
 // Retrieve the database password from the environment variable
-const dbPassword = process.env.DB_PASSWORD;
+const dbPassword = process.env.DB_PASSWORD || "Promisebode@29";
 
 // Create the connection pool to the database
 const pool = mysql.createPool({

@@ -10,7 +10,7 @@ const validator = require("validator");
 const app = express();
 
 // Set the port using an environment variable or default to 3000
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Configure session middleware
 const sessionSecret = process.env.SESSION_SECRET || "keyboard cat";
