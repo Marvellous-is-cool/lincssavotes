@@ -5,7 +5,7 @@ const dbPassword = process.env.DB_PASSWORD;
 
 // Create the connection pool to the database
 const pool = mysql.createPool({
-  host: "209.209.40.90", // Database Host
+  host: "mysql-159565-0.cloudclusters.net", // Database Host
   user: "admin", // Database User
   password: dbPassword, // Use the environment variable or default to "L1NCSSABASH"
   database: "bashvote", // Database Name
