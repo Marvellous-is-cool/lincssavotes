@@ -5,6 +5,8 @@ const connection = require("../../models/connection");
 
 // Replace with your Paystack Secret Key
 const paystackSecretKey = "sk_test_820e317fbabe37837e53b5e7bb54f34c6da49d91";
+
+const website = process.env.WEB;
 const paystack = require("paystack")(paystackSecretKey); // Explicitly require Paystack module
 
 // Function to retrieve selected contestant based on nickname
@@ -29,9 +31,10 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
     };
 
     // Make a POST request to Paystack API to initialize the transaction
-    const response = await paystack.transaction.initialize(
-      paystackTransactionDetails
-    );
+    const response = await paystack.transaction.initialize({
+      ...paystackTransactionDetails,
+      callback: `https://${website}/${selectedContestant.nickname}/votenow/payment/callback`,
+    });
 
     // Save the payment transaction details to the database
     const savePaymentQuery = `
