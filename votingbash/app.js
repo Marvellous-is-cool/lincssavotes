@@ -50,7 +50,6 @@ app.use("/admin", adminRoutes);
 
 // Use other routes as needed
 app.use("/", clientRoutes);
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

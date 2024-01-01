@@ -1,11 +1,11 @@
 const mysql = require("mysql2");
 
 // Retrieve the database password from the environment variable
-const dbPassword = process.env.DB_PASSWORD || "2SbPcToA";
+const dbPassword = process.env.DB_PASSWORD;
 
 // Create the connection pool to the database
 const pool = mysql.createPool({
-  host: "mysql-159565-0.cloudclusters.net", // Database Host
+  host: "209.209.40.90", // Database Host
   user: "admin", // Database User
   password: dbPassword, // Use the environment variable or default to "L1NCSSABASH"
   database: "bashvote", // Database Name
