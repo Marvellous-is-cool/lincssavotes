@@ -3,12 +3,9 @@ const router = express.Router();
 const clientController = require("../../controllers/clientController");
 const connection = require("../../models/connection");
 
-// Replace with your Paystack Secret Key
 const paystackSecretKey = "sk_test_820e317fbabe37837e53b5e7bb54f34c6da49d91";
+const paystack = require("paystack")(paystackSecretKey);
 
-const paystack = require("paystack")(paystackSecretKey); // Explicitly require Paystack module
-
-// Function to retrieve selected contestant based on nickname
 async function getSelectedContestant(nickname) {
   return await clientController.getContestantByNickname(nickname);
 }
@@ -19,39 +16,49 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
     const selectedContestant = await getSelectedContestant(nickname);
     const { email } = req.body;
 
-    // Construct Paystack transaction details
     const paystackTransactionDetails = {
       email,
-      amount: 5000, // Replace with your desired amount in kobo (e.g., 5000 for ₦50.00)
+      amount: 5000,
       reference: `vote_${selectedContestant.nickname}_${Date.now()}`.replace(
         /[^\w_]/g,
         ""
-      ), // Remove invalid characters
+      ),
     };
 
-    // Make a POST request to Paystack API to initialize the transaction
+    // Use your local host URL during development
+    const callbackURL = `http://localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`;
+
+    // Initialize the Paystack transaction
     const response = await paystack.transaction.initialize({
       ...paystackTransactionDetails,
-      callback: `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`,
+      callback: callbackURL,
     });
 
-    // Save the payment transaction details to the database
-    const savePaymentQuery = `
-      INSERT INTO payments (contestant_id, transaction_reference, amount, currency, status)
-      VALUES (?, ?, ?, ?, ?);
-    `;
-    await connection.query(savePaymentQuery, [
-      selectedContestant.id,
-      response.data.reference,
-      paystackTransactionDetails.amount,
-      "NGN", // Assuming the currency is NGN
-      "pending",
-    ]);
+    // Log the entire response for debugging
+    console.log("Paystack Transaction Response:", response);
 
-    // Send the authorization URL to the client
-    res.json({ authorization_url: response.data.authorization_url });
+    if (response.data && response.data.reference) {
+      // Save payment details to the database
+      const savePaymentQuery = `
+        INSERT INTO payments (contestant_id, transaction_reference, amount, currency, status)
+        VALUES (?, ?, ?, ?, ?);
+      `;
+
+      await connection.query(savePaymentQuery, [
+        selectedContestant.id,
+        response.data.reference,
+        paystackTransactionDetails.amount,
+        "NGN",
+        "pending",
+      ]);
+
+      // Redirect the user to Paystack
+      res.redirect(response.data.authorization_url);
+    } else {
+      console.error("Invalid Paystack response:", response);
+      res.status(500).json({ error: "Invalid Paystack Response" });
+    }
   } catch (error) {
-    // Handle errors
     console.error("Error processing payment:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -65,51 +72,42 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
 
     const transactionReference = req.query.reference;
 
-    // Verify the Paystack transaction
     const response = await paystack.transaction.verify(transactionReference);
 
-    // Check if the payment was successful
     if (
       response.data.status === "success" &&
       response.data.currency === "NGN"
     ) {
-      // Update the payment status in the database
       const updatePaymentQuery =
         "UPDATE payments SET status = 'success' WHERE transaction_reference = ?";
       await connection.query(updatePaymentQuery, [transactionReference]);
 
-      // Fetch additional transaction details from the database
+      // Increment votes for the contestant
+      await incrementVotesForContestant(selectedContestant.id);
+
       const fetchPaymentQuery =
         "SELECT * FROM payments WHERE transaction_reference = ?";
       const [paymentDetails] = await connection.query(fetchPaymentQuery, [
         transactionReference,
       ]);
 
-      // Proceed with your logic based on the payment details
       if (paymentDetails.length > 0) {
-        return res.render("voteNowSuccess", {
-          selectedContestant,
-          paymentSuccess: true,
-        });
+        // Redirect to the success page with appropriate query parameters
+        res.redirect(`/nickname/votenow/success?status=success`);
       } else {
-        // Handle the case where payment details are not found
-        return res.status(400).send("Invalid payment details");
+        res.redirect(`/nickname/votenow/success?status=invalid`);
       }
     } else {
-      // Update the payment status in the database
       const updatePaymentQuery =
         "UPDATE payments SET status = 'failed' WHERE transaction_reference = ?";
       await connection.query(updatePaymentQuery, [transactionReference]);
 
-      // Inform the customer that their payment was unsuccessful
-      return res.render("voteNowSuccess", {
-        selectedContestant,
-        paymentSuccess: false,
-      });
+      // Redirect to the failure page with appropriate query parameters
+      res.redirect(`/nickname/votenow/success?status=failed`);
     }
   } catch (error) {
     console.error("Error processing Paystack callback:", error);
-    return res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal Server Error");
   }
 });
 

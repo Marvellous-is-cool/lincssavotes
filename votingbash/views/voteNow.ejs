@@ -152,25 +152,43 @@
                 return response.json();
               })
               .then((data) => {
-                // Check for Paystack authorization URL in the response
-                if (data && data.authorization_url) {
-                  // Extract the authorization URL from the JSON response
-                  var authorizationUrl = data.authorization_url;
+                // Handle the response from the server as needed
+                console.log(data);
 
-                  // Perform client-side redirection to Paystack
-                  window.location.href = authorizationUrl;
+                // For example, you can check if the response indicates success
+                if (data && data.status === "success") {
+                  // Redirect to your custom success page
+                  window.location.href =
+                    "/<%= selectedContestant.nickname %>/votenow/success";
                 } else {
+                  // Handle the case where the response indicates an error
                   console.error("Invalid response from server:", data);
+
+                  // Reset button text and enable the button on error
+                  document.getElementById("continueButton").innerText =
+                    "Continue";
+                  document.getElementById("continueButton").disabled = false;
                 }
               })
               .catch((error) => {
                 console.error("Error during POST request:", error);
+
                 // Reset button text and enable the button on error
                 document.getElementById("continueButton").innerText =
                   "Continue";
                 document.getElementById("continueButton").disabled = false;
               });
           });
+
+        // Handle closing of the payment modal using the 'x' button
+        window.addEventListener("popstate", function (event) {
+          // Check if the URL is your payment callback URL
+          if (window.location.href.includes("/votenow/payment/callback")) {
+            // Redirect to your custom voteNowSuccess page
+            window.location.href =
+              "/<%= selectedContestant.nickname %>/votenow/success"; // Update with your actual route
+          }
+        });
       });
     </script>
   </body>

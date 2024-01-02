@@ -56,18 +56,16 @@
         <p>Level: <%= selectedContestant.level %></p>
         <p>Award Title: <%= selectedContestant.award_title %></p>
         <!-- Display "Voted Successfully" or "Try Again" button based on payment status -->
-        <% if (paymentSuccess) { %>
+        <% if (paymentSuccess === 'success') { %>
         <button class="btn btn-success" disabled>Voted Successfully!</button>
-        <!-- Redirect to payment platform with stored email when "Vote Again" is clicked -->
         <a
           href="#"
           id="voteAgainButton"
           class="btn btn-primary vote-again-button"
           >Vote Again</a
         >
-        <% } else { %>
+        <% } else if (paymentSuccess === 'failed') { %>
         <p class="failure-message">Payment failed. Please try again.</p>
-        <!-- Redirect to payment platform with stored email when "Try Again" is clicked -->
         <a
           href="#"
           id="tryAgainButton"
