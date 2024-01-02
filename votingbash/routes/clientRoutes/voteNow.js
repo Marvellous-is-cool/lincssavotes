@@ -26,7 +26,7 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
     };
 
     // Use your local host URL during development
-    const callbackURL = `http://localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`;
+    const callbackURL = `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`;
 
     // Initialize the Paystack transaction
     const response = await paystack.transaction.initialize({
