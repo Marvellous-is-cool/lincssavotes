@@ -10,10 +10,10 @@ const validator = require("validator");
 const app = express();
 
 // Set the port using an environment variable or default to 3000
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Configure session middleware
-const sessionSecret = process.env.SESSION_SECRET;
+const sessionSecret = process.env.SESSION_SECRET || "keyboard cat";
 const sessionStore = new MySQLStore({}, connection);
 app.use(
   session({
@@ -60,7 +60,7 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(
     `Server is running on port ${port} in ${
-      process.env.NODE_ENV || "development"
+      process.env.NODE_ENV || "production"
     } mode`
   );
 });
