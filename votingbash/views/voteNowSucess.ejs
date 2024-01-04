@@ -109,10 +109,11 @@
           });
 
         // Function to redirect to the payment platform
+        // Function to redirect to the payment platform
         function redirectToPayment(email) {
-          // Redirect to the payment platform with the stored email
-          window.location.href =
-            "/nickname/votenow/payment?email=" + encodeURIComponent(email);
+          window.location.href = `/votenow/payment?email=${encodeURIComponent(
+            email
+          )}`;
         }
       });
     </script>

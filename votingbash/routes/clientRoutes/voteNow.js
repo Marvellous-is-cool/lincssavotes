@@ -10,14 +10,15 @@ async function getSelectedContestant(nickname) {
   return await clientController.getContestantByNickname(nickname);
 }
 
-router.post("/:nickname/votenow/payment/process", async (req, res) => {
+// Modified endpoint to fetch Paystack authentication URL
+router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
   try {
     const nickname = req.params.nickname;
     const selectedContestant = await getSelectedContestant(nickname);
-    const { email } = req.body;
 
+    // Initialize Paystack transaction details
     const paystackTransactionDetails = {
-      email,
+      email: req.body.email,
       amount: 5000,
       reference: `vote_${selectedContestant.nickname}_${Date.now()}`.replace(
         /[^\w_]/g,
@@ -52,8 +53,10 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
         "pending",
       ]);
 
-      // Redirect the user to Paystack
-      res.redirect(response.data.authorization_url);
+      // Redirect to Paystack authentication URL on the client side
+      res.status(200).json({
+        authorization_url: response.data.authorization_url,
+      });
     } else {
       console.error("Invalid Paystack response:", response);
       res.status(500).json({ error: "Invalid Paystack Response" });
@@ -63,6 +66,8 @@ router.post("/:nickname/votenow/payment/process", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+// Removed the second route as it's not needed anymore
 
 router.get("/:nickname/votenow/payment/callback", async (req, res) => {
   try {
@@ -93,9 +98,9 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
 
       if (paymentDetails.length > 0) {
         // Redirect to the success page with appropriate query parameters
-        res.redirect(`/nickname/votenow/success?status=success`);
+        res.redirect(`/votenow/success?status=success&nickname=${nickname}`);
       } else {
-        res.redirect(`/nickname/votenow/success?status=invalid`);
+        res.redirect(`/votenow/success?status=invalid&nickname=${nickname}`);
       }
     } else {
       const updatePaymentQuery =
@@ -103,7 +108,7 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Redirect to the failure page with appropriate query parameters
-      res.redirect(`/nickname/votenow/success?status=failed`);
+      res.redirect(`/votenow/success?status=failed&nickname=${nickname}`);
     }
   } catch (error) {
     console.error("Error processing Paystack callback:", error);
