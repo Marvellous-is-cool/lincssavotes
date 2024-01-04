@@ -136,19 +136,31 @@
 
             // Fetch Paystack authentication URL directly from the client-side
             fetch("/<%= selectedContestant.nickname %>/votenow/payment/get-url")
-              .then((response) => response.json())
+              .then((response) => response.text())
               .then((data) => {
-                // Handle the response from the server
-                console.log(data);
+                console.log("Raw Response:", data);
 
-                // For example, you can check if the response indicates success
-                if (data && data.authorization_url) {
-                  // Redirect to Paystack authentication URL
-                  window.location.href = data.authorization_url;
-                } else {
-                  // Handle the case where the response indicates an error
-                  console.error("Invalid response from server:", data);
+                try {
+                  const jsonData = JSON.parse(data);
+                  console.log("Parsed JSON Data:", jsonData);
 
+                  // Continue processing as needed
+                  if (jsonData && jsonData.authorization_url) {
+                    // Redirect to Paystack authentication URL
+                    window.location.href = jsonData.authorization_url;
+                  } else {
+                    // Handle the case where the response indicates an error
+                    console.error("Invalid response from server:", jsonData);
+
+                    // Reset button text and enable the button on error
+                    document.getElementById("continueButton").innerText =
+                      "Continue";
+                    document.getElementById("continueButton").disabled = false;
+                  }
+                } catch (parseError) {
+                  console.error("Error parsing JSON:", parseError);
+
+                  // Handle the parsing error
                   // Reset button text and enable the button on error
                   document.getElementById("continueButton").innerText =
                     "Continue";
@@ -164,16 +176,6 @@
                 document.getElementById("continueButton").disabled = false;
               });
           });
-
-        // Remove the popstate event listener since we are not handling the callback URL on the client side
-        // window.addEventListener("popstate", function (event) {
-        //   // Check if the URL is your payment callback URL
-        //   if (window.location.href.includes("/votenow/payment/callback")) {
-        //     // Redirect to your custom voteNowSuccess page
-        //     window.location.href =
-        //       "/<%= selectedContestant.nickname %>/votenow/payment/callback"; // Update with your actual route
-        //   }
-        // });
       });
     </script>
   </body>
