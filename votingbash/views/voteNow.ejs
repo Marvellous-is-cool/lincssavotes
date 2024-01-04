@@ -135,9 +135,7 @@
             document.getElementById("continueButton").disabled = true;
 
             // Fetch Paystack authentication URL directly from the client-side
-            fetch(
-              "/<%= selectedContestant.nickname %>/votenow/payment/get-url-client"
-            )
+            fetch("/<%= selectedContestant.nickname %>/votenow/payment/get-url")
               .then((response) => response.json())
               .then((data) => {
                 // Handle the response from the server
