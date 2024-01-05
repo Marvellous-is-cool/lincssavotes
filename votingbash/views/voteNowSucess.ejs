@@ -56,7 +56,7 @@
         <p>Level: <%= selectedContestant.level %></p>
         <p>Award Title: <%= selectedContestant.award_title %></p>
         <!-- Display "Voted Successfully" or "Try Again" button based on payment status -->
-        <% if (paymentSuccess === 'success') { %>
+        <% if (status === 'success') { %>
         <button class="btn btn-success" disabled>Voted Successfully!</button>
         <a
           href="#"
@@ -64,7 +64,7 @@
           class="btn btn-primary vote-again-button"
           >Vote Again</a
         >
-        <% } else if (paymentSuccess === 'failed') { %>
+        <% } else if (status === 'failed') { %>
         <p class="failure-message">Payment failed. Please try again.</p>
         <a
           href="#"
@@ -72,6 +72,8 @@
           class="btn btn-primary vote-again-button"
           >Try Again</a
         >
+        <% } else { %>
+        <p class="failure-message">Invalid payment status. Please try again.</p>
         <% } %>
       </div>
     </div>

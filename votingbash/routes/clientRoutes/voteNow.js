@@ -1,16 +1,32 @@
+// Import necessary modules and libraries
 const express = require("express");
 const router = express.Router();
 const clientController = require("../../controllers/clientController");
 const connection = require("../../models/connection");
+const axios = require("axios"); // Import the axios library
 
+// Replace with your Paystack public and secret keys
+const paystackPublicKey = "pk_test_46bbb2b74c84bbb5d2cba7728e558bd7475d08a9";
 const paystackSecretKey = "sk_test_820e317fbabe37837e53b5e7bb54f34c6da49d91";
-const paystack = require("paystack")(paystackSecretKey);
 
+// Function to get selected contestant details
 async function getSelectedContestant(nickname) {
   return await clientController.getContestantByNickname(nickname);
 }
 
-// Modified endpoint to fetch Paystack authentication URL
+// Function to increment votes for the contestant
+async function incrementVotesForContestant(contestantId) {
+  try {
+    const incrementVotesQuery =
+      "UPDATE contestants SET votes = votes + 1 WHERE id = ?";
+    await connection.query(incrementVotesQuery, [contestantId]);
+  } catch (error) {
+    console.error("Error incrementing votes:", error);
+    throw error;
+  }
+}
+
+// Endpoint to fetch Paystack authentication URL
 router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
   try {
     const nickname = req.params.nickname;
@@ -19,46 +35,38 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
     // Initialize Paystack transaction details
     const paystackTransactionDetails = {
       email: req.body.email,
-      amount: 5000,
+      amount: 5000, // Modify the amount as needed
       reference: `vote_${selectedContestant.nickname}_${Date.now()}`.replace(
         /[^\w_]/g,
         ""
       ),
+      currency: "NGN", // Modify the currency as needed
+      callback: `http//localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`,
     };
 
-    // Use your local host URL during development
-    const callbackURL = `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`;
+    const paystackURL = "https://api.paystack.co/transaction/initialize";
 
-    // Initialize the Paystack transaction
-    const response = await paystack.transaction.initialize({
-      ...paystackTransactionDetails,
-      callback: callbackURL,
-    });
+    // Use axios instead of fetch
+    const paystackResponse = await axios.post(
+      paystackURL,
+      paystackTransactionDetails,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${paystackSecretKey}`,
+        },
+      }
+    );
 
-    // Log the entire response for debugging
-    console.log("Paystack Transaction Response:", response);
+    const responseData = paystackResponse.data;
 
-    if (response.data && response.data.reference) {
-      // Save payment details to the database
-      const savePaymentQuery = `
-        INSERT INTO payments (contestant_id, transaction_reference, amount, currency, status)
-        VALUES (?, ?, ?, ?, ?);
-      `;
-
-      await connection.query(savePaymentQuery, [
-        selectedContestant.id,
-        response.data.reference,
-        paystackTransactionDetails.amount,
-        "NGN",
-        "pending",
-      ]);
-
+    if (responseData.data && responseData.data.authorization_url) {
       // Redirect to Paystack authentication URL on the client side
       res.status(200).json({
-        authorization_url: response.data.authorization_url,
+        authorization_url: responseData.data.authorization_url,
       });
     } else {
-      console.error("Invalid Paystack response:", response);
+      console.error("Invalid Paystack response:", responseData);
       res.status(500).json({ error: "Invalid Paystack Response" });
     }
   } catch (error) {
@@ -67,8 +75,7 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
   }
 });
 
-// Removed the second route as it's not needed anymore
-
+// Callback endpoint to handle Paystack callback
 router.get("/:nickname/votenow/payment/callback", async (req, res) => {
   try {
     console.log("Paystack Callback Request Received:", req.query);
@@ -77,11 +84,21 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
 
     const transactionReference = req.query.reference;
 
-    const response = await paystack.transaction.verify(transactionReference);
+    const verifyURL = `https://api.paystack.co/transaction/verify/${transactionReference}`;
+
+    // Use axios instead of fetch
+    const verifyResponse = await axios.get(verifyURL, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${paystackSecretKey}`,
+      },
+    });
+
+    const verifyData = verifyResponse.data;
 
     if (
-      response.data.status === "success" &&
-      response.data.currency === "NGN"
+      verifyData.data.status === "success" &&
+      verifyData.data.currency === "NGN"
     ) {
       const updatePaymentQuery =
         "UPDATE payments SET status = 'success' WHERE transaction_reference = ?";
@@ -98,9 +115,15 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
 
       if (paymentDetails.length > 0) {
         // Redirect to the success page with appropriate query parameters
-        res.redirect(`/votenow/success?status=success&nickname=${nickname}`);
+        res.render("voteNowSuccess", {
+          selectedContestant,
+          status: "success",
+        });
       } else {
-        res.redirect(`/votenow/success?status=invalid&nickname=${nickname}`);
+        res.render("voteNowSuccess", {
+          selectedContestant,
+          status: "invalid",
+        });
       }
     } else {
       const updatePaymentQuery =
@@ -108,7 +131,10 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Redirect to the failure page with appropriate query parameters
-      res.redirect(`/votenow/success?status=failed&nickname=${nickname}`);
+      res.render("voteNowSuccess", {
+        selectedContestant,
+        status: "failed",
+      });
     }
   } catch (error) {
     console.error("Error processing Paystack callback:", error);

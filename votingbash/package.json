@@ -21,6 +21,7 @@
     "express-session": "^1.17.3",
     "got": "^11.8.3",
     "mysql2": "^2.0.0",
+    "node-fetch": "^3.3.2",
     "paystack": "^2.0.1",
     "paystack-api": "^2.0.6",
     "uuid": "^9.0.1",
