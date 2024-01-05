@@ -29,7 +29,11 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
         ""
       ),
       currency: "NGN", // Modify the currency as needed
+<<<<<<< HEAD
       callback: `http://localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`,
+=======
+      callback: `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`,
+>>>>>>> 28ce96219af6da1f4d5a932aa911cc501289cb1c
     };
 
     const paystackURL = "https://api.paystack.co/transaction/initialize";
