@@ -14,18 +14,6 @@ async function getSelectedContestant(nickname) {
   return await clientController.getContestantByNickname(nickname);
 }
 
-// Function to increment votes for the contestant
-async function incrementVotesForContestant(contestantId) {
-  try {
-    const incrementVotesQuery =
-      "UPDATE contestants SET votes = votes + 1 WHERE id = ?";
-    await connection.query(incrementVotesQuery, [contestantId]);
-  } catch (error) {
-    console.error("Error incrementing votes:", error);
-    throw error;
-  }
-}
-
 // Endpoint to fetch Paystack authentication URL
 router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
   try {
@@ -41,7 +29,7 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
         ""
       ),
       currency: "NGN", // Modify the currency as needed
-      callback: `http//localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`,
+      callback: `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`,
     };
 
     const paystackURL = "https://api.paystack.co/transaction/initialize";
