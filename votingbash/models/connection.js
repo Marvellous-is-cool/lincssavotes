@@ -5,11 +5,11 @@ const mysql = require("mysql2");
 
 // Create the connection pool to the database
 const pool = mysql.createPool({
-  host: "209.209.40.90", // Database Host
+  host: "68.64.164.95", // Database Host
   user: "admin", // Database User
-  password: "2SbPcToA", // Use the environment variable or default to "L1NCSSABASH"
+  password: "5ceh0w5a", // Use the environment variable or default to "L1NCSSABASH"
   database: "bashvote", // Database Name
-  port: 10009, // Database Port
+  port: 10011, // Database Port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
