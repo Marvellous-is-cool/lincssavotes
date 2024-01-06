@@ -15,7 +15,11 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
     const nickname = req.params.nickname; // Assuming you send the nickname in the request body
     const selectedContestant = await getSelectedContestant(nickname);
 
-    console.log("Request IP Address:", req.ip);
+    // Log the forwarded IP address before making the Paystack API call
+    console.log(
+      "Request Forwarded IP Address:",
+      req.headers["x-forwarded-for"] || req.connection.remoteAddress
+    );
 
     // Initialize Paystack transaction details
     const paystackTransactionDetails = {
