@@ -70,7 +70,7 @@
           <div class="modal-body">
             <!-- Email form with Bootstrap validation classes -->
             <form
-              action="/<%= selectedContestant.nickname %>/votenow/payment/process"
+              action="/<%= selectedContestant.nickname %>/payment/get-url"
               method="post"
               id="emailForm"
               class="needs-validation"
@@ -131,22 +131,25 @@
             // Continue with the remaining logic
             var email = document.getElementById("email").value;
 
+            // Store the entered email in local storage
+            localStorage.setItem("userEmail", email);
+
             // Change button text to indicate redirection
             document.getElementById("continueButton").innerText =
               "Redirecting to Paystack... Please wait";
             document.getElementById("continueButton").disabled = true;
 
             // Fetch Paystack authentication URL directly from the client-side
-            fetch(
-              "/<%= selectedContestant.nickname %>/votenow/payment/get-url",
-              {
-                method: "POST", // Specify the request method
-                headers: {
-                  "Content-Type": "application/json", // Specify the content type
-                },
-                body: JSON.stringify({ email: storedEmail }), // Convert the data to JSON
-              }
-            )
+            fetch("/<%= selectedContestant.nickname %>/payment/get-url", {
+              method: "POST", // Specify the request method
+              headers: {
+                "Content-Type": "application/json", // Specify the content type
+              },
+              body: JSON.stringify({
+                email: email,
+                nickname: "<%= selectedContestant.nickname %>", // Include the nickname
+              }),
+            })
               .then((response) => response.json())
               .then((data) => {
                 console.log("Paystack Response:", data);

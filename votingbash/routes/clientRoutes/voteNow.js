@@ -1,13 +1,8 @@
-// Import necessary modules and libraries
 const express = require("express");
 const router = express.Router();
 const clientController = require("../../controllers/clientController");
 const connection = require("../../models/connection");
-const axios = require("axios"); // Import the axios library
-
-// Replace with your Paystack public and secret keys
-const paystackPublicKey = "pk_test_46bbb2b74c84bbb5d2cba7728e558bd7475d08a9";
-const paystackSecretKey = "sk_test_820e317fbabe37837e53b5e7bb54f34c6da49d91";
+const paystack = require("paystack")(`${process.env.PAYSTACK_SECRET_KEY}`);
 
 // Function to get selected contestant details
 async function getSelectedContestant(nickname) {
@@ -15,9 +10,9 @@ async function getSelectedContestant(nickname) {
 }
 
 // Endpoint to fetch Paystack authentication URL
-router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
+router.post("/:nickname/payment/get-url", async (req, res) => {
   try {
-    const nickname = req.params.nickname;
+    const nickname = req.params.nickname; // Assuming you send the nickname in the request body
     const selectedContestant = await getSelectedContestant(nickname);
 
     // Initialize Paystack transaction details
@@ -28,37 +23,22 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
         /[^\w_]/g,
         ""
       ),
-      currency: "NGN", // Modify the currency as needed
-<<<<<<< HEAD
-      callback: `http://localhost:3000/${selectedContestant.nickname}/votenow/payment/callback`,
-=======
-      callback: `https://bashvoting.onrender.com/${selectedContestant.nickname}/votenow/payment/callback`,
->>>>>>> 28ce96219af6da1f4d5a932aa911cc501289cb1c
+      currency: "NGN", // Modify the currency
+      callback: `https://bashvoting.onrender.com/payment/callback`,
     };
 
-    const paystackURL = "https://api.paystack.co/transaction/initialize";
-
-    // Use axios instead of fetch
-    const paystackResponse = await axios.post(
-      paystackURL,
-      paystackTransactionDetails,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${paystackSecretKey}`,
-        },
-      }
+    // Use the paystack library to initialize the transaction
+    const paystackResponse = await paystack.transaction.initialize(
+      paystackTransactionDetails
     );
 
-    const responseData = paystackResponse.data;
-
-    if (responseData.data && responseData.data.authorization_url) {
+    if (paystackResponse.status && paystackResponse.status === true) {
       // Send Paystack authentication URL to the client side
       res.status(200).json({
-        authorization_url: responseData.data.authorization_url,
+        authorization_url: paystackResponse.data.authorization_url,
       });
     } else {
-      console.error("Invalid Paystack response:", responseData);
+      console.error("Invalid Paystack response:", paystackResponse);
       res.status(500).json({ error: "Invalid Paystack Response" });
     }
   } catch (error) {
@@ -68,32 +48,27 @@ router.post("/:nickname/votenow/payment/get-url", async (req, res) => {
 });
 
 // Callback endpoint to handle Paystack callback
-router.get("/:nickname/votenow/payment/callback", async (req, res) => {
+router.get("/payment/callback", async (req, res) => {
   try {
     console.log("Paystack Callback Request Received:", req.query);
-    const nickname = req.params.nickname;
+    const nickname = req.body.nickname;
     const selectedContestant = await getSelectedContestant(nickname);
 
     const transactionReference = req.query.reference;
 
-    const verifyURL = `https://api.paystack.co/transaction/verify/${transactionReference}`;
-
-    // Use axios instead of fetch
-    const verifyResponse = await axios.get(verifyURL, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${paystackSecretKey}`,
-      },
-    });
-
-    const verifyData = verifyResponse.data;
+    // Use the paystack library to verify the transaction
+    const verifyResponse = await paystack.transaction.verify(
+      transactionReference
+    );
 
     if (
-      verifyData.data.status === "success" &&
-      verifyData.data.currency === "NGN"
+      verifyResponse.status &&
+      verifyResponse.status === true &&
+      verifyResponse.data.currency === "NGN"
     ) {
+      // Process the successful payment
       const updatePaymentQuery =
-        "UPDATE payments SET status = 'success' WHERE transaction_reference = ?";
+        'UPDATE payments SET status = "success" WHERE transaction_reference = ?';
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Increment votes for the contestant
@@ -118,8 +93,9 @@ router.get("/:nickname/votenow/payment/callback", async (req, res) => {
         });
       }
     } else {
+      // Process the failed payment
       const updatePaymentQuery =
-        "UPDATE payments SET status = 'failed' WHERE transaction_reference = ?";
+        'UPDATE payments SET status = "failed" WHERE transaction_reference = ?';
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Redirect to the failure page with appropriate query parameters

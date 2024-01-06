@@ -1,3 +1,4 @@
+// Import necessary modules
 const express = require("express");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
@@ -7,6 +8,9 @@ const flash = require("express-flash");
 const connection = require("./models/connection");
 const path = require("path");
 const validator = require("validator");
+const cors = require("cors");
+require("dotenv").config(); // Load environment variables
+
 const app = express();
 
 // Set the port using an environment variable or default to 3000
@@ -35,11 +39,13 @@ app.use(fileUpload({ tempFileDir: "/temp" }));
 app.use(express.static("uploads"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Add validator tores.locals
+// Add validator to res.locals
 app.use((req, res, next) => {
   res.locals.validator = validator;
   next();
 });
+
+app.use(cors()); // Enable CORS
 
 // Use routes from the 'routes' folder
 const adminRoutes = require("./routes/adminRoutes/adminContestantRoute");
@@ -50,6 +56,7 @@ app.use("/admin", adminRoutes);
 
 // Use other routes as needed
 app.use("/", clientRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -60,7 +67,7 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(
     `Server is running on port ${port} in ${
-      process.env.NODE_ENV || "production"
+      process.env.NODE_ENV || "development"
     } mode`
   );
 });
