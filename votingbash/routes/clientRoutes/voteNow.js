@@ -15,6 +15,8 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
     const nickname = req.params.nickname; // Assuming you send the nickname in the request body
     const selectedContestant = await getSelectedContestant(nickname);
 
+    console.log("Request IP Address:", req.ip);
+
     // Initialize Paystack transaction details
     const paystackTransactionDetails = {
       email: req.body.email,
