@@ -100,21 +100,22 @@
                   class="list-group-item d-flex justify-content-between align-items-center"
                 >
                   <%= contestant.nickname %>
-                  <div class="progress" style="width: 50%">
+                  <div
+                    class="progress"
+                    style="background-color: #ccc; height: 20px"
+                  >
                     <div
-                      class="progress-bar bg-success"
-                      <!--
-                      Set
-                      background
-                      color
-                      to
-                      green
-                      --
+                      class="progress-bar bg-success progress-bar-striped"
+                      role="progressbar"
+                      style="
+                        width: <%= (contestant.votes / (award.totalVotes * 2)) *
+                          100 %>%;
+                      "
+                      aria-valuenow="<%= contestant.votes %>"
+                      aria-valuemin="0"
+                      aria-valuemax="<%= award.totalVotes %>"
                     >
-                      role="progressbar" style=" width: <%= (contestant.votes /
-                      (award.totalVotes * 2)) * 100 %>%; " aria-valuenow="<%=
-                      contestant.votes %>" aria-valuemin="0" aria-valuemax="<%=
-                      award.totalVotes %>" >
+                      <%= contestant.votes %>
                     </div>
                   </div>
                   <span class="badge badge-primary badge-pill"

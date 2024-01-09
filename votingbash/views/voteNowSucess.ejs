@@ -15,14 +15,9 @@
     <!-- Include Google Font CSS -->
     <!-- <link rel="stylesheet" href="path-to-your-downloaded-google-font.css" /> -->
     <style>
-      /* Custom styles for the "Copy Link" button */
-      #copyLinkButton {
-        margin-left: 10px;
-      }
-
       /* Additional styles for the success and failure messages */
       .success-message {
-        color: green;
+        color: rgba(11, 62, 11, 0.503);
         font-weight: bold;
       }
 
@@ -78,7 +73,6 @@
     </div>
     <!-- Include necessary scripts and libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/script/copyLink.js"></script>
     <!-- Add custom script to handle "Vote Again" and "Try Again" button clicks -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -94,6 +88,7 @@
               "Redirecting to Paystack... Please wait";
             document.getElementById("voteAgainButton").disabled = true;
 
+            // Redirect to payment with the stored email
             redirectToPayment(storedEmail);
           });
 
@@ -106,10 +101,10 @@
               "Redirecting to Paystack... Please wait";
             document.getElementById("tryAgainButton").disabled = true;
 
+            // Redirect to payment with the stored email
             redirectToPayment(storedEmail);
           });
 
-        // Function to redirect to the payment platform
         // Function to redirect to the payment platform
         function redirectToPayment(email) {
           window.location.href = `/votenow/payment?email=${encodeURIComponent(
