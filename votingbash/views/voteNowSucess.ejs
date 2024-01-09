@@ -37,11 +37,10 @@
     </style>
   </head>
   <body>
-    <%- include('header') %>
+    <%- include('header', { selectedContestant }) %>
     <div class="container mt-5">
       <div class="d-flex justify-content-between align-items-center">
         <h2>Vote Now</h2>
-        <button id="copyLinkButton" class="btn btn-secondary">Copy Link</button>
       </div>
       <!-- Display the selected contestant details -->
       <div class="contestant-card">
