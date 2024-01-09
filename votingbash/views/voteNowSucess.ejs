@@ -79,38 +79,76 @@
         // Retrieve email from local storage
         var storedEmail = localStorage.getItem("userEmail");
 
+        // Function to initiate the process of fetching authentication URL
+        function initiateAuthenticationRequest(buttonId, buttonText) {
+          // Change button text to indicate redirection
+          document.getElementById(
+            buttonId
+          ).innerText = `${buttonText}... Please wait`;
+          document.getElementById(buttonId).disabled = true;
+
+          // Fetch authentication URL from the server
+          fetchAuthenticationURL(storedEmail, buttonId);
+        }
+
+        // Function to fetch authentication URL from the server
+        function fetchAuthenticationURL(email, buttonId) {
+          fetch(
+            `/<%= selectedContestant.nickname %>/payment/get-url?email=${encodeURIComponent(
+              email
+            )}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Paystack Response:", data);
+
+              // Continue processing as needed
+              if (data.authorization_url) {
+                // Redirect to Paystack authentication URL
+                window.location.href = data.authorization_url;
+              } else {
+                // Handle the case where the response indicates an error
+                console.error("Invalid response from server:", data);
+
+                // Reset button text and enable the button on error
+                document.getElementById(buttonId).innerText = buttonText;
+                document.getElementById(buttonId).disabled = false;
+              }
+            })
+            .catch((error) => {
+              console.error("Error during fetch request:", error);
+
+              // Reset button text and enable the button on error
+              document.getElementById(buttonId).innerText = buttonText;
+              document.getElementById(buttonId).disabled = false;
+            });
+        }
+
         // Handle "Vote Again" button click
         document
           .getElementById("voteAgainButton")
           .addEventListener("click", function () {
-            // Change button text to indicate redirection
-            document.getElementById("voteAgainButton").innerText =
-              "Redirecting to Paystack... Please wait";
-            document.getElementById("voteAgainButton").disabled = true;
-
-            // Redirect to payment with the stored email
-            redirectToPayment(storedEmail);
+            initiateAuthenticationRequest(
+              "voteAgainButton",
+              "Redirecting to Paystack"
+            );
           });
 
         // Handle "Try Again" button click
         document
           .getElementById("tryAgainButton")
           .addEventListener("click", function () {
-            // Change button text to indicate redirection
-            document.getElementById("tryAgainButton").innerText =
-              "Redirecting to Paystack... Please wait";
-            document.getElementById("tryAgainButton").disabled = true;
-
-            // Redirect to payment with the stored email
-            redirectToPayment(storedEmail);
+            initiateAuthenticationRequest(
+              "tryAgainButton",
+              "Redirecting to Paystack"
+            );
           });
-
-        // Function to redirect to the payment platform
-        function redirectToPayment(email) {
-          window.location.href = `/votenow/payment?email=${encodeURIComponent(
-            email
-          )}`;
-        }
       });
     </script>
   </body>
