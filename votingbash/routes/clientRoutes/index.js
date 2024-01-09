@@ -23,9 +23,25 @@ router.get("/admin/login", (req, res) => {
 router.use("/", voteNowRouter);
 
 // Define the route for /voteNowSucess
-router.get("/voteNowSucess", (req, res) => {
-  // Handle the request for /voteNowSucess
-  res.render("voteNowSucess"); // Change the rendering based on your actual setup
+router.get("/voteNowSucess", async (req, res) => {
+  try {
+    const { status, email, nickname } = req.query;
+
+    // Fetch contestant details by nickname
+    const selectedContestant = await clientController.getContestantByNickname(
+      nickname
+    );
+
+    res.render("voteNowSucess", {
+      status,
+      email,
+      nickname,
+      selectedContestant,
+    });
+  } catch (error) {
+    console.error("Error fetching contestant details:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 router.get("/contestant/:nickname/votenow/payment", async (req, res) => {
