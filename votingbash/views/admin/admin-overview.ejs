@@ -102,16 +102,20 @@
                   <%= contestant.nickname %>
                   <div class="progress" style="width: 50%">
                     <div
-                      class="progress-bar"
-                      role="progressbar"
-                      style="
-                        width: <%= (contestant.votes / award.totalVotes) * 100
-                          %>%;
-                      "
-                      aria-valuenow="<%= contestant.votes %>"
-                      aria-valuemin="0"
-                      aria-valuemax="<%= award.totalVotes %>"
-                    ></div>
+                      class="progress-bar bg-success"
+                      <!--
+                      Set
+                      background
+                      color
+                      to
+                      green
+                      --
+                    >
+                      role="progressbar" style=" width: <%= (contestant.votes /
+                      (award.totalVotes * 2)) * 100 %>%; " aria-valuenow="<%=
+                      contestant.votes %>" aria-valuemin="0" aria-valuemax="<%=
+                      award.totalVotes %>" >
+                    </div>
                   </div>
                   <span class="badge badge-primary badge-pill"
                     ><%= contestant.votes %></span
@@ -124,7 +128,6 @@
           <% }) %>
         </div>
 
-        <!-- Section 2: Transaction Details -->
         <div
           class="tab-pane fade"
           id="section2"
@@ -136,7 +139,8 @@
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">User</th>
+                <th scope="col">Contestant</th>
+                <th scope="col">Award</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Date</th>
               </tr>
@@ -145,13 +149,14 @@
               <% payments.forEach((payment, index) => { %>
               <tr>
                 <th scope="row"><%= index + 1 %></th>
-                <td><%= payment.user %></td>
+                <td><%= payment.contestant_nickname %></td>
+                <td><%= payment.award_title %></td>
                 <td>
-                  N<%= typeof payment.amount === 'number' ?
-                  payment.amount.toFixed(2) : payment.amount %>
+                  N<%= typeof payment.amount_divided_by_10 === 'number' ?
+                  payment.amount_divided_by_10.toFixed(2) :
+                  payment.amount_divided_by_10 %>
                 </td>
-
-                <td><%= new Date(payment.date).toLocaleString() %></td>
+                <td><%= new Date(payment.payment_date).toLocaleString() %></td>
               </tr>
               <% }) %>
             </tbody>

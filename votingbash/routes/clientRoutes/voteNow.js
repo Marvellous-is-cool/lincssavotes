@@ -80,8 +80,21 @@ router.get("/paid/callback", async (req, res) => {
     ) {
       // Update the payment status in the database
       const updatePaymentQuery =
-        'UPDATE payments SET status = "success" WHERE transaction_reference = ?';
-      await connection.query(updatePaymentQuery, [transactionReference]);
+        'UPDATE payments SET status = "success" WHERE contestant_nickname = ?';
+      await connection.query(updatePaymentQuery, [selectedContestant.nickname]);
+
+      // Insert payment details into the new payments table
+      const insertPaymentQuery = `
+        INSERT INTO payments (contestant_nickname, award_id, amount_divided_by_10, payment_date, status)
+        VALUES (?, ?, ?, ?, "success")
+      `;
+      const amountDividedBy10 = verifyResponse.data.amount / 10;
+      await connection.query(insertPaymentQuery, [
+        selectedContestant.nickname,
+        selectedContestant.award_id,
+        amountDividedBy10,
+        new Date(),
+      ]);
 
       // Increment votes for the contestant
       await clientController.incrementVotesForContestant(selectedContestant.id);
@@ -92,8 +105,8 @@ router.get("/paid/callback", async (req, res) => {
     } else {
       // Update the payment status in the database for failed transactions
       const updatePaymentQuery =
-        'UPDATE payments SET status = "failed" WHERE transaction_reference = ?';
-      await connection.query(updatePaymentQuery, [transactionReference]);
+        'UPDATE payments SET status = "failed" WHERE contestant_nickname = ?';
+      await connection.query(updatePaymentQuery, [selectedContestant.nickname]);
 
       res.redirect(
         `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`

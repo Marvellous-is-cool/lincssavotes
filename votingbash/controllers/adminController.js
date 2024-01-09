@@ -130,11 +130,14 @@ const adminController = {
       throw new Error("Internal Server Error");
     }
   },
-
   // Get Payments details
   getPaymentsDetails: async () => {
     try {
-      const [payments] = await connection.query("SELECT * FROM payments");
+      const [payments] = await connection.query(`
+      SELECT p.id, p.status, p.contestant_nickname, p.amount_divided_by_10, p.payment_date, a.title as award_title
+      FROM payments p
+      JOIN awards a ON p.award_id = a.id
+    `);
       return payments;
     } catch (error) {
       console.error("Error fetching Payments details:", error);
