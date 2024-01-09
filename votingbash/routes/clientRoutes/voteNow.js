@@ -59,7 +59,9 @@ router.get("/payment/callback", async (req, res) => {
 
     // Extracting nickname from the transaction reference
     const nicknameMatch = transactionReference.match(/vote_(.*?)_\d+/);
-    const nickname = nicknameMatch ? nicknameMatch[1].replace(/_/g, " ") : null;
+    const nickname = nicknameMatch
+      ? nicknameMatch[1].replace(/_/g, " ").trim()
+      : null;
 
     // Getting the contestant details by nickname
     const selectedContestant = await getSelectedContestant(nickname);
