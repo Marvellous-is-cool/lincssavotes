@@ -40,7 +40,7 @@ async function getContestantsForAward(awardId) {
 async function incrementVotesForContestant(contestantId) {
   try {
     const updateQuery = "UPDATE contestants SET votes = votes + 1 WHERE id = ?";
-    await connection.promise().query(updateQuery, [contestantId]);
+    await connection.query(updateQuery, [contestantId]);
   } catch (error) {
     console.error("Error incrementing votes for contestant:", error);
     throw error;
