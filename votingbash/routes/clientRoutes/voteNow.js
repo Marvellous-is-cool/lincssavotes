@@ -87,7 +87,7 @@ router.get("/payment/callback", async (req, res) => {
       await clientController.incrementVotesForContestant(selectedContestant.id);
 
       res.redirect(
-        `/voteNowSuccess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+        `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
       );
     } else {
       // Update the payment status in the database for failed transactions
@@ -96,7 +96,7 @@ router.get("/payment/callback", async (req, res) => {
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       res.redirect(
-        `/voteNowSuccess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+        `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
       );
     }
   } catch (error) {
