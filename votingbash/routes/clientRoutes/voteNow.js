@@ -26,7 +26,7 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
         "__"
       )}_${Date.now()}`,
       currency: "NGN", // Modify the currency
-      callback: `https://bashvoting.onrender.com/payment/callback`,
+      callback: `https://bashvoting.onrender.com/paid/callback`,
     };
 
     console.log("Request Body:", paystackTransaction);
@@ -52,7 +52,7 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
 });
 
 // Callback endpoint to handle Paystack callback
-router.get("/payment/callback", async (req, res) => {
+router.get("/paid/callback", async (req, res) => {
   try {
     console.log("Paystack Callback Request Received:", req.query);
     const transactionReference = req.query.reference;
@@ -87,9 +87,7 @@ router.get("/payment/callback", async (req, res) => {
       await clientController.incrementVotesForContestant(selectedContestant.id);
 
       res.redirect(
-        302,
-        `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
-        { selectedContestant }
+        `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
       );
     } else {
       // Update the payment status in the database for failed transactions
@@ -98,9 +96,7 @@ router.get("/payment/callback", async (req, res) => {
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       res.redirect(
-        302,
-        `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
-        { selectedContestant }
+        `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
       );
     }
   } catch (error) {
