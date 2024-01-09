@@ -21,10 +21,10 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
     const paystackTransaction = {
       email: email, // Use the extracted email
       amount: 10000, // Modify the amount as needed
-      reference: `vote_${selectedContestant.nickname}_${Date.now()}`.replace(
-        /[^\w_]/g,
-        ""
-      ),
+      reference: `vote_${selectedContestant.nickname.replace(
+        /\s+/g,
+        "%"
+      )}_${Date.now()}`,
       currency: "NGN", // Modify the currency
       callback: `https://bashvoting.onrender.com/payment/callback`,
     };
@@ -60,8 +60,10 @@ router.get("/payment/callback", async (req, res) => {
     // Extracting nickname from the transaction reference
     const nicknameMatch = transactionReference.match(/vote_(.*?)_\d+/);
     const nickname = nicknameMatch
-      ? nicknameMatch[1].replace(/_/g, " ").trim()
+      ? nicknameMatch[1].replace(/%/g, " ").trim()
       : null;
+
+    console.log("Extracted Nickname:", nickname);
 
     // Getting the contestant details by nickname
     const selectedContestant = await getSelectedContestant(nickname);
