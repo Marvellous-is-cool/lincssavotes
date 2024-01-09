@@ -86,24 +86,20 @@ router.get("/payment/callback", async (req, res) => {
       // Increment votes for the contestant
       await clientController.incrementVotesForContestant(selectedContestant.id);
 
-      res
-        .status(302)
-        .redirect(
-          `/voteNowSuccess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
-          { selectedContestant }
-        );
+      res.redirect(
+        302,
+        `/voteNowSuccess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+      );
     } else {
       // Update the payment status in the database for failed transactions
       const updatePaymentQuery =
         'UPDATE payments SET status = "failed" WHERE transaction_reference = ?';
       await connection.query(updatePaymentQuery, [transactionReference]);
 
-      res
-        .status(302)
-        .redirect(
-          `/voteNowSuccess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
-          { selectedContestant }
-        );
+      res.redirect(
+        302,
+        `/voteNowSuccess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+      );
     }
   } catch (error) {
     console.error("Error processing Paystack callback:", error);
