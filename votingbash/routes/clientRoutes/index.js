@@ -22,6 +22,12 @@ router.get("/admin/login", (req, res) => {
 
 router.use("/", voteNowRouter);
 
+// Define the route for /voteNowSuccess
+router.get("/voteNowSuccess", (req, res) => {
+  // Handle the request for /voteNowSuccess
+  res.render("voteNowSuccess"); // Change the rendering based on your actual setup
+});
+
 router.get("/contestant/:nickname/votenow/payment", async (req, res) => {
   try {
     const nickname = req.params.nickname;
