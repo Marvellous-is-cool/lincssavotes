@@ -10,19 +10,9 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <!-- Include your custom CSS -->
     <link rel="stylesheet" href="/styles/style.css" />
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Include Popper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-    <!-- Include Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/validator@13.6.0"></script> -->
-    <script src="/script/emailValidation.js"></script>
-    <script src="/script/copyLink.js"></script>
   </head>
   <body>
     <%- include('header') %>
@@ -100,9 +90,20 @@
         </div>
       </div>
     </div>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/validator@13.6.0"></script> -->
+    <script src="/script/emailValidation.js"></script>
+    <script src="/script/copyLink.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded event fired");
         // Handle "Proceed to Vote" button click
+        console.log("Proceed to Vote button clicked");
         document
           .getElementById("proceedToVoteButton")
           .addEventListener("click", function () {
@@ -112,15 +113,6 @@
             );
             emailModal.show();
           });
-
-        // Retrieve email from local storage
-        var storedEmail = localStorage.getItem("userEmail");
-        if (storedEmail) {
-          document.getElementById("email").value = storedEmail;
-          // Trigger input event to perform validation and enable/disable Continue button
-          var inputEvent = new Event("input");
-          document.getElementById("email").dispatchEvent(inputEvent);
-        }
 
         // Handle email form submission and validation
         document
@@ -133,6 +125,15 @@
 
             // Store the entered email in local storage
             localStorage.setItem("userEmail", email);
+            console.log(email);
+
+            // Add the stored email to the request body
+            var requestBody = {
+              email: email,
+              nickname: "<%= selectedContestant.nickname %>",
+            };
+
+            console.log("Request Body:", JSON.stringify(requestBody), email);
 
             // Change button text to indicate redirection
             document.getElementById("continueButton").innerText =
@@ -140,16 +141,15 @@
             document.getElementById("continueButton").disabled = true;
 
             // Fetch Paystack authentication URL directly from the client-side
-            fetch("/<%= selectedContestant.nickname %>/payment/get-url", {
-              method: "POST", // Specify the request method
-              headers: {
-                "Content-Type": "application/json", // Specify the content type
-              },
-              body: JSON.stringify({
-                email: email,
-                nickname: "<%= selectedContestant.nickname %>", // Include the nickname
-              }),
-            })
+            fetch(
+              `/<%= selectedContestant.nickname %>/payment/get-url?email=${email}`,
+              {
+                method: "POST", // Specify the request method
+                headers: {
+                  "Content-Type": "application/json", // Specify the content type
+                },
+              }
+            )
               .then((response) => response.json())
               .then((data) => {
                 console.log("Paystack Response:", data);

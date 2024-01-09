@@ -12,19 +12,15 @@ async function getSelectedContestant(nickname) {
 // Endpoint to fetch Paystack authentication URL
 router.post("/:nickname/payment/get-url", async (req, res) => {
   try {
-    const nickname = req.params.nickname; // Assuming you send the nickname in the request body
+    const nickname = req.params.nickname;
     const selectedContestant = await getSelectedContestant(nickname);
 
-    // Log the forwarded IP address before making the Paystack API call
-    console.log(
-      "Request Forwarded IP Address:",
-      req.headers["x-forwarded-for"] || req.connection.remoteAddress
-    );
+    // Extract email from query parameters
+    const email = req.query.email;
 
-    // Initialize Paystack transaction details
-    const paystackTransactionDetails = {
-      email: req.body.email,
-      amount: 5000, // Modify the amount as needed
+    const paystackTransaction = {
+      email: email, // Use the extracted email
+      amount: 10000, // Modify the amount as needed
       reference: `vote_${selectedContestant.nickname}_${Date.now()}`.replace(
         /[^\w_]/g,
         ""
@@ -33,15 +29,17 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
       callback: `https://bashvoting.onrender.com/payment/callback`,
     };
 
-    // Use the paystack library to initialize the transaction
+    console.log("Request Body:", paystackTransaction);
+
     const paystackResponse = await paystack.transaction.initialize(
-      paystackTransactionDetails
+      paystackTransaction
     );
 
     if (paystackResponse.status && paystackResponse.status === true) {
       // Send Paystack authentication URL to the client side
       res.status(200).json({
         authorization_url: paystackResponse.data.authorization_url,
+        email: email, // Send the email back to the client
       });
     } else {
       console.error("Invalid Paystack response:", paystackResponse);
@@ -57,12 +55,16 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
 router.get("/payment/callback", async (req, res) => {
   try {
     console.log("Paystack Callback Request Received:", req.query);
-    const nickname = req.body.nickname;
-    const selectedContestant = await getSelectedContestant(nickname);
-
     const transactionReference = req.query.reference;
 
-    // Use the paystack library to verify the transaction
+    // Extracting nickname from the transaction reference
+    const nicknameMatch = transactionReference.match(/vote_(.*?)_\d+/);
+    const nickname = nicknameMatch ? nicknameMatch[1] : null;
+
+    // Getting the contestant details by nickname
+    const selectedContestant = await getSelectedContestant(nickname);
+
+    // Verify the Paystack transaction
     const verifyResponse = await paystack.transaction.verify(
       transactionReference
     );
@@ -72,43 +74,26 @@ router.get("/payment/callback", async (req, res) => {
       verifyResponse.status === true &&
       verifyResponse.data.currency === "NGN"
     ) {
-      // Process the successful payment
+      // Update the payment status in the database
       const updatePaymentQuery =
         'UPDATE payments SET status = "success" WHERE transaction_reference = ?';
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       // Increment votes for the contestant
-      await incrementVotesForContestant(selectedContestant.id);
+      await clientController.incrementVotesForContestant(selectedContestant.id);
 
-      const fetchPaymentQuery =
-        "SELECT * FROM payments WHERE transaction_reference = ?";
-      const [paymentDetails] = await connection.query(fetchPaymentQuery, [
-        transactionReference,
-      ]);
-
-      if (paymentDetails.length > 0) {
-        // Redirect to the success page with appropriate query parameters
-        res.render("voteNowSuccess", {
-          selectedContestant,
-          status: "success",
-        });
-      } else {
-        res.render("voteNowSuccess", {
-          selectedContestant,
-          status: "invalid",
-        });
-      }
+      res.redirect(
+        `/voteNowSuccess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+      );
     } else {
-      // Process the failed payment
+      // Update the payment status in the database for failed transactions
       const updatePaymentQuery =
         'UPDATE payments SET status = "failed" WHERE transaction_reference = ?';
       await connection.query(updatePaymentQuery, [transactionReference]);
 
-      // Redirect to the failure page with appropriate query parameters
-      res.render("voteNowSuccess", {
-        selectedContestant,
-        status: "failed",
-      });
+      res.redirect(
+        `/voteNowSuccess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+      );
     }
   } catch (error) {
     console.error("Error processing Paystack callback:", error);
