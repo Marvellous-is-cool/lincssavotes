@@ -87,7 +87,6 @@ router.get("/payment/callback", async (req, res) => {
       await clientController.incrementVotesForContestant(selectedContestant.id);
 
       res.redirect(
-        302,
         `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
         { selectedContestant }
       );
@@ -98,7 +97,6 @@ router.get("/payment/callback", async (req, res) => {
       await connection.query(updatePaymentQuery, [transactionReference]);
 
       res.redirect(
-        302,
         `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`,
         { selectedContestant }
       );
