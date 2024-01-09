@@ -23,7 +23,7 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
       amount: 10000, // Modify the amount as needed
       reference: `vote_${selectedContestant.nickname.replace(
         /\s+/g,
-        "%"
+        "__"
       )}_${Date.now()}`,
       currency: "NGN", // Modify the currency
       callback: `https://bashvoting.onrender.com/payment/callback`,
@@ -60,7 +60,7 @@ router.get("/payment/callback", async (req, res) => {
     // Extracting nickname from the transaction reference
     const nicknameMatch = transactionReference.match(/vote_(.*?)_\d+/);
     const nickname = nicknameMatch
-      ? nicknameMatch[1].replace(/%/g, " ").trim()
+      ? nicknameMatch[1].replace(/__/g, " ").trim()
       : null;
 
     console.log("Extracted Nickname:", nickname);
