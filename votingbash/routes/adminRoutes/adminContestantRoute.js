@@ -76,4 +76,30 @@ router.get("/dashboard/overview", async (req, res) => {
   }
 });
 
+router.get("/logout", (req, res) => {
+  // Destroy the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      // Redirect to the login page after destroying the session
+      res.redirect("/");
+    }
+  });
+});
+
+// Endpoint to handle session destruction when the tab or connection is closed
+router.post("/destroy-session", (req, res) => {
+  // Destroy the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
 module.exports = router;

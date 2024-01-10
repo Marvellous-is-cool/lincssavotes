@@ -29,8 +29,6 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
       callback: `https://bashvoting.onrender.com/paid/callback`,
     };
 
-    console.log("Request Body:", paystackTransaction);
-
     const paystackResponse = await paystack.transaction.initialize(
       paystackTransaction
     );
@@ -54,7 +52,6 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
 // Callback endpoint to handle Paystack callback
 router.get("/paid/callback", async (req, res) => {
   try {
-    console.log("Paystack Callback Request Received:", req.query);
     const transactionReference = req.query.reference;
 
     // Extracting nickname from the transaction reference
@@ -62,8 +59,6 @@ router.get("/paid/callback", async (req, res) => {
     const nickname = nicknameMatch
       ? nicknameMatch[1].replace(/__/g, " ").trim()
       : null;
-
-    console.log("Extracted Nickname:", nickname);
 
     // Getting the contestant details by nickname
     const selectedContestant = await getSelectedContestant(nickname);

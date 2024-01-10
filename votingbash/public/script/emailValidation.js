@@ -1,5 +1,3 @@
-console.log("DOMContentLoaded event fired");
-
 document.addEventListener("DOMContentLoaded", function () {
   var emailInput = document.getElementById("email");
   var emailError = document.getElementById("emailError");

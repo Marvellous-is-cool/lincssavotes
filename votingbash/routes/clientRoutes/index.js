@@ -8,8 +8,6 @@ const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); //
 
 // Index route
 router.get("/", async (req, res) => {
-  console.log("Index Route Triggered");
-  console.log("Session Data:", req.session);
   try {
     const awards = await clientController.getAwards();
     res.render("index", { awards });

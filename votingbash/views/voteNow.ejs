@@ -104,9 +104,6 @@
     <script src="/script/copyLink.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        console.log("DOMContentLoaded event fired");
-        // Handle "Proceed to Vote" button click
-        console.log("Proceed to Vote button clicked");
         document
           .getElementById("proceedToVoteButton")
           .addEventListener("click", function () {
@@ -128,15 +125,12 @@
 
             // Store the entered email in local storage
             localStorage.setItem("userEmail", email);
-            console.log(email);
 
             // Add the stored email to the request body
             var requestBody = {
               email: email,
               nickname: "<%= selectedContestant.nickname %>",
             };
-
-            console.log("Request Body:", JSON.stringify(requestBody), email);
 
             // Change button text to indicate redirection
             document.getElementById("continueButton").innerText =
@@ -155,8 +149,6 @@
             )
               .then((response) => response.json())
               .then((data) => {
-                console.log("Paystack Response:", data);
-
                 // Continue processing as needed
                 if (data.authorization_url) {
                   // Redirect to Paystack authentication URL
