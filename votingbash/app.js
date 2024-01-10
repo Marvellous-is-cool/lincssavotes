@@ -18,7 +18,23 @@ const port = process.env.PORT || 3000;
 
 // Configure session middleware
 const sessionSecret = process.env.SESSION_SECRET || "keyboard cat";
-const sessionStore = new MySQLStore({}, connection);
+const sessionExpiration = 1000 * 60 * 60 * 20; // 20 hours
+const sessionStore = new MySQLStore(
+  {
+    createDatabaseTable: true,
+    schema: {
+      tableName: "sessions",
+      columnNames: {
+        session_id: "session_id",
+        expires: "expires",
+        data: "data",
+      },
+    },
+    expiration: sessionExpiration,
+  },
+  connection
+);
+
 app.use(
   session({
     key: "keyboard cat",
@@ -26,6 +42,7 @@ app.use(
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
+    cookie: { maxAge: sessionExpiration },
   })
 );
 
@@ -51,11 +68,11 @@ app.use(cors()); // Enable CORS
 const adminRoutes = require("./routes/adminRoutes/adminContestantRoute");
 const clientRoutes = require("./routes/clientRoutes");
 
-// Use the adminContestantRoute with the base path /admin
-app.use("/admin", adminRoutes);
-
 // Use other routes as needed
 app.use("/", clientRoutes);
+
+// Use the adminContestantRoute with the base path /admin
+app.use("/admin", adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

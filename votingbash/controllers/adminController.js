@@ -49,6 +49,7 @@ const adminController = {
       return {
         success: admin.length > 0,
         error: admin.length > 0 ? null : "Incorrect username or password",
+        admin: admin.length > 0 ? admin[0] : null, // Include admin data
       };
     } catch (error) {
       console.error("Error authenticating admin:", error);
