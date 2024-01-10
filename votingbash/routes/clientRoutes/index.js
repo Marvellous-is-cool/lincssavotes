@@ -7,14 +7,18 @@ const authMiddleware = require("../../middlewares/authMiddleware");
 const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); // Import the adminContestantRoute
 
 // Index route
+// router.get("/", async (req, res) => {
+//   try {
+//     const awards = await clientController.getAwards();
+//     res.render("index", { awards });
+//   } catch (error) {
+//     console.error("Error rendering index:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
 router.get("/", async (req, res) => {
-  try {
-    const awards = await clientController.getAwards();
-    res.render("index", { awards });
-  } catch (error) {
-    console.error("Error rendering index:", error);
-    res.status(500).send("Internal Server Error");
-  }
+  res.render("suspended");
 });
 
 // Apply authMiddleware only to the routes under /admin
@@ -95,77 +99,77 @@ router.post("/destroy-session", (req, res) => {
   });
 });
 
-router.use("/", voteNowRouter);
+// router.use("/", voteNowRouter);
 
-// Define the route for /voteNowSucess
-router.get("/voteNowSucess", async (req, res) => {
-  try {
-    const { status, email, nickname } = req.query;
+// // Define the route for /voteNowSucess
+// router.get("/voteNowSucess", async (req, res) => {
+//   try {
+//     const { status, email, nickname } = req.query;
 
-    // Fetch contestant details by nickname
-    const selectedContestant = await clientController.getContestantByNickname(
-      nickname
-    );
+//     // Fetch contestant details by nickname
+//     const selectedContestant = await clientController.getContestantByNickname(
+//       nickname
+//     );
 
-    res.render("voteNowSucess", {
-      status,
-      email,
-      nickname,
-      selectedContestant,
-    });
-  } catch (error) {
-    console.error("Error fetching contestant details:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//     res.render("voteNowSucess", {
+//       status,
+//       email,
+//       nickname,
+//       selectedContestant,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching contestant details:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
-router.get("/contestant/:nickname/votenow/payment", async (req, res) => {
-  try {
-    const nickname = req.params.nickname;
+// router.get("/contestant/:nickname/votenow/payment", async (req, res) => {
+//   try {
+//     const nickname = req.params.nickname;
 
-    // Fetch contestant details by nickname
-    const selectedContestant = await clientController.getContestantByNickname(
-      nickname
-    );
+//     // Fetch contestant details by nickname
+//     const selectedContestant = await clientController.getContestantByNickname(
+//       nickname
+//     );
 
-    res.render("voteNow", { selectedContestant });
-  } catch (error) {
-    console.error("Error fetching contestant details:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//     res.render("voteNow", { selectedContestant });
+//   } catch (error) {
+//     console.error("Error fetching contestant details:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
-router.post("/vote", async (req, res) => {
-  try {
-    const { award } = req.body;
+// router.post("/vote", async (req, res) => {
+//   try {
+//     const { award } = req.body;
 
-    // Fetch selected award details
-    const selectedAward = await clientController.getSelectedAward(award);
+//     // Fetch selected award details
+//     const selectedAward = await clientController.getSelectedAward(award);
 
-    // Fetch contestants for the selected award
-    const contestants = await clientController.getContestantsForAward(award);
+//     // Fetch contestants for the selected award
+//     const contestants = await clientController.getContestantsForAward(award);
 
-    res.render("contestants", {
-      selectedAward,
-      contestants,
-    });
-  } catch (error) {
-    console.error("Error processing vote:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+//     res.render("contestants", {
+//       selectedAward,
+//       contestants,
+//     });
+//   } catch (error) {
+//     console.error("Error processing vote:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
-// Endpoint to handle session destruction when the tab or connection is closed
-router.post("/destroy-session", (req, res) => {
-  // Destroy the session
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-      res.status(500).send("Internal Server Error");
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
+// // Endpoint to handle session destruction when the tab or connection is closed
+// router.post("/destroy-session", (req, res) => {
+//   // Destroy the session
+//   req.session.destroy((err) => {
+//     if (err) {
+//       console.error("Error destroying session:", err);
+//       res.status(500).send("Internal Server Error");
+//     } else {
+//       res.sendStatus(200);
+//     }
+//   });
+// });
 
 module.exports = router;

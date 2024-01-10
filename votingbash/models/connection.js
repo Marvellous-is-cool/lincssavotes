@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 
-// // Create the connection pool to the database
+// Create the connection pool to the database
 const pool = mysql.createPool({
   host: "173.247.225.109", // Database Host
   user: "admin", // Database User
