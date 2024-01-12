@@ -106,7 +106,7 @@ router.get("/paid/callback", async (req, res) => {
 
       console.log("Payment success:", contestantId);
       res.redirect(
-        `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}&votes=${numberOfVotes}`
+        `/voteNowSucess?status=success&email=${req.query.email}&contestantId=${contestantId}`
       );
     } else {
       // Call the handlePaymentQueries function with 'failed' status
@@ -119,7 +119,7 @@ router.get("/paid/callback", async (req, res) => {
 
       console.log("Payment failed:", contestantId);
       res.redirect(
-        `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+        `/voteNowSucess?status=failed&email=${req.query.email}&contestantId=${contestantId}`
       );
     }
   } catch (error) {
