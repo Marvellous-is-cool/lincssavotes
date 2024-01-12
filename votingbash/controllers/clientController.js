@@ -16,7 +16,7 @@ async function getSelectedAward(awardId) {
   const sql = "SELECT * FROM awards WHERE id = ?";
   try {
     const [selectedAward] = await connection.execute(sql, [awardId]);
-    
+
     return selectedAward[0];
   } catch (error) {
     console.error("Error fetching selected award:", error);
@@ -26,12 +26,10 @@ async function getSelectedAward(awardId) {
 
 async function getContestantsForAward(awardId) {
   try {
-    
     const contestants = await awardContestantController.getContestantsForAward(
       awardId
     );
-    
-    
+
     return contestants;
   } catch (error) {
     console.error("Error fetching contestants:", error);
@@ -43,7 +41,6 @@ async function incrementVotesForContestant(contestantId, numberOfVotes) {
   const sql = "UPDATE contestants SET votes = votes + ? WHERE id = ?";
   try {
     await connection.execute(sql, [numberOfVotes, contestantId]);
-    
   } catch (error) {
     console.error("Error incrementing votes for contestant:", error);
     throw error;
@@ -52,26 +49,22 @@ async function incrementVotesForContestant(contestantId, numberOfVotes) {
 
 async function getContestantById(contestantId) {
   const sql = `
-    SELECT c.*, GROUP_CONCAT(a.title) AS award_titles
-    FROM contestants c
-    LEFT JOIN award_contestants ac ON c.id = ac.contestant_id
-    LEFT JOIN awards a ON ac.award_id = a.id
-    WHERE c.id = ?
-    GROUP BY c.id;
-  `;
+  SELECT c.*, GROUP_CONCAT(a.title) AS award_titles
+  FROM contestants c
+  LEFT JOIN award_contestants ac ON c.id = ac.contestant_id
+  LEFT JOIN awards a ON ac.award_id = a.id
+  WHERE c.id = ?
+  GROUP BY c.id;
+`;
 
   try {
     const [contestant] = await connection.execute(sql, [contestantId]);
 
     if (contestant.length > 0) {
-      
-
       // Convert the comma-separated string of award titles to an array
       const awardTitles = contestant[0].award_titles
         ? contestant[0].award_titles.split(",")
         : [];
-
-      
 
       return {
         ...contestant[0],
