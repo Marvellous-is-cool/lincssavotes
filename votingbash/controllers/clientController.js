@@ -95,14 +95,22 @@ async function handlePaymentQueries(
 
   try {
     // Update payment status in the database
+    console.log(
+      "Debugging - Parameters:",
+      status,
+      nickname,
+      selectedContestant.award_id,
+      amountDividedBy10
+    );
+
     await connection.execute(updatePaymentQuery, [status, nickname]);
 
     // Insert payment details into the new payments table
     const amountDividedBy10 = amount / 10;
     await connection.execute(insertPaymentQuery, [
       nickname,
-      selectedContestant.award_id,
-      amountDividedBy10,
+      selectedContestant.award_id || null,
+      amountDividedBy10 || null,
       new Date(),
       status,
     ]);
