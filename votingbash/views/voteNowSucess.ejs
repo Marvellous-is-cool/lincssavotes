@@ -1,10 +1,10 @@
-<!-- voteNow.ejs -->
+<!-- voteNowSuccess.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vote Now</title>
+    <title>Vote Now Success</title>
     <!-- Include Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -12,8 +12,6 @@
     />
     <!-- Include your custom CSS -->
     <link rel="stylesheet" href="/styles/style.css" />
-    <!-- Include Google Font CSS -->
-    <!-- <link rel="stylesheet" href="path-to-your-downloaded-google-font.css" /> -->
     <style>
       /* Additional styles for the success and failure messages */
       .success-message {
@@ -35,7 +33,13 @@
     <%- include('header', { selectedContestant }) %>
     <div class="container mt-5">
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Congratulations</h2>
+        <% if (status === 'success') { %>
+        <h2 class="text-success">Congratulations</h2>
+        <% } else if (status === 'failed') { %>
+        <h2 class="text-danger">Sorry, your payment was not successful</h2>
+        <% } else { %>
+        <h2 class="text-info">There is an error within your payment</h2>
+        <% } %>
       </div>
       <!-- Display the selected contestant details -->
       <div class="contestant-card">
@@ -51,7 +55,9 @@
           Nickname: <%= selectedContestant.nickname %>
         </p>
         <p>Level: <%= selectedContestant.level %></p>
-        <p>Award Title: <%= selectedContestant.award_title %></p>
+        <p>Award Title: <%= selectedContestant.award_titles[0] %></p>
+        <!-- Assuming there's only one award title -->
+
         <!-- Display "Voted Successfully" or "Try Again" button based on payment status -->
         <% if (status === 'success') { %>
         <button class="btn btn-success" disabled>Voted Successfully!</button>
@@ -98,7 +104,7 @@
         // Function to fetch authentication URL from the server
         function fetchAuthenticationURL(email, buttonId) {
           fetch(
-            `/<%= selectedContestant.nickname %>/payment/get-url?email=${encodeURIComponent(
+            `/<%= selectedContestant.id %>/payment/get-url?email=${encodeURIComponent(
               email
             )}`,
             {

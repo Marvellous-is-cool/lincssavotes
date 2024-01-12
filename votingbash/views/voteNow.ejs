@@ -16,6 +16,27 @@
   </head>
   <body>
     <%- include('header') %>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h3>Instruction</h3>
+      Click on Proceed to vote button, enter an email, then confirm and you will
+      be redirected to the paystack platform.
+      <br />
+      Kindly <b> wait or go back to the gateway </b> when you are done paying
+      (especially if you are paying through transfer) until you are redirected
+      back sucessfully here, else teh server will not be able to process your
+      vote, and you <b> WILL </b> lose your vote in the process.
+      <button
+        type="button"
+        class="btn btn-rounded btn-dark text-white close"
+        data-dismiss="alert"
+        onclick="this.parentElement.style.display='none';"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <div class="container mt-5">
       <div class="d-flex justify-content-between align-items-center">
         <h2>Vote Now</h2>
@@ -28,15 +49,13 @@
           src="/uploads/<%= selectedContestant.photo_url %>"
           alt="<%= selectedContestant.nickname %>"
           class="img-small"
-          data-lightbox="<%= selectedContestant.nickname %>"
-          data-title="Click outside to close the image"
         />
 
         <p class="mt-2 nickname">
           Nickname: <%= selectedContestant.nickname %>
         </p>
         <p>Level: <%= selectedContestant.level %></p>
-        <p>Award Title: <%= selectedContestant.award_title %></p>
+        <p>Award Title: <%= awardTitle %></p>
 
         <!-- "Proceed to Vote" button triggers email modal -->
         <button id="proceedToVoteButton" class="btn btn-primary">
@@ -63,7 +82,7 @@
           <div class="modal-body">
             <!-- Email form with Bootstrap validation classes -->
             <form
-              action="/<%= selectedContestant.nickname %>/payment/get-url"
+              action="/<%= selectedContestant.id %>/payment/get-url"
               method="post"
               id="emailForm"
               class="needs-validation"
@@ -129,7 +148,7 @@
             // Add the stored email to the request body
             var requestBody = {
               email: email,
-              nickname: "<%= selectedContestant.nickname %>",
+              id: "<%= selectedContestant.id %>",
             };
 
             // Change button text to indicate redirection
@@ -139,12 +158,13 @@
 
             // Fetch Paystack authentication URL directly from the client-side
             fetch(
-              `/<%= selectedContestant.nickname %>/payment/get-url?email=${email}`,
+              `/<%= selectedContestant.id %>/payment/get-url?email=${email}`,
               {
                 method: "POST", // Specify the request method
                 headers: {
                   "Content-Type": "application/json", // Specify the content type
                 },
+                body: JSON.stringify(requestBody), // Updated: Include request body
               }
             )
               .then((response) => response.json())
@@ -172,21 +192,9 @@
                 document.getElementById("continueButton").disabled = false;
               });
           });
-
-        document.querySelector(".img-small").addEventListener("click");
       });
     </script>
     <!-- views/footer.ejs -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        lightbox.option({
-          resizeDuration: 200,
-          wrapAround: true,
-        });
-      });
-    </script>
   </body>
 </html>

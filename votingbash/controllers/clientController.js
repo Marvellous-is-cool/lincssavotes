@@ -1,9 +1,10 @@
-// clientController.js
 const connection = require("../models/connection");
+const awardContestantController = require("./awardContestantController");
 
 async function getAwards() {
+  const sql = "SELECT * FROM awards ORDER BY title ASC";
   try {
-    const [awards] = await connection.query("SELECT * FROM awards");
+    const [awards] = await connection.execute(sql);
     return awards;
   } catch (error) {
     console.error("Error fetching awards:", error);
@@ -12,11 +13,10 @@ async function getAwards() {
 }
 
 async function getSelectedAward(awardId) {
+  const sql = "SELECT * FROM awards WHERE id = ?";
   try {
-    const [selectedAward] = await connection.query(
-      "SELECT * FROM awards WHERE id = ?",
-      [awardId]
-    );
+    const [selectedAward] = await connection.execute(sql, [awardId]);
+    
     return selectedAward[0];
   } catch (error) {
     console.error("Error fetching selected award:", error);
@@ -26,10 +26,12 @@ async function getSelectedAward(awardId) {
 
 async function getContestantsForAward(awardId) {
   try {
-    const [contestants] = await connection.query(
-      "SELECT * FROM contestants WHERE award_id = ?",
-      [awardId]
+    
+    const contestants = await awardContestantController.getContestantsForAward(
+      awardId
     );
+    
+    
     return contestants;
   } catch (error) {
     console.error("Error fetching contestants:", error);
@@ -37,28 +39,82 @@ async function getContestantsForAward(awardId) {
   }
 }
 
-async function incrementVotesForContestant(contestantId) {
+async function incrementVotesForContestant(contestantId, numberOfVotes) {
+  const sql = "UPDATE contestants SET votes = votes + ? WHERE id = ?";
   try {
-    const updateQuery = "UPDATE contestants SET votes = votes + 1 WHERE id = ?";
-    await connection.query(updateQuery, [contestantId]);
+    await connection.execute(sql, [numberOfVotes, contestantId]);
+    
   } catch (error) {
     console.error("Error incrementing votes for contestant:", error);
     throw error;
   }
 }
 
-async function getContestantByNickname(nickname) {
+async function getContestantById(contestantId) {
+  const sql = `
+    SELECT c.*, GROUP_CONCAT(a.title) AS award_titles
+    FROM contestants c
+    LEFT JOIN award_contestants ac ON c.id = ac.contestant_id
+    LEFT JOIN awards a ON ac.award_id = a.id
+    WHERE c.id = ?
+    GROUP BY c.id;
+  `;
+
   try {
-    const query = `
-      SELECT contestants.*, awards.title as award_title
-      FROM contestants
-      JOIN awards ON contestants.award_id = awards.id
-      WHERE contestants.nickname = ?;
-    `;
-    const [contestant] = await connection.query(query, [nickname]);
-    return contestant[0];
+    const [contestant] = await connection.execute(sql, [contestantId]);
+
+    if (contestant.length > 0) {
+      
+
+      // Convert the comma-separated string of award titles to an array
+      const awardTitles = contestant[0].award_titles
+        ? contestant[0].award_titles.split(",")
+        : [];
+
+      
+
+      return {
+        ...contestant[0],
+        award_titles: awardTitles,
+      };
+    } else {
+      return null;
+    }
   } catch (error) {
-    console.error("Error fetching contestant by nickname:", error);
+    console.error("Error fetching contestant by ID:", error);
+    throw error;
+  }
+}
+
+// Function to handle database queries related to payments
+async function handlePaymentQueries(contestantId, amount, status) {
+  const updatePaymentQuery =
+    "UPDATE payments SET status = ? WHERE contestant_id = ?";
+  const insertPaymentQuery = `
+    INSERT INTO payments (contestant_id, award_id, amount_divided_by_10, payment_date, status)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  try {
+    // Update payment status in the database
+    await connection.execute(updatePaymentQuery, [status, contestantId]);
+
+    // Insert payment details into the new payments table
+    const amountDividedBy10 = amount / 10;
+    await connection.execute(insertPaymentQuery, [
+      contestantId,
+      selectedContestant.award_id,
+      amountDividedBy10,
+      new Date(),
+      status,
+    ]);
+
+    console.log(
+      "Payment queries executed successfully for Contestant ID:",
+      contestantId
+    );
+  } catch (error) {
+    console.error("Error executing payment queries:", error);
     throw error;
   }
 }
@@ -68,5 +124,6 @@ module.exports = {
   getSelectedAward,
   getContestantsForAward,
   incrementVotesForContestant,
-  getContestantByNickname,
+  getContestantById,
+  handlePaymentQueries,
 };

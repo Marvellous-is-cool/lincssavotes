@@ -1,31 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const clientController = require("../../controllers/clientController");
-const connection = require("../../models/connection");
 const paystack = require("paystack")(`${process.env.PAYSTACK_SECRET_KEY}`);
-
-// Function to get selected contestant details
-async function getSelectedContestant(nickname) {
-  return await clientController.getContestantByNickname(nickname);
-}
+const awardContestantController = require("../../controllers/awardContestantController");
+const handlePaymentQueries = clientController.handlePaymentQueries;
 
 // Endpoint to fetch Paystack authentication URL
-router.post("/:nickname/payment/get-url", async (req, res) => {
+router.post("/:id/payment/get-url", async (req, res) => {
   try {
-    const nickname = req.params.nickname;
-    const selectedContestant = await getSelectedContestant(nickname);
+    const contestantId = req.params.id;
+    const selectedContestant = await clientController.getSelectedContestant(
+      contestantId
+    );
 
-    // Extract email from query parameters
-    const email = req.query.email;
+    // Extract email and amount from the request body
+    const { email, amount } = req.body;
 
     const paystackTransaction = {
-      email: email, // Use the extracted email
-      amount: 10000, // Modify the amount as needed
-      reference: `vote_${selectedContestant.nickname.replace(
+      email: email,
+      amount: amount || 10000,
+      reference: `vote${selectedContestant.id.replace(
         /\s+/g,
         "__"
-      )}_${Date.now()}`,
-      currency: "NGN", // Modify the currency
+      )}${Date.now()}`,
+      currency: "NGN",
       callback: `https://bashvoting.onrender.com/paid/callback`,
     };
 
@@ -35,9 +33,10 @@ router.post("/:nickname/payment/get-url", async (req, res) => {
 
     if (paystackResponse.status && paystackResponse.status === true) {
       // Send Paystack authentication URL to the client side
+      console.log("Paystack response:", paystackResponse);
       res.status(200).json({
         authorization_url: paystackResponse.data.authorization_url,
-        email: email, // Send the email back to the client
+        email: email,
       });
     } else {
       console.error("Invalid Paystack response:", paystackResponse);
@@ -54,57 +53,52 @@ router.get("/paid/callback", async (req, res) => {
   try {
     const transactionReference = req.query.reference;
 
-    // Extracting nickname from the transaction reference
-    const nicknameMatch = transactionReference.match(/vote_(.*?)_\d+/);
-    const nickname = nicknameMatch
-      ? nicknameMatch[1].replace(/__/g, " ").trim()
+    // Extracting contestant id from the transaction reference
+    const contestantIdMatch = transactionReference.match(/vote_(\d+)_\d+/);
+    const contestantId = contestantIdMatch
+      ? parseInt(contestantIdMatch[1])
       : null;
 
-    // Getting the contestant details by nickname
-    const selectedContestant = await getSelectedContestant(nickname);
+    // Getting the contestant details by id
+    const selectedContestant = await getContestantById(contestantId);
 
     // Verify the Paystack transaction
     const verifyResponse = await paystack.transaction.verify(
       transactionReference
     );
 
+    console.log("Paystack verify response:", verifyResponse);
+
     if (
       verifyResponse.status &&
       verifyResponse.status === true &&
       verifyResponse.data.currency === "NGN"
     ) {
-      // Update the payment status in the database
-      const updatePaymentQuery =
-        'UPDATE payments SET status = "success" WHERE contestant_nickname = ?';
-      await connection.query(updatePaymentQuery, [selectedContestant.nickname]);
+      // Calculate the number of votes based on the paid amount
+      const paidAmount = verifyResponse.data.amount / 100; // Convert from kobo to Naira
+      const numberOfVotes = Math.floor(paidAmount / 100); // Assuming N100 per vote
 
-      // Insert payment details into the new payments table
-      const insertPaymentQuery = `
-        INSERT INTO payments (contestant_nickname, award_id, amount_divided_by_10, payment_date, status)
-        VALUES (?, ?, ?, ?, "success")
-      `;
-      const amountDividedBy10 = verifyResponse.data.amount / 10;
-      await connection.query(insertPaymentQuery, [
-        selectedContestant.nickname,
-        selectedContestant.award_id,
-        amountDividedBy10,
-        new Date(),
-      ]);
+      // Call the handlePaymentQueries function to handle database queries
+      await handlePaymentQueries(
+        contestantId,
+        verifyResponse.data.amount,
+        "success"
+      );
 
-      // Increment votes for the contestant
-      await clientController.incrementVotesForContestant(selectedContestant.id);
+      // Increment votes for the contestant using the new controller
+      await incrementVotesForContestant(contestantId, numberOfVotes);
 
+      console.log("Payment success:", contestantId);
       res.redirect(
-        `/voteNowSucess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+        `/voteNowSuccess?status=success&email=${req.query.email}&nickname=${selectedContestant.nickname}&votes=${numberOfVotes}`
       );
     } else {
-      // Update the payment status in the database for failed transactions
-      const updatePaymentQuery =
-        'UPDATE payments SET status = "failed" WHERE contestant_nickname = ?';
-      await connection.query(updatePaymentQuery, [selectedContestant.nickname]);
+      // Call the handlePaymentQueries function with 'failed' status
+      await handlePaymentQueries(contestantId, 0, "failed");
 
+      console.log("Payment failed:", contestantId);
       res.redirect(
-        `/voteNowSucess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
+        `/voteNowSuccess?status=failed&email=${req.query.email}&nickname=${selectedContestant.nickname}`
       );
     }
   } catch (error) {

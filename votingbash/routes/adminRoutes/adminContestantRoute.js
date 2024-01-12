@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../../controllers/adminController");
+const editController = require("../../controllers/editController");
 
 // Admin show awards route
 router.get("/add-contestant", async (req, res) => {
   try {
-    // Fetch award titles from the database
+    // Fetch award titles from the database using the updated method
     const awards = await adminController.getAwardTitles();
 
     res.render("admin/add-contestant", { awards });
@@ -15,9 +16,9 @@ router.get("/add-contestant", async (req, res) => {
   }
 });
 
-// Admin add contestant route
 router.post("/add-contestant", async (req, res) => {
   try {
+    // Call the updated addContestant method in adminController
     await adminController.addContestant(req, res);
   } catch (error) {
     console.error("Error adding contestant:", error);
@@ -26,7 +27,6 @@ router.post("/add-contestant", async (req, res) => {
 });
 
 // Admin dashboard route
-// Attach an event listener for beforeunload to trigger session destruction
 router.get("/dashboard", async (req, res) => {
   try {
     // Fetch admin dashboard data using the admin controller
@@ -50,6 +50,7 @@ router.post("/delete-contestant/:awardId/:contestantId", async (req, res) => {
       awardId,
       contestantId
     );
+
     req.flash("success", result.message);
     res.redirect("/admin/dashboard");
   } catch (error) {
@@ -58,6 +59,16 @@ router.post("/delete-contestant/:awardId/:contestantId", async (req, res) => {
     res.redirect("/admin/dashboard");
   }
 });
+
+// admin edit routes
+router.get(
+  "/edit-contestant/:awardId/:contestantId",
+  editController.renderEditContestantPage
+);
+router.post(
+  "/edit-contestant/:awardId/:contestantId",
+  editController.editContestant
+);
 
 // Admin dashboard overview route
 router.get("/dashboard/overview", async (req, res) => {

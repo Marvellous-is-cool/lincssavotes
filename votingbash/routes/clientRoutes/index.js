@@ -7,21 +7,83 @@ const authMiddleware = require("../../middlewares/authMiddleware");
 const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); // Import the adminContestantRoute
 
 // Index route
-// router.get("/", async (req, res) => {
-//   try {
-//     const awards = await clientController.getAwards();
-//     res.render("index", { awards });
-//   } catch (error) {
-//     console.error("Error rendering index:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
 router.get("/", async (req, res) => {
-  res.render("suspended");
+  try {
+    const awards = await clientController.getAwards();
+    res.render("index", { awards });
+  } catch (error) {
+    console.error("Error rendering index:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
-// Apply authMiddleware only to the routes under /admin
+router.post("/vote", async (req, res) => {
+  try {
+    const { award } = req.body;
+
+    // Fetch selected award details
+    const selectedAward = await clientController.getSelectedAward(award);
+
+    // Fetch contestants for the selected award
+    const contestants = await clientController.getContestantsForAward(award);
+
+    // Add this line to log the fetched contestants
+
+    res.render("contestants", {
+      selectedAward,
+      contestants,
+    });
+  } catch (error) {
+    console.error("Error processing vote:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/contestant/:id/votenow/payment", async (req, res) => {
+  try {
+    const contestantId = req.params.id;
+
+    // Fetch contestant details by ID with associated award title
+    const selectedContestant = await clientController.getContestantById(
+      contestantId
+    );
+
+    // Pass both selectedContestant and awardTitle to the template
+    res.render("voteNow", {
+      selectedContestant,
+      awardTitle: selectedContestant.award_titles[0], // Assuming there's only one award title
+    });
+  } catch (error) {
+    console.error("Error fetching contestant details:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.use("/", voteNowRouter);
+
+// // Define the route for /voteNowSuccess
+router.get("/voteNowSuccess", async (req, res) => {
+  try {
+    const { status, email, nickname } = req.query;
+
+    // Fetch contestant details by nickname
+    const selectedContestant = await clientController.getContestantsByNickname(
+      nickname
+    );
+
+    res.render("voteNowSuccess", {
+      status,
+      email,
+      nickname,
+      selectedContestant,
+    });
+  } catch (error) {
+    console.error("Error fetching contestant details:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// // Apply authMiddleware only to the routes under /admin
 router.use("/admin", authMiddleware, adminContestantRouter);
 
 // Admin login route accessible without /admin prefix
@@ -30,7 +92,7 @@ router.get("/login", (req, res) => {
   res.render("admin-login", { error });
 });
 
-// Admin authentication route
+// // Admin authentication route
 router.post("/authenticate", async (req, res) => {
   const { username, password } = req.body;
 
@@ -64,6 +126,7 @@ router.post("/authenticate", async (req, res) => {
         "error",
         error || "Incorrect username or password. Please try again."
       );
+
       res.redirect("/login");
     }
   } catch (error) {
@@ -85,8 +148,7 @@ router.get("/logout", (req, res) => {
     }
   });
 });
-
-// Endpoint to handle session destruction when the tab or connection is closed
+// // Endpoint to handle session destruction when the tab or connection is closed
 router.post("/destroy-session", (req, res) => {
   // Destroy the session
   req.session.destroy((err) => {
@@ -98,78 +160,5 @@ router.post("/destroy-session", (req, res) => {
     }
   });
 });
-
-// router.use("/", voteNowRouter);
-
-// // Define the route for /voteNowSucess
-// router.get("/voteNowSucess", async (req, res) => {
-//   try {
-//     const { status, email, nickname } = req.query;
-
-//     // Fetch contestant details by nickname
-//     const selectedContestant = await clientController.getContestantByNickname(
-//       nickname
-//     );
-
-//     res.render("voteNowSucess", {
-//       status,
-//       email,
-//       nickname,
-//       selectedContestant,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching contestant details:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
-// router.get("/contestant/:nickname/votenow/payment", async (req, res) => {
-//   try {
-//     const nickname = req.params.nickname;
-
-//     // Fetch contestant details by nickname
-//     const selectedContestant = await clientController.getContestantByNickname(
-//       nickname
-//     );
-
-//     res.render("voteNow", { selectedContestant });
-//   } catch (error) {
-//     console.error("Error fetching contestant details:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
-// router.post("/vote", async (req, res) => {
-//   try {
-//     const { award } = req.body;
-
-//     // Fetch selected award details
-//     const selectedAward = await clientController.getSelectedAward(award);
-
-//     // Fetch contestants for the selected award
-//     const contestants = await clientController.getContestantsForAward(award);
-
-//     res.render("contestants", {
-//       selectedAward,
-//       contestants,
-//     });
-//   } catch (error) {
-//     console.error("Error processing vote:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
-// // Endpoint to handle session destruction when the tab or connection is closed
-// router.post("/destroy-session", (req, res) => {
-//   // Destroy the session
-//   req.session.destroy((err) => {
-//     if (err) {
-//       console.error("Error destroying session:", err);
-//       res.status(500).send("Internal Server Error");
-//     } else {
-//       res.sendStatus(200);
-//     }
-//   });
-// });
 
 module.exports = router;

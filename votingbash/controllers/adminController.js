@@ -2,24 +2,26 @@
 
 const connection = require("../models/connection");
 const uploadFile = require("../helpers/uploadFile");
+const awardContestantController = require("./awardContestantController");
 
 const adminController = {
   // Get admin dashboard data (e.g., award titles)
   getDashboardData: async () => {
     try {
-      const [awards] = await connection.query("SELECT * FROM awards");
+      const [awards] = await connection.query(
+        "SELECT * FROM awards ORDER BY title ASC"
+      );
 
-      // Fetch contestants for each award
+      // Fetch contestants for each award using the awardContestantController
       const awardsWithContestants = await Promise.all(
         awards.map(async (award) => {
-          const [contestants] = await connection.query(
-            "SELECT * FROM contestants WHERE award_id = ? ORDER BY votes DESC",
-            [award.id]
-          );
+          const contestants =
+            await awardContestantController.getContestantsForAward(award.id);
           return { ...award, contestants };
         })
       );
 
+      
       return awardsWithContestants;
     } catch (error) {
       console.error("Error fetching award titles and contestants:", error);
@@ -31,6 +33,7 @@ const adminController = {
   getAwardTitles: async () => {
     try {
       const [awards] = await connection.query("SELECT id, title FROM awards");
+      
       return awards;
     } catch (error) {
       console.error("Error fetching award titles:", error);
@@ -46,11 +49,14 @@ const adminController = {
         [username.toLowerCase(), password]
       );
 
-      return {
+      const result = {
         success: admin.length > 0,
         error: admin.length > 0 ? null : "Incorrect username or password",
         admin: admin.length > 0 ? admin[0] : null, // Include admin data
       };
+
+      
+      return result;
     } catch (error) {
       console.error("Error authenticating admin:", error);
       throw new Error("Internal Server Error");
@@ -60,27 +66,52 @@ const adminController = {
   // Add Contestant operation
   addContestant: async (req, res) => {
     const { contestantName, contestantLevel, selectedAwardId } = req.body;
-    const contestantData = { name: contestantName };
+
+    // Check if contestantName is set before proceeding
+    if (!contestantName) {
+      console.error("Contestant name is missing in the request.");
+      res.status(400).send("Contestant name is required.");
+      return;
+    }
+
+    // Use uploadFile to handle file upload and get the generated filename
+    const contestantData = await uploadFile(
+      req.files.contestantPhoto,
+      { name: contestantName }, // Pass an object with a 'name' property
+      "photo"
+    );
+
+    
 
     try {
-      // Use uploadFile to handle file upload and get the generated filename
-      const updatedContestantData = await uploadFile(
-        req.files.contestantPhoto,
-        contestantData,
-        "photo"
+      // Insert the contestant into the contestants table
+      const contestantInsertSql =
+        "INSERT INTO contestants (nickname, level, photo_url) VALUES (?, ?, ?)";
+      const contestantInsertValues = [
+        contestantName,
+        contestantLevel,
+        contestantData.photo, // Use the generated filename
+      ];
+
+      const [insertedContestant] = await connection.query(
+        contestantInsertSql,
+        contestantInsertValues
       );
 
-      // Insert the contestant into the database
-      const sql =
-        "INSERT INTO contestants (nickname, level, photo_url, award_id) VALUES (?, ?, ?, ?)";
-      const values = [
-        contestantName,
-        contestantLevel, // Use the selected contestantLevel from the form
-        updatedContestantData.photo, // Use the generated filename
+      // Insert the contestant-award relationship into award_contestants table
+      const awardContestantInsertSql =
+        "INSERT INTO award_contestants (contestant_id, award_id) VALUES (?, ?)";
+      const awardContestantInsertValues = [
+        insertedContestant.insertId,
         selectedAwardId,
       ];
 
-      await connection.query(sql, values);
+      await connection.query(
+        awardContestantInsertSql,
+        awardContestantInsertValues
+      );
+
+      
       req.flash("success", "Contestant added successfully.");
       res.redirect("/admin/dashboard");
     } catch (error) {
@@ -102,8 +133,13 @@ const adminController = {
   // Delete Contestant operation
   deleteContestant: async (awardId, contestantId) => {
     try {
+      // Use the awardContestantController to unlink the contestant from all awards
+      await awardContestantController.unlinkContestantFromAllAwards(
+        contestantId
+      );
+
       // Fetch the contestant's photo URL from the database
-      const [contestant] = await connection.query(
+      const [contestant] = await connection.execute(
         "SELECT photo_url FROM contestants WHERE id = ?",
         [contestantId]
       );
@@ -111,8 +147,8 @@ const adminController = {
       if (contestant.length > 0) {
         const photoUrl = contestant[0].photo_url;
 
-        // Delete the contestant from the database
-        await connection.query("DELETE FROM contestants WHERE id = ?", [
+        // Delete the contestant from the contestants table
+        await connection.execute("DELETE FROM contestants WHERE id = ?", [
           contestantId,
         ]);
 
@@ -124,21 +160,30 @@ const adminController = {
           fs.unlinkSync(photoPath);
         }
 
-        return { success: true, message: "Contestant deleted successfully." };
+        const result = {
+          success: true,
+          message: "Contestant deleted successfully.",
+        };
+
+        
+        return result;
       }
     } catch (error) {
       console.error("Error deleting contestant:", error);
       throw new Error("Internal Server Error");
     }
   },
+
   // Get Payments details
   getPaymentsDetails: async () => {
     try {
       const [payments] = await connection.query(`
-      SELECT p.id, p.status, p.contestant_nickname, p.amount_divided_by_10, p.payment_date, a.title as award_title
-      FROM payments p
-      JOIN awards a ON p.award_id = a.id
-    `);
+        SELECT p.id, p.status, p.contestant_nickname, p.amount_divided_by_10, p.payment_date, a.title as award_title
+        FROM payments p
+        JOIN awards a ON p.award_id = a.id
+      `);
+
+      
       return payments;
     } catch (error) {
       console.error("Error fetching Payments details:", error);
