@@ -91,7 +91,8 @@ router.get("/paid/callback", async (req, res) => {
       await clientController.handlePaymentQueries(
         selectedContestant.nickname,
         verifyResponse.data.amount,
-        "success"
+        "success",
+        selectedContestant
       );
 
       // Increment votes for the contestant using the new controller
@@ -109,7 +110,8 @@ router.get("/paid/callback", async (req, res) => {
       await clientController.handlePaymentQueries(
         selectedContestant.nickname,
         0,
-        "failed"
+        "failed",
+        selectedContestant
       );
 
       console.log("Payment failed:", contestantId);

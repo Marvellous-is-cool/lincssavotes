@@ -69,6 +69,7 @@ async function getContestantById(contestantId) {
       return {
         ...contestant[0],
         award_titles: awardTitles,
+        id: contestant[0].id,
       };
     } else {
       return null;
@@ -80,7 +81,12 @@ async function getContestantById(contestantId) {
 }
 
 // Function to handle database queries related to payments
-async function handlePaymentQueries(contestantId, amount, status) {
+async function handlePaymentQueries(
+  nickname,
+  amount,
+  status,
+  selectedContestant
+) {
   const updatePaymentQuery =
     "UPDATE payments SET status = ? WHERE contestant_nickname = ?";
   const insertPaymentQuery = `
@@ -90,12 +96,12 @@ async function handlePaymentQueries(contestantId, amount, status) {
 
   try {
     // Update payment status in the database
-    await connection.execute(updatePaymentQuery, [status, contestantId]);
+    await connection.execute(updatePaymentQuery, [status, nickname]);
 
     // Insert payment details into the new payments table
     const amountDividedBy10 = amount / 10;
     await connection.execute(insertPaymentQuery, [
-      contestantId,
+      nickname,
       selectedContestant.award_id,
       amountDividedBy10,
       new Date(),
@@ -103,8 +109,8 @@ async function handlePaymentQueries(contestantId, amount, status) {
     ]);
 
     console.log(
-      "Payment queries executed successfully for Contestant ID:",
-      contestantId
+      "Payment queries executed successfully for Contestant Nickname:",
+      nickname
     );
   } catch (error) {
     console.error("Error executing payment queries:", error);
