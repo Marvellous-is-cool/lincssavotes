@@ -94,16 +94,24 @@ async function handlePaymentQueries(
   `;
 
   try {
-    // Update payment status in the database
-    await connection.execute(updatePaymentQuery, [status, nickname]);
+    // Get the contestant details with award_id
+    const contestantDetails = await getContestantById(selectedContestant.id);
+
+    if (!contestantDetails) {
+      console.error("Contestant not found:", selectedContestant.id);
+      throw new Error("Contestant not found");
+    }
 
     // Calculate amountDividedBy10 here before using it in the next execute call
     const amountDividedBy10 = amount / 10;
 
+    // Update payment status in the database
+    await connection.execute(updatePaymentQuery, [status, nickname]);
+
     // Insert payment details into the new payments table
     await connection.execute(insertPaymentQuery, [
       nickname,
-      selectedContestant.award_id || null,
+      contestantDetails.award_id || null,
       amountDividedBy10 || null,
       new Date(),
       status,
