@@ -20,7 +20,9 @@
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <h3>Instruction</h3>
       Click on Proceed to vote button, enter an email, then confirm and you will
-      be redirected to the paystack platform.
+      be redirected to the paystack platform. You can click on the set amount
+      button below to set your desired amount to pay if you choose to vote
+      multiple times at once (the deafult will be 1 vote of N100)
       <br />
       Kindly <b> wait or go back to the gateway </b> when you are done paying
       (especially if you are paying through transfer) until you are redirected
@@ -70,7 +72,9 @@
         <div class="modal-content">
           <!-- Beautiful modal header -->
           <div class="modal-header">
-            <h5 class="modal-title">Enter a valid email address</h5>
+            <h5 class="modal-title">
+              Enter a valid email address (snd optionally an amount)
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -80,7 +84,7 @@
           </div>
 
           <div class="modal-body">
-            <!-- Email form with Bootstrap validation classes -->
+            <!-- Email and Amount form with Bootstrap validation classes -->
             <form
               action="/<%= selectedContestant.id %>/payment/get-url"
               method="post"
@@ -99,6 +103,22 @@
                 />
                 <div class="invalid-feedback" id="emailError"></div>
               </div>
+
+              <div class="mb-3">
+                <label for="amount" class="form-label"
+                  >Amount (in Naira):</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="amount"
+                  name="amount"
+                  placeholder="Default: N100"
+                  min="1"
+                  value="100"
+                />
+              </div>
+
               <button
                 type="submit"
                 class="btn btn-primary mt-3"
@@ -141,21 +161,25 @@
 
             // Continue with the remaining logic
             var email = document.getElementById("email").value;
+            var amount = document.getElementById("amount").value;
 
-            console.log("Entered Email:", email); // Log entered email
+            // Validate amount input
+            if (!isValidAmount(amount)) {
+              // Display error message and prevent form submission
+              document.getElementById("amountError").innerText =
+                "Please enter a valid amount in multiples of 100.";
+              return;
+            }
 
-            // Store the entered email in local storage
-            localStorage.setItem("userEmail", email);
+            // If amount is valid, proceed with the submission
+            document.getElementById("amountError").innerText = ""; // Clear previous error message
 
-            console.log("Stored Email in voteNow.ejs:", email); // Add this line to log the stored email
-
-            // Add the stored email to the request body
+            // Store the entered email and amount in the request body
             var requestBody = {
               email: email,
+              amount: parseInt(amount),
               id: "<%= selectedContestant.id %>",
             };
-
-            console.log("Request Body:", requestBody); // Log request body
 
             // Change button text to indicate redirection
             document.getElementById("continueButton").innerText =
@@ -164,16 +188,14 @@
 
             // Fetch Paystack authentication URL directly from the client-side
             fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
-              method: "POST", // Specify the request method
+              method: "POST",
               headers: {
-                "Content-Type": "application/json", // Specify the content type
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify(requestBody), // Updated: Include request body
+              body: JSON.stringify(requestBody),
             })
               .then((response) => response.json())
               .then((data) => {
-                console.log("Paystack Response:", data); // Log Paystack response
-
                 // Continue processing as needed
                 if (data.authorization_url) {
                   // Redirect to Paystack authentication URL
@@ -197,6 +219,15 @@
                 document.getElementById("continueButton").disabled = false;
               });
           });
+
+        // Function to validate amount input
+        function isValidAmount(amount) {
+          // Check if the amount is a positive integer and a multiple of 100
+          var parsedAmount = parseInt(amount);
+          return (
+            !isNaN(parsedAmount) && parsedAmount > 0 && parsedAmount % 100 === 0
+          );
+        }
       });
     </script>
     <!-- views/footer.ejs -->

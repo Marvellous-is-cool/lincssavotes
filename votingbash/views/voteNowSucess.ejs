@@ -81,11 +81,64 @@
         <p class="failure-message">Contestant details not available.</p>
         <% } %>
       </div>
+      <!-- Button to set the amount -->
+      <button
+        id="setAmountButton"
+        class="btn btn-info mt-3"
+        data-bs-toggle="modal"
+        data-bs-target="#amountModal"
+      >
+        Set Amount
+      </button>
+
+      <!-- Modal for entering the amount -->
+      <div class="modal" tabindex="-1" role="dialog" id="amountModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Set Amount</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- Input field for entering the amount -->
+              <div class="mb-3">
+                <label for="amount" class="form-label">Enter Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="amount"
+                  placeholder="100"
+                  step="100"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <!-- Confirm button to proceed with the set amount -->
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="confirmPaymentButton"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <!-- Include necessary scripts and libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Add custom script to handle "Vote Again" and "Try Again" button clicks -->
+    <!-- Include necessary scripts and libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Function to retrieve email from local storage
@@ -94,7 +147,7 @@
         }
 
         // Function to initiate the process of fetching authentication URL
-        function initiateAuthenticationRequest() {
+        function initiateAuthenticationRequest(amount) {
           // Retrieve stored email
           var storedEmail = retrieveStoredEmail();
 
@@ -103,6 +156,7 @@
             // Prepare request body
             var requestBody = {
               email: storedEmail,
+              amount: amount,
             };
 
             // Fetch Paystack authentication URL from the server using POST request
@@ -115,8 +169,6 @@
             })
               .then((response) => response.json())
               .then((data) => {
-                console.log("Paystack Response:", data);
-
                 // Continue processing as needed
                 if (data.authorization_url) {
                   // Redirect to Paystack authentication URL
@@ -155,6 +207,44 @@
         } else {
           console.error("Try Again button not found.");
         }
+
+        // Show the modal when the "Set Amount" button is clicked
+        var setAmountButton = document.getElementById("setAmountButton");
+        setAmountButton.addEventListener("click", function () {
+          var amountModal = new bootstrap.Modal(
+            document.getElementById("amountModal")
+          );
+          amountModal.show();
+        });
+
+        // Handle the "Confirm" button click in the modal
+        var confirmPaymentButton = document.getElementById(
+          "confirmPaymentButton"
+        );
+        confirmPaymentButton.addEventListener("click", function () {
+          // Retrieve the amount from the input field
+          var amountInput = document.getElementById("amount");
+          var amount = amountInput.value;
+
+          // Validate the amount
+          if (amount && /^\d+$/.test(amount)) {
+            amount = parseInt(amount);
+
+            // Ensure the amount is not less than 100 and is a multiple of 100
+            if (amount >= 100 && amount % 100 === 0) {
+              // Proceed with the payment
+              initiateAuthenticationRequest(amount);
+            } else {
+              // Display an error message for invalid amount
+              alert(
+                "Please enter a valid amount (minimum 100, in multiples of 100)."
+              );
+            }
+          } else {
+            // Display an error message for invalid input
+            alert("Please enter a valid amount.");
+          }
+        });
       });
     </script>
 

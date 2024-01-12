@@ -14,27 +14,25 @@ router.post("/:id/payment/get-url", async (req, res) => {
     );
 
     // Extract email from the request body
-    const { email } = req.body;
+    const { email, amount } = req.body;
 
     const paystackTransaction = {
       email: email,
-      amount: 10000,
+      amount: amount ? amount * 100 : 10000,
       reference: `vote__${selectedContestant.id}__${Date.now()}`,
       currency: "NGN",
       callback: `https://bashvoting.onrender.com/paid/callback`,
-    };
-
-    console.log("Paystack Transaction:", paystackTransaction); // Log Paystack transaction details
+    }; // Log Paystack transaction details
 
     const paystackResponse = await paystack.transaction.initialize(
       paystackTransaction
     );
 
-    console.log("Paystack Response:", paystackResponse); // Log Paystack API response
+    // Log Paystack API response
 
     if (paystackResponse.status && paystackResponse.status === true) {
       // Send Paystack authentication URL to the client side
-      console.log("Paystack response:", paystackResponse);
+
       res.status(200).json({
         authorization_url: paystackResponse.data.authorization_url,
         email: email,
@@ -54,7 +52,7 @@ router.get("/paid/callback", async (req, res) => {
   try {
     const transactionReference = req.query.reference;
 
-    console.log("Transaction Reference:", transactionReference); // Log the transaction reference
+    // Log the transaction reference
 
     // Extracting contestant id from the transaction reference
     const contestantIdMatch = transactionReference.match(/vote__(\d+)__/);
@@ -62,21 +60,21 @@ router.get("/paid/callback", async (req, res) => {
       ? parseInt(contestantIdMatch[1])
       : null;
 
-    console.log("Extracted Contestant ID:", contestantId); // Log the extracted contestant ID
+    // Log the extracted contestant ID
 
     // Getting the contestant details by id
     const selectedContestant = await clientController.getContestantById(
       contestantId
     );
 
-    console.log("Selected Contestant:", selectedContestant); // Log selected contestant details
+    // Log selected contestant details
 
     // Verify the Paystack transaction
     const verifyResponse = await paystack.transaction.verify(
       transactionReference
     );
 
-    console.log("Paystack Verify Response:", verifyResponse); // Log Paystack verification response
+    // Log Paystack verification response
 
     if (
       verifyResponse.status &&
@@ -87,8 +85,8 @@ router.get("/paid/callback", async (req, res) => {
       const paidAmount = verifyResponse.data.amount / 100; // Convert from kobo to Naira
       const numberOfVotes = Math.floor(paidAmount / 100); // Assuming N100 per vote
 
-      console.log("Paid Amount:", paidAmount); // Log the paid amount
-      console.log("Number of Votes:", numberOfVotes); // Log the number of votes calculated
+      // Log the paid amount
+      // Log the number of votes calculated
 
       // Call the handlePaymentQueries function to handle database queries
       await clientController.handlePaymentQueries(
@@ -104,7 +102,6 @@ router.get("/paid/callback", async (req, res) => {
         numberOfVotes
       );
 
-      console.log("Payment success:", contestantId);
       res.redirect(
         `/voteNowSucess?status=success&email=${req.query.email}&contestantId=${contestantId}`
       );
@@ -117,7 +114,6 @@ router.get("/paid/callback", async (req, res) => {
         selectedContestant
       );
 
-      console.log("Payment failed:", contestantId);
       res.redirect(
         `/voteNowSucess?status=failed&email=${req.query.email}&contestantId=${contestantId}`
       );
