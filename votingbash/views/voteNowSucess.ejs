@@ -93,6 +93,14 @@
 
         // Function to initiate the process of fetching authentication URL
         function initiateAuthenticationRequest(buttonId, buttonText) {
+          // Retrieve email from local storage
+          var storedEmail = localStorage.getItem("userEmail");
+
+          if (!storedEmail) {
+            console.error("Email not found in local storage.");
+            return;
+          }
+
           // Change button text to indicate redirection
           document.getElementById(
             buttonId
@@ -146,7 +154,7 @@
           .addEventListener("click", function () {
             initiateAuthenticationRequest(
               "voteAgainButton",
-              "Redirecting to Paystack"
+              "Redirecting to Paystack..."
             );
           });
 
@@ -156,7 +164,7 @@
           .addEventListener("click", function () {
             initiateAuthenticationRequest(
               "tryAgainButton",
-              "Redirecting to Paystack"
+              "Redirecting to Paystack..."
             );
           });
       });
