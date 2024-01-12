@@ -89,7 +89,7 @@ router.get("/paid/callback", async (req, res) => {
 
       // Call the handlePaymentQueries function to handle database queries
       await clientController.handlePaymentQueries(
-        contestantId,
+        selectedContestant.nickname,
         verifyResponse.data.amount,
         "success"
       );
@@ -106,7 +106,11 @@ router.get("/paid/callback", async (req, res) => {
       );
     } else {
       // Call the handlePaymentQueries function with 'failed' status
-      await clientController.handlePaymentQueries(contestantId, 0, "failed");
+      await clientController.handlePaymentQueries(
+        selectedContestant.nickname,
+        0,
+        "failed"
+      );
 
       console.log("Payment failed:", contestantId);
       res.redirect(
