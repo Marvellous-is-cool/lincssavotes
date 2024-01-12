@@ -100,10 +100,36 @@
 
           // Check if email is available
           if (storedEmail) {
-            // Redirect to Paystack authentication URL
-            window.location.href = `/<%= selectedContestant.id %>/payment/get-url?email=${encodeURIComponent(
-              storedEmail
-            )}`;
+            // Prepare request body
+            var requestBody = {
+              email: storedEmail,
+            };
+
+            // Fetch Paystack authentication URL from the server using POST request
+            fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestBody),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("Paystack Response:", data);
+
+                // Continue processing as needed
+                if (data.authorization_url) {
+                  // Redirect to Paystack authentication URL
+                  window.location.href = data.authorization_url;
+                } else {
+                  console.error("Invalid response from server:", data);
+                  // Handle the case where the response indicates an error
+                }
+              })
+              .catch((error) => {
+                console.error("Error during fetch request:", error);
+                // Handle fetch error
+              });
           } else {
             console.error("Stored email not found.");
             // Handle the case where stored email is not available
