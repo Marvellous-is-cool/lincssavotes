@@ -87,6 +87,9 @@ router.get("/paid/callback", async (req, res) => {
       const paidAmount = verifyResponse.data.amount / 100; // Convert from kobo to Naira
       const numberOfVotes = Math.floor(paidAmount / 100); // Assuming N100 per vote
 
+      console.log("Paid Amount:", paidAmount); // Log the paid amount
+      console.log("Number of Votes:", numberOfVotes); // Log the number of votes calculated
+
       // Call the handlePaymentQueries function to handle database queries
       await clientController.handlePaymentQueries(
         selectedContestant.nickname,
