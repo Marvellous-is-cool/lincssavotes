@@ -57,7 +57,7 @@ router.get("/paid/callback", async (req, res) => {
     console.log("Transaction Reference:", transactionReference); // Log the transaction reference
 
     // Extracting contestant id from the transaction reference
-    const contestantIdMatch = transactionReference.match(/vote_(\d+)_\d+/);
+    const contestantIdMatch = transactionReference.match(/vote__(\d+)__/);
     const contestantId = contestantIdMatch
       ? parseInt(contestantIdMatch[1])
       : null;
