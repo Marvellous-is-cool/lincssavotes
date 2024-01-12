@@ -102,11 +102,11 @@
           document.getElementById(buttonId).disabled = true;
 
           // Fetch authentication URL from the server
-          fetchAuthenticationURL(storedEmail, buttonId);
+          fetchAuthenticationURL(storedEmail, buttonId, buttonText);
         }
 
         // Function to fetch authentication URL from the server
-        function fetchAuthenticationURL(email, buttonId) {
+        function fetchAuthenticationURL(email, buttonId, buttonText) {
           fetch(
             `/<%= selectedContestant.id %>/payment/get-url?email=${encodeURIComponent(
               email
