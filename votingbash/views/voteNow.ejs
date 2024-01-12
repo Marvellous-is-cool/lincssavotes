@@ -142,6 +142,8 @@
             // Continue with the remaining logic
             var email = document.getElementById("email").value;
 
+            console.log("Entered Email:", email); // Log entered email
+
             // Store the entered email in local storage
             localStorage.setItem("userEmail", email);
 
@@ -151,24 +153,25 @@
               id: "<%= selectedContestant.id %>",
             };
 
+            console.log("Request Body:", requestBody); // Log request body
+
             // Change button text to indicate redirection
             document.getElementById("continueButton").innerText =
               "Redirecting to Paystack... Please wait";
             document.getElementById("continueButton").disabled = true;
 
             // Fetch Paystack authentication URL directly from the client-side
-            fetch(
-              `/<%= selectedContestant.id %>/payment/get-url?email=${email}`,
-              {
-                method: "POST", // Specify the request method
-                headers: {
-                  "Content-Type": "application/json", // Specify the content type
-                },
-                body: JSON.stringify(requestBody), // Updated: Include request body
-              }
-            )
+            fetch(`/<%= selectedContestant.id %>/payment/get-url`, {
+              method: "POST", // Specify the request method
+              headers: {
+                "Content-Type": "application/json", // Specify the content type
+              },
+              body: JSON.stringify(requestBody), // Updated: Include request body
+            })
               .then((response) => response.json())
               .then((data) => {
+                console.log("Paystack Response:", data); // Log Paystack response
+
                 // Continue processing as needed
                 if (data.authorization_url) {
                   // Redirect to Paystack authentication URL

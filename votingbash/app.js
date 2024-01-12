@@ -48,6 +48,7 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(flash());
+
 app.set("view engine", "ejs");
 
 // Serve static files
@@ -63,6 +64,8 @@ app.use((req, res, next) => {
 });
 
 app.use(cors()); // Enable CORS
+
+app.use(express.json());
 
 // Use routes from the 'routes' folder
 const adminRoutes = require("./routes/adminRoutes/adminContestantRoute");
