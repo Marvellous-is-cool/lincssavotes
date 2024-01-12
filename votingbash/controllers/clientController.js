@@ -103,8 +103,8 @@ async function handlePaymentQueries(
     // Insert payment details into the new payments table
     await connection.execute(insertPaymentQuery, [
       nickname,
-      selectedContestant.award_id,
-      amountDividedBy10,
+      selectedContestant.award_id || null,
+      amountDividedBy10 || null,
       new Date(),
       status,
     ]);
