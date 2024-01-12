@@ -61,20 +61,20 @@ router.get("/contestant/:id/votenow/payment", async (req, res) => {
 
 router.use("/", voteNowRouter);
 
-// // Define the route for /voteNowSuccess
-router.get("/voteNowSuccess", async (req, res) => {
+// // Define the route for /voteNowSucess
+router.get("/voteNowSucess", async (req, res) => {
   try {
-    const { status, email, nickname } = req.query;
+    const { status, email, contestantId } = req.query;
 
-    // Fetch contestant details by nickname
-    const selectedContestant = await clientController.getContestantsByNickname(
-      nickname
+    // Fetch contestant details by ID using the correct function
+    const selectedContestant = await clientController.getContestantById(
+      parseInt(contestantId)
     );
 
-    res.render("voteNowSuccess", {
+    res.render("voteNowSucess", {
       status,
       email,
-      nickname,
+      contestantId,
       selectedContestant,
     });
   } catch (error) {
