@@ -43,6 +43,7 @@
       </div>
       <!-- Display the selected contestant details -->
       <div class="contestant-card">
+        <% if (selectedContestant) { %>
         <img
           src="/uploads/<%= selectedContestant.photo_url %>"
           alt="<%= selectedContestant.nickname %>"
@@ -77,6 +78,9 @@
         >
         <% } else { %>
         <p class="failure-message">Invalid payment status. Please try again.</p>
+        <% } %> <% } else { %>
+        <!-- Render a message when selectedContestant is not available -->
+        <p class="failure-message">Contestant details not available.</p>
         <% } %>
       </div>
     </div>
