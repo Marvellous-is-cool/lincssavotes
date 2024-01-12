@@ -147,6 +147,8 @@
             // Store the entered email in local storage
             localStorage.setItem("userEmail", email);
 
+            console.log("Stored Email in voteNow.ejs:", email); // Add this line to log the stored email
+
             // Add the stored email to the request body
             var requestBody = {
               email: email,
