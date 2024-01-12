@@ -93,33 +93,86 @@
 
         console.log("Retrieved Email in voteNowSucess.ejs:", storedEmail); // Log the retrieved email
 
-        // Function to initiate the process of fetching authentication URL
-        function initiateAuthenticationRequest(buttonId, buttonText) {
-          // Log the initiation
-          console.log(`Initiating authentication request for ${buttonId}...`);
-
-          // You can continue with the authentication request logic here
+        // Check if the email is available
+        if (!storedEmail) {
+          console.error("Email not found in local storage.");
+          return;
         }
 
         // Handle "Vote Again" button click
-        document
-          .getElementById("voteAgainButton")
-          .addEventListener("click", function () {
+        var voteAgainButton = document.getElementById("voteAgainButton");
+        if (voteAgainButton) {
+          voteAgainButton.addEventListener("click", function () {
             initiateAuthenticationRequest(
               "voteAgainButton",
               "Redirecting to Paystack"
             );
           });
+        } else {
+          console.error("Vote Again button not found.");
+        }
 
         // Handle "Try Again" button click
-        document
-          .getElementById("tryAgainButton")
-          .addEventListener("click", function () {
+        var tryAgainButton = document.getElementById("tryAgainButton");
+        if (tryAgainButton) {
+          tryAgainButton.addEventListener("click", function () {
             initiateAuthenticationRequest(
               "tryAgainButton",
               "Redirecting to Paystack"
             );
           });
+        } else {
+          console.error("Try Again button not found.");
+        }
+
+        // Function to initiate the process of fetching authentication URL
+        function initiateAuthenticationRequest(buttonId, buttonText) {
+          // Change button text to indicate redirection
+          document.getElementById(
+            buttonId
+          ).innerText = `${buttonText}... Please wait`;
+          document.getElementById(buttonId).disabled = true;
+
+          // Fetch authentication URL from the server
+          fetchAuthenticationURL(storedEmail, buttonId);
+        }
+
+        // Function to fetch authentication URL from the server
+        function fetchAuthenticationURL(email, buttonId) {
+          fetch(
+            `/<%= selectedContestant.id %>/payment/get-url?email=${encodeURIComponent(
+              email
+            )}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              // Continue processing as needed
+              if (data.authorization_url) {
+                // Redirect to Paystack authentication URL
+                window.location.href = data.authorization_url;
+              } else {
+                // Handle the case where the response indicates an error
+                console.error("Invalid response from server:", data);
+
+                // Reset button text and enable the button on error
+                document.getElementById(buttonId).innerText = buttonText;
+                document.getElementById(buttonId).disabled = false;
+              }
+            })
+            .catch((error) => {
+              console.error("Error during fetch request:", error);
+
+              // Reset button text and enable the button on error
+              document.getElementById(buttonId).innerText = buttonText;
+              document.getElementById(buttonId).disabled = false;
+            });
+        }
       });
     </script>
 
