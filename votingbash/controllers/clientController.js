@@ -69,7 +69,6 @@ async function getContestantById(contestantId) {
       return {
         ...contestant[0],
         award_titles: awardTitles,
-        id: contestant[0].id,
       };
     } else {
       return null;
