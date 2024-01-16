@@ -161,4 +161,15 @@ router.post("/destroy-session", (req, res) => {
   });
 });
 
+router.get("/live/votes", async (req, res) => {
+  try {
+    // Fetch admin dashboard data using the admin controller
+    const awards = await adminController.getDashboardData();
+    res.render("votes", { awards });
+  } catch (error) {
+    console.error("Error fetching admin dashboard data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;
