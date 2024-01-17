@@ -7,10 +7,19 @@ const authMiddleware = require("../../middlewares/authMiddleware");
 const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); // Import the adminContestantRoute
 
 // Index route
+// router.get("/", async (req, res) => {
+//   try {
+//     const awards = await clientController.getAwards();
+//     res.render("index", { awards });
+//   } catch (error) {
+//     console.error("Error rendering index:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
 router.get("/", async (req, res) => {
   try {
-    const awards = await clientController.getAwards();
-    res.render("index", { awards });
+    res.render("suspended");
   } catch (error) {
     console.error("Error rendering index:", error);
     res.status(500).send("Internal Server Error");
@@ -161,15 +170,15 @@ router.post("/destroy-session", (req, res) => {
   });
 });
 
-router.get("/live/votes", async (req, res) => {
-  try {
-    // Fetch admin dashboard data using the admin controller
-    const awards = await adminController.getDashboardData();
-    res.render("votes", { awards });
-  } catch (error) {
-    console.error("Error fetching admin dashboard data:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+// router.get("/live/votes", async (req, res) => {
+//   try {
+//     // Fetch admin dashboard data using the admin controller
+//     const awards = await adminController.getDashboardData();
+//     res.render("votes", { awards });
+//   } catch (error) {
+//     console.error("Error fetching admin dashboard data:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 module.exports = router;
