@@ -32,7 +32,7 @@ function linkContestantToAward(contestantId, awardId) {
   return new Promise((resolve, reject) => {
     db.query(sql, [contestantId, awardId], (err, results) => {
       if (err) {
-        console.error("Error linking contestant to award:", err);
+        console.error(" Error linking contestant to award:", err);
         reject(err);
       } else {
         resolve(results);
@@ -50,7 +50,7 @@ async function unlinkContestantFromAllAwards(contestantId) {
 
     return results;
   } catch (err) {
-    console.error("Error unlinking contestant from all awards:", err);
+    console.error(" Error unlinking contestant from all awards:", err);
     throw err; // Re-throw the error to let the calling function handle it
   }
 }
@@ -67,7 +67,7 @@ function getAwardsForContestant(contestantId) {
   return new Promise((resolve, reject) => {
     db.query(sql, [contestantId], (err, results) => {
       if (err) {
-        console.error("Error getting awards for contestant:", err);
+        console.error(" Error getting awards for contestant:", err);
         reject(err);
       } else {
         resolve(results);

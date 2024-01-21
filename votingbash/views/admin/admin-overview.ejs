@@ -146,9 +146,10 @@
         >
           <div class="row mt-3">
             <h2 class="col">Transaction Details</h2>
-            <b id="totalAmount" class="col h-5 text-danger"
-              >Total Amount: N0.00</b
-            >
+            <b id="totalAmount" class="col h-5 text-danger">
+              Total Amount: N<%= payments.reduce((total, payment) => total +
+              parseFloat(payment.amount_divided_by_10 || 0), 0).toFixed(2) %>
+            </b>
           </div>
 
           <table class="table">

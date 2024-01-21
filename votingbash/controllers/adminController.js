@@ -21,11 +21,13 @@ const adminController = {
         })
       );
 
-      
       return awardsWithContestants;
     } catch (error) {
-      console.error("Error fetching award titles and contestants:", error);
-      throw new Error("Internal Server Error");
+      console.error(
+        "ADMINCONTROLLER - Error fetching award titles and contestants:",
+        error
+      );
+      throw new Error("ADMINCONTROLLER - Internal Server Error");
     }
   },
 
@@ -33,11 +35,11 @@ const adminController = {
   getAwardTitles: async () => {
     try {
       const [awards] = await connection.query("SELECT id, title FROM awards");
-      
+
       return awards;
     } catch (error) {
-      console.error("Error fetching award titles:", error);
-      throw new Error("Internal Server Error");
+      console.error("ADMINCONTROLLER - Error fetching award titles:", error);
+      throw new Error("ADMINCONTROLLER - Internal Server Error");
     }
   },
 
@@ -55,11 +57,10 @@ const adminController = {
         admin: admin.length > 0 ? admin[0] : null, // Include admin data
       };
 
-      
       return result;
     } catch (error) {
-      console.error("Error authenticating admin:", error);
-      throw new Error("Internal Server Error");
+      console.error("ADMINCONTROLLER - Error authenticating admin:", error);
+      throw new Error("ADMINCONTROLLER - Internal Server Error");
     }
   },
 
@@ -69,7 +70,9 @@ const adminController = {
 
     // Check if contestantName is set before proceeding
     if (!contestantName) {
-      console.error("Contestant name is missing in the request.");
+      console.error(
+        "ADMINCONTROLLER - Contestant name is missing in the request."
+      );
       res.status(400).send("Contestant name is required.");
       return;
     }
@@ -80,8 +83,6 @@ const adminController = {
       { name: contestantName }, // Pass an object with a 'name' property
       "photo"
     );
-
-    
 
     try {
       // Insert the contestant into the contestants table
@@ -111,11 +112,10 @@ const adminController = {
         awardContestantInsertValues
       );
 
-      
       req.flash("success", "Contestant added successfully.");
       res.redirect("/admin/dashboard");
     } catch (error) {
-      console.error("Error adding contestant:", error);
+      console.error("ADMINCONTROLLER - Error adding contestant:", error);
 
       // Provide a user-friendly error message based on the type of error
       if (error.code === "ER_DUP_ENTRY") {
@@ -165,12 +165,11 @@ const adminController = {
           message: "Contestant deleted successfully.",
         };
 
-        
         return result;
       }
     } catch (error) {
-      console.error("Error deleting contestant:", error);
-      throw new Error("Internal Server Error");
+      console.error("ADMINCONTROLLER - Error deleting contestant:", error);
+      throw new Error("ADMINCONTROLLER - Internal Server Error");
     }
   },
 
@@ -178,16 +177,28 @@ const adminController = {
   getPaymentsDetails: async () => {
     try {
       const [payments] = await connection.query(`
-        SELECT p.id, p.status, p.contestant_nickname, p.amount_divided_by_10, p.payment_date, a.title as award_title
+        SELECT 
+          p.id, 
+          p.status, 
+          p.contestant_nickname, 
+          COALESCE(a.title, awards.title) as award_title,
+          p.amount_divided_by_10, 
+          p.payment_date
         FROM payments p
-        JOIN awards a ON p.award_id = a.id
+        LEFT JOIN awards a ON p.award_id = a.id
+        LEFT JOIN award_contestants ac ON p.contestant_nickname = ac.contestant_id
+        LEFT JOIN awards ON ac.award_id = awards.id
+        WHERE a.id IS NOT NULL OR awards.id IS NOT NULL
+          OR (a.id IS NULL AND awards.id IS NULL AND p.contestant_nickname IS NOT NULL)
       `);
 
-      
       return payments;
     } catch (error) {
-      console.error("Error fetching Payments details:", error);
-      throw new Error("Internal Server Error");
+      console.error(
+        "ADMINCONTROLLER - Error fetching Payments details:",
+        error
+      );
+      throw new Error("ADMINCONTROLLER - Internal Server Error");
     }
   },
 };

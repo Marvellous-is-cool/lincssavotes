@@ -10,6 +10,11 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  connectTimeout: 30000, // 30 seconds timeout
+});
+
+pool.on("error", (err) => {
+  console.error("MySQL Pool Error:", err.message);
 });
 
 // Export the promise-based interface of the pool

@@ -30,6 +30,19 @@
     <%- include('header') %>
     <div class="container mt-5">
       <h1>Welcome to the Voting App</h1>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h3>Important Information</h3>
+        <b>VOting ends 12:59pm....</b>
+        <button
+          type="button"
+          class="btn btn-rounded btn-dark text-white close"
+          data-dismiss="alert"
+          onclick="this.parentElement.style.display='none';"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <form action="/vote" method="post">
         <label for="award" class="form-label">Select an award category:</label>
         <select name="award" id="award" class="form-select">
