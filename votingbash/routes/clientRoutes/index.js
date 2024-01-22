@@ -6,25 +6,25 @@ const voteNowRouter = require("./voteNow.js");
 const authMiddleware = require("../../middlewares/authMiddleware");
 const adminContestantRouter = require("../adminRoutes/adminContestantRoute"); // Import the adminContestantRoute
 
-// Index route
-router.get("/", async (req, res) => {
-  try {
-    const awards = await clientController.getAwards();
-    res.render("index", { awards });
-  } catch (error) {
-    console.error("Error rendering index:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
+// // Index route
 // router.get("/", async (req, res) => {
 //   try {
-//     res.render("suspended");
+//     const awards = await clientController.getAwards();
+//     res.render("index", { awards });
 //   } catch (error) {
 //     console.error("Error rendering index:", error);
 //     res.status(500).send("Internal Server Error");
 //   }
 // });
+
+router.get("/", async (req, res) => {
+  try {
+    res.render("suspended");
+  } catch (error) {
+    console.error("Error rendering index:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 router.post("/vote", async (req, res) => {
   try {
