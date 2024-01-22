@@ -80,7 +80,11 @@ app.use("/admin", adminRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something went wrong!");
+  res.status(500).render("suspended");
+});
+
+app.use((req, res, next) => {
+  res.status(404).render("bye"); // Assuming you have a 404.ejs file in the 'views' folder
 });
 
 // Start the server
