@@ -1,4 +1,3 @@
-// Import necessary modules
 const express = require("express");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
@@ -74,7 +73,6 @@ const clientRoutes = require("./routes/clientRoutes");
 // Use other routes as needed
 app.use("/", clientRoutes);
 
-// Use the adminContestantRoute with the base path /admin
 app.use("/admin", adminRoutes);
 
 // Error handling middleware
@@ -84,7 +82,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.status(404).render("bye"); // Assuming you have a 404.ejs file in the 'views' folder
+  res.status(404).render("bye"); 
 });
 
 // Start the server

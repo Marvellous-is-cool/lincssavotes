@@ -30,7 +30,7 @@
     <%- include('header') %>
     <div class="container mt-5">
       <h1>Welcome to the Voting App</h1>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <!-- <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <h3>Important Information</h3>
         <b>Voting ends in an hour (TIE resolution)</b>
         <button
@@ -42,11 +42,10 @@
         >
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
+      </div> -->
       <form action="/vote" method="post">
         <label for="award" class="form-label">Select an award category:</label>
         <select name="award" id="award" class="form-select">
-          <!-- Populate the select options dynamically from your database -->
           <% awards.forEach(award => { %>
           <option value="<%= award.id %>"><%= award.title %></option>
           <% }); %>
