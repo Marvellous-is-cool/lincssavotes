@@ -21,6 +21,7 @@
     "express-flash": "^0.0.2",
     "express-mysql-session": "^3.0.0",
     "express-session": "^1.17.3",
+    "fs": "^0.0.1-security",
     "got": "^11.8.3",
     "mysql2": "^2.0.0",
     "node-fetch": "^3.3.2",

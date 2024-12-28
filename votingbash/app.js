@@ -81,9 +81,9 @@ app.use((err, req, res, next) => {
   res.status(500).render("suspended");
 });
 
-app.use((req, res, next) => {
-  res.status(404).render("bye"); 
-});
+// app.use((req, res, next) => {
+//   res.status(404).render("bye"); 
+// });
 
 // Start the server
 app.listen(port, () => {

@@ -1,84 +1,91 @@
-<!-- views/admin/edit-contestant.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Contestant</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    />
-  </head>
-
-  <body>
-    <div class="container mt-4">
-      <h2>Edit Contestant</h2>
-      <form action="/admin/edit-contestant/<%= contestant.id %>" method="post">
-        <div class="form-group">
-          <label for="nickname">Nickname</label>
-          <input
-            type="text"
-            class="form-control"
-            id="nickname"
-            name="nickname"
-            value="<%= contestant.nickname %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="level">Level</label>
-          <input
-            type="number"
-            class="form-control"
-            id="level"
-            name="level"
-            value="<%= contestant.level %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="photo_url">Photo URL</label>
-          <input
-            type="text"
-            class="form-control"
-            id="photo_url"
-            name="photo_url"
-            value="<%= contestant.photo_url %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="votes">Votes</label>
-          <input
-            type="number"
-            class="form-control"
-            id="votes"
-            name="votes"
-            value="<%= contestant.votes %>"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="photo">Upload Photo</label>
-          <input
-            type="file"
-            class="form-control-file"
-            id="photo"
-            name="photo"
-            accept="image/*"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">Update Contestant</button>
-        <a href="/admin/dashboard" class="btn btn-secondary ml-2">Cancel</a>
-      </form>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Contestant</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 40px;
+    }
+    h2 {
+      color: #343a40;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: #343a40;
+      border-color: #343a40;
+    }
+    .btn-primary:hover {
+      background-color: #495057;
+      border-color: #495057;
+    }
+    .btn-primary:focus,
+    .btn-primary.focus {
+      background-color: #495057;
+      border-color: #495057;
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+    }
+    #editContestantForm {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row">
+      <%- include('header') %>
+      <div class="col-md-6 offset-md-3" data-aos="fade-up">
+        <h2>Edit Contestant</h2>
+        <form id="editContestantForm" action="/admin/edit-contestant/<%= awardId %>/<%= contestant.id %>" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="nickname">Nickname</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" value="<%= contestant.nickname %>" required />
+          </div>
+          <div class="form-group">
+            <label for="level">Level</label>
+            <select class="form-control" id="level" name="level" required>
+              <option value="100" <%= contestant.level === '100' ? 'selected' : '' %>>100</option>
+              <option value="200" <%= contestant.level === '200' ? 'selected' : '' %>>200</option>
+              <option value="300" <%= contestant.level === '300' ? 'selected' : '' %>>300</option>
+              <option value="400" <%= contestant.level === '400' ? 'selected' : '' %>>400</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="photo_url">Photo URL</label>
+            <input type="text" class="form-control" id="photo_url" name="photo_url" value="<%= contestant.photo_url %>" required />
+          </div>
+          <div class="form-group">
+            <label for="votes">Votes</label>
+            <input type="number" class="form-control" id="votes" name="votes" value="<%= contestant.votes %>" required />
+          </div>
+          <div class="form-group">
+            <label for="photo">Upload Photo</label>
+            <input type="file" class="form-control-file" id="photo" name="contestantPhoto" accept="image/*" />
+          </div>
+          <button type="submit" class="btn btn-primary">Update Contestant</button>
+          <a href="/admin/dashboard" class="btn btn-secondary ml-2">Cancel</a>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <%- include('footer') %>
-    <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  </body>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+</body>
 </html>

@@ -116,11 +116,6 @@ async function handlePaymentQueries(
       new Date(),
       status,
     ]);
-
-    console.log(
-      "Payment queries executed successfully for Contestant Nickname:",
-      nickname
-    );
   } catch (error) {
     console.error("Error executing payment queries:", error);
     throw error;
