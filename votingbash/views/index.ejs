@@ -537,7 +537,7 @@ h1::before {
     overlay.className = 'overlay-container animate__animated animate__fadeIn';
     
     // Create spans for each word and letter in the header for wave animation
-    const headerWords = 'Welcome to LINCSSA BASH 2.0 / Second Batch'.split(' ');
+    const headerWords = 'Welcome to LINCSSA BASH 2.0 / Third Batch'.split(' ');
     const animatedHeader = headerWords.map(word => {
       const letters = word.split('').map((letter, i) => 
         `<span class="letter" style="--i:${i}">${letter}</span>`
@@ -551,6 +551,7 @@ h1::before {
         <ul class="changes-list">
           <li>✨ New style appearances with magical animations!</li>
           <li>🎯 Vote again without entering your email again. <em>Vote on!</em></li>
+          <li>⌛ There is now a countdown to the party, watch out!</em></li>
         </ul>
         <div class="timer-container">
           <div class="timer">

@@ -18,9 +18,35 @@
 
   <div class="app__header_sneak">
     <p class="app__header_sneak-text">
-      Countdown till the party 🎉<b class="timeframe"> SOON</b>
+      Countdown till the party 🎉<b class="timeframe" id="timeframe"></b>
     </p>
   </div>
 </div>
 
-<!-- <script src="/script/headerScript.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  // timeframe logic remains the same as in the previous example
+  var timeframeDate = new Date("January 25, 2025 00:00:00").getTime();
+
+  var x = setInterval(function () {
+    var now = new Date().getTime();
+    var distance = timeframeDate - now;
+
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("timeframe").innerHTML =
+      days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+    if (distance < 0) {
+      clearInterval(x);
+      document.getElementById("timeframe").innerHTML = "NOW!";
+    }
+  }, 1000);
+</script>
