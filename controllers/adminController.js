@@ -161,28 +161,8 @@ const adminController = {
       // Delete the contestant
       await Contestant.findByIdAndDelete(contestantId);
 
-      // Delete the contestant's photo from the uploads folder if it exists (only in local environments)
-      if (
-        !process.env.VERCEL &&
-        !process.env.NETLIFY &&
-        !process.env.AWS_LAMBDA_FUNCTION_NAME
-      ) {
-        const fs = require("fs");
-        const path = require("path");
-        const photoPath = path.join(__dirname, "..", "uploads", photoUrl);
-        if (fs.existsSync(photoPath)) {
-          try {
-            fs.unlinkSync(photoPath);
-            console.log(`Deleted photo file: ${photoPath}`);
-          } catch (error) {
-            console.error("Error deleting photo file:", error);
-          }
-        }
-      } else {
-        console.log(
-          `Skipping photo deletion in serverless environment: ${photoUrl}`
-        );
-      }
+      // Note: Photo files are not deleted in serverless environments
+      console.log(`Contestant deleted: ${contestantId}`);
 
       return {
         success: true,

@@ -1,47 +1,12 @@
 {
   "version": 2,
-  "env": {
-    "NODE_ENV": "production",
-    "VERCEL": "1"
-  },
   "builds": [
     {
       "src": "app.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "uploads/**",
-      "use": "@vercel/static"
+      "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/uploads/(.*)",
-      "dest": "/uploads/$1"
-    },
-    {
-      "src": "/styles/(.*)",
-      "dest": "/public/styles/$1"
-    },
-    {
-      "src": "/script/(.*)",
-      "dest": "/public/script/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/public/images/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "/app.js"
