@@ -338,6 +338,7 @@
                 // Choose icon based on position title
                 let positionIcon = 'vote-yea';
                 if (position.title.toLowerCase().includes('president')) {
+                  positionIcon = 'crown';
                 } else if (position.title.toLowerCase().includes('secretary')) {
                   positionIcon = 'file-alt';
                 } else if (position.title.toLowerCase().includes('treasurer')) {
@@ -358,11 +359,11 @@
               <% } else { %>
               <span class="status-badge active">
                 <i class="fas fa-vote-yea me-1"></i> Voting Open
+              </span>
+              <% } %>
+              
               <p class="position-description">
                 <%= position.description || 'Cast your vote for this important position in the student union.' %>
-              </p>lass="position-description">
-                <%= position.description || 'Cast your vote for this important
-                position in the student union.' %>
               </p>
 
               <div class="d-flex justify-content-between align-items-center">
@@ -379,7 +380,9 @@
             </div>
           </div>
         </div>
-        <% }); %> <% } else { %>
+        <% }); %>
+        
+        <% } else { %>
         <div class="col-12 text-center py-5">
           <i
             class="fas fa-info-circle fa-3x mb-3"

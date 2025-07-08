@@ -54,6 +54,12 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
   etag: false
 }));
 
+// Add validator to res.locals
+app.use((req, res, next) => {
+  res.locals.validator = validator;
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -64,15 +70,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-// Add validator to res.locals
-app.use((req, res, next) => {
-  res.locals.validator = validator;
-  next();
-});
-
-app.use(cors());
-app.use(express.json());
 
 // Use routes
 const clientRoutes = require("./routes/clientRoutes");
