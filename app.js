@@ -45,10 +45,7 @@ app.use(flash());
 // Set up view engine with custom path resolution for Vercel compatibility
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.engine('ejs', require('./helpers/viewEngine'));
-
-// Set absolute path for views to prevent path duplication issues in different environments
-app.locals.basedir = path.join(__dirname, "views");
+app.engine("ejs", require("./helpers/viewEngine"));
 
 // Set absolute path for views to prevent path duplication issues in different environments
 app.locals.basedir = path.join(__dirname, "views");
@@ -87,6 +84,10 @@ const adminRoutes = require("./routes/adminRoutes");
 // Add middleware to fix path resolution issues and provide debugging
 const vercelPathFix = require("./middlewares/vercelPathFix");
 const debugPaths = require("./middlewares/debugPaths");
+const templateDebug = require("./middlewares/templateDebug");
+
+// Apply template debugging first to catch all render attempts
+app.use(templateDebug);
 app.use(vercelPathFix);
 app.use(debugPaths);
 
