@@ -43,6 +43,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(flash());
 
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Serve static files
 app.use(express.static("public"));
@@ -137,7 +138,7 @@ app.use((req, res, next) => {
   // Check if the request is for an admin page
   const isAdminRequest = req.path.startsWith("/admin");
 
-  res.status(404).render("error-v3", {
+  res.status(404).render("error", {
     title: "Page Not Found",
     status: 404,
     message: "Page Not Found",
@@ -174,7 +175,7 @@ app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorTitle = errorStatus === 404 ? "Page Not Found" : "Error";
 
-  res.status(errorStatus).render("error-v3", {
+  res.status(errorStatus).render("error", {
     title: errorTitle,
     status: errorStatus,
     message: err.message || "Something went wrong",
