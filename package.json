@@ -6,11 +6,16 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "build": "echo 'Build completed - no compilation needed'",
+    "netlify-build": "npm install",
     "stats": "node scripts/view-stats.js",
     "clean-logs": "rm -f logs/*.log || true",
     "export-db": "node scripts/export-schema.js",
     "configure-planetscale": "node scripts/configure-planetscale.js",
-    "init-db": "node scripts/initialize-votes-db.js"
+    "init-db": "node scripts/initialize-votes-db.js",
+    "prestart": "npm run clean-logs",
+    "lint": "echo 'No linting configured'",
+    "test": "echo 'No tests configured'"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +38,7 @@
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.1",
     "node-fetch": "^3.3.2",
+    "serverless-http": "^3.2.0",
     "uuid": "^11.1.0",
     "validator": "^13.11.0"
   },
