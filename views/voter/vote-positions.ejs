@@ -327,23 +327,26 @@
 
       <!-- Positions Grid -->
       <div class="row g-4">
-        <% if (positions && positions.length > 0) { %> <%
-        positions.forEach(position => { %>
+        <% if (positions && positions.length > 0) { %>
+        <% positions.forEach(position => { %>
         <div class="col-md-6 col-lg-4">
           <div class="position-card">
             <div class="position-card-header">
               <h2 class="position-title"><%= position.title %></h2>
               <div class="position-icon">
-                <% // Choose icon based on position title let positionIcon =
-                'vote-yea'; if
-                (position.title.toLowerCase().includes('president')) {
-                positionIcon = 'user-tie'; } else if
-                (position.title.toLowerCase().includes('secretary')) {
-                positionIcon = 'file-alt'; } else if
-                (position.title.toLowerCase().includes('treasurer')) {
-                positionIcon = 'money-bill-wave'; } else if
-                (position.title.toLowerCase().includes('director')) {
-                positionIcon = 'bullhorn'; } %>
+                <% 
+                // Choose icon based on position title
+                let positionIcon = 'vote-yea';
+                if (position.title.toLowerCase().includes('president')) {
+                } else if (position.title.toLowerCase().includes('secretary')) {
+                  positionIcon = 'file-alt';
+                } else if (position.title.toLowerCase().includes('treasurer')) {
+                  positionIcon = 'money-bill-wave';
+                } else if (position.title.toLowerCase().includes('director')) {
+                  positionIcon = 'bullhorn';
+                }
+                %>
+                <i class="fas fa-<%= positionIcon %>"></i>
                 <i class="fas fa-<%= positionIcon %>"></i>
               </div>
             </div>
@@ -355,10 +358,9 @@
               <% } else { %>
               <span class="status-badge active">
                 <i class="fas fa-vote-yea me-1"></i> Voting Open
-              </span>
-              <% } %>
-
               <p class="position-description">
+                <%= position.description || 'Cast your vote for this important position in the student union.' %>
+              </p>lass="position-description">
                 <%= position.description || 'Cast your vote for this important
                 position in the student union.' %>
               </p>
