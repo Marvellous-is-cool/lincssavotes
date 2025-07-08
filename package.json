@@ -28,8 +28,6 @@
     "express-fileupload": "^1.4.3",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
-    "firebase": "^11.10.0",
-    "firebase-admin": "^13.4.0",
     "fs": "^0.0.1-security",
     "got": "^14.4.7",
     "mongodb": "^6.17.0",
