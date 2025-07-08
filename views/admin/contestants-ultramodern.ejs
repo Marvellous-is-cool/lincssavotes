@@ -929,13 +929,20 @@
               data-position="<%= contestant.position._id || contestant.position %>"
             >
               <div class="contestant-image">
-                <% // Prepare the image path with proper error handling let
-                photoPath = ''; if (contestant.photo &&
-                contestant.photo.startsWith('/')) { // Already a path starting
-                with slash photoPath = contestant.photo; } else if
-                (contestant.photo) { // Add path prefix if needed photoPath =
-                `/uploads/${contestant.photo}`; } else { // Default image
-                photoPath = '/images/default-contestant.png'; } %>
+                <% 
+                // Prepare the image path with proper error handling
+                let photoPath = '';
+                if (contestant.photo && contestant.photo.startsWith('/')) {
+                  // Already a path starting with slash
+                  photoPath = contestant.photo;
+                } else if (contestant.photo) {
+                  // Add path prefix if needed
+                  photoPath = `/uploads/${contestant.photo}`;
+                } else {
+                  // Default image
+                  photoPath = '/images/default-contestant.png';
+                }
+                %>
                 <img
                   src="<%= photoPath %>"
                   alt="<%= contestant.nickname || contestant.name %>"

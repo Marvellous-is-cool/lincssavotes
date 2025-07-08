@@ -765,11 +765,14 @@
               ></div>
             </div>
             <p>
-              <% let voteStatusMessage = 'You haven\'t voted yet'; if
-              (voter?.votedPositions && voter.votedPositions.length > 0) {
-              voteStatusMessage = voter.votedPositions.length >= (positions ?
-              positions.length : 5) ? 'All votes cast successfully' : 'Partial
-              votes submitted'; } %> <%= voteStatusMessage %>
+              <% 
+              let voteStatusMessage = 'You haven\'t voted yet';
+              if (voter?.votedPositions && voter.votedPositions.length > 0) {
+                voteStatusMessage = voter.votedPositions.length >= (positions ? positions.length : 5) ? 
+                  'All votes cast successfully' : 'Partial votes submitted';
+              }
+              %>
+              <%= voteStatusMessage %>
             </p>
             <div class="dashboard-card-link">
               <% const hasCompletedVoting = voter?.votedPositions &&

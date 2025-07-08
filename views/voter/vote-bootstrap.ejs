@@ -346,9 +346,8 @@
       <div class="header" data-aos="fade-up">
         <h1 class="gradient-text"><%= position.title %></h1>
         <p class="text-light mb-4">
-          <% let defaultDescription = 'Please select your preferred candidate by
-          clicking on their card below.'; %> <%= position.description ||
-          defaultDescription %>
+          <% let defaultDescription = 'Please select your preferred candidate by clicking on their card below.'; %>
+          <%= position.description || defaultDescription %>
         </p>
       </div>
 
