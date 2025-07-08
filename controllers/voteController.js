@@ -82,14 +82,22 @@ const voteController = {
       // Get contestants for this position
       const contestants = await Contestant.find({ position: positionId });
 
-      // Use the Bootstrap template
-      res.render("voter/vote-bootstrap", {
+      // Use the Bootstrap template with path safety
+      const templatePath = req.path.includes('/voter/') ? 'vote-bootstrap' : 'voter/vote-bootstrap';
+      
+      res.render(templatePath, {
         title: `Vote for ${position.title}`,
         position,
         contestants,
         settings,
         voter: req.session.voter,
         messages: req.flash(),
+        // Add debug info
+        debug: {
+          originalPath: "voter/vote-bootstrap",
+          usedPath: templatePath,
+          reqPath: req.path
+        }
       });
     } catch (error) {
       console.error("Error rendering voting page:", error);
