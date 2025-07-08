@@ -438,7 +438,7 @@ const adminController = {
         bio,
         manifesto,
         level,
-        position,
+        position, // Changed from positionId to position
         votes,
       } = req.body;
 
@@ -465,11 +465,11 @@ const adminController = {
       // Update contestant
       await Contestant.findByIdAndUpdate(contestantId, {
         name,
-        nickname: nickname || name, // Use nickname if provided, otherwise use name
+        nickname,
         bio,
         manifesto,
         level,
-        position: position,
+        position: position, // Use position field from the form
         votes: parseInt(votes) || contestant.votes,
         photo: photoUrl,
         updated_at: new Date(),
@@ -488,20 +488,7 @@ const adminController = {
     try {
       const contestantId = req.params.id;
 
-      // Get the contestant before deleting to check for photo
-      const contestant = await Contestant.findById(contestantId);
-
-      if (!contestant) {
-        req.flash("error", "Contestant not found");
-        return res.redirect("/admin/contestants");
-      }
-
-      // Delete the contestant from the database
       await Contestant.findByIdAndDelete(contestantId);
-
-      // TODO: If we want to also delete the photo file, we can add code here
-      // e.g., using fs.unlink(path) to remove the file from the uploads folder
-      // But that would require more context about how photos are stored
 
       req.flash("success", "Contestant deleted successfully");
       res.redirect("/admin/contestants");
