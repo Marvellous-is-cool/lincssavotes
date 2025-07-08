@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES Admin</title>
+
+    <!-- CSS Libraries -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --primary-light: #3b82f6;
+        --primary-dark: #1d4ed8;
+        --secondary-color: #64748b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --dark-color: #1e293b;
+        --light-color: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+          0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: var(--text-primary);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      /* Layout */
+      .admin-layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-xl);
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sidebar-logo h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+      }
+
+      .sidebar-logo span {
+        color: var(--primary-light);
+      }
+
+      .sidebar-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-menu {
+        padding: 1rem;
+        list-style: none;
+        margin: 0;
+      }
+
+      .menu-item {
+        margin-bottom: 0.5rem;
+      }
+
+      .menu-item a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .menu-item a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .menu-item.active a {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .menu-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar.collapsed + .main-content {
+        margin-left: 80px;
+      }
+
+      /* Header */
+      .page-header {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      /* Buttons */
+      .btn-modern {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      .btn-modern-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-modern-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .btn-modern-secondary {
+        background: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-modern-secondary:hover {
+        background: #475569;
+      }
+
+      .btn-modern-outline {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-modern-outline:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      /* Cards */
+      .card-modern {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .card-modern:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+      }
+
+      .card-header-modern {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .card-body-modern {
+        padding: 1.5rem;
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+      }
+
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .stat-icon.primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--primary-light)
+        );
+      }
+
+      .stat-icon.success {
+        background: linear-gradient(135deg, var(--success-color), #34d399);
+      }
+
+      .stat-icon.warning {
+        background: linear-gradient(135deg, var(--warning-color), #fbbf24);
+      }
+
+      .stat-info h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+      }
+
+      .stat-info p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      /* Search and Filter Bar */
+      .filter-bar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 300px;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+      }
+
+      .filter-select {
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        min-width: 200px;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      /* Contestants Grid */
+      .contestants-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+      }
+
+      .contestant-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .contestant-card:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-4px);
+      }
+
+      .contestant-image {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .contestant-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+      }
+
+      .contestant-card:hover .contestant-image img {
+        transform: scale(1.05);
+      }
+
+      .position-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        font-size: 0.85rem;
+        font-weight: 600;
+        z-index: 10;
+      }
+
+      .contestant-info {
+        padding: 1.5rem;
+      }
+
+      .contestant-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: var(--text-primary);
+      }
+
+      .contestant-details {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .votes-count {
+        background: linear-gradient(135deg, var(--success-color), #34d399);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .contestant-actions {
+        display: flex;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .action-btn {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .action-btn-edit {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .action-btn-edit:hover {
+        background: var(--primary-dark);
+      }
+
+      .action-btn-delete {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      .action-btn-delete:hover {
+        background: #dc2626;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+
+      .empty-state-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--primary-light)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+      }
+
+      .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .empty-state p {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+      }
+
+      /* Alerts */
+      .alert-modern {
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius-md);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: none;
+      }
+
+      .alert-modern-success {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #065f46;
+        border-left: 4px solid var(--success-color);
+      }
+
+      .alert-modern-danger {
+        background: linear-gradient(135deg, #fef2f2, #fecaca);
+        color: #991b1b;
+        border-left: 4px solid var(--danger-color);
+      }
+
+      .alert-icon {
+        font-size: 1.5rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          width: 280px;
+        }
+
+        .sidebar.mobile-open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 1rem;
+        }
+
+        .mobile-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem;
+          background: white;
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-md);
+          margin-bottom: 1rem;
+        }
+
+        .mobile-menu-btn {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: var(--text-primary);
+          cursor: pointer;
+        }
+
+        .contestants-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .search-box {
+          min-width: unset;
+        }
+      }
+
+      /* Modal Enhancements */
+      .modal-content {
+        border: none;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .modal-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+
+      .modal-title {
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .modal-body {
+        padding: 2rem;
+      }
+
+      .modal-footer {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-control,
+      .form-select {
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 1rem;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      /* Loading Animation */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .loading-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid var(--border-color);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Mobile Overlay */
+      .mobile-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Layout -->
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <h1>LINCSSA <span>VOTES</span></h1>
+          </div>
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </div>
+
+        <ul class="sidebar-menu">
+          <li class="menu-item">
+            <a href="/admin/dashboard">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/settings">
+              <i class="fas fa-cogs"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/positions">
+              <i class="fas fa-sitemap"></i>
+              <span>Positions</span>
+            </a>
+          </li>
+          <li class="menu-item active">
+            <a href="/admin/contestants">
+              <i class="fas fa-users"></i>
+              <span>Contestants</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/voters">
+              <i class="fas fa-user-check"></i>
+              <span>Voters</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/results">
+              <i class="fas fa-chart-bar"></i>
+              <span>Results</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Mobile Header -->
+        <div class="mobile-header d-md-none">
+          <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h2 class="m-0">Contestants</h2>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header" data-aos="fade-up">
+          <div>
+            <h1 class="page-title">Manage Contestants</h1>
+            <p class="page-subtitle">
+              Add, edit, and manage election contestants
+            </p>
+          </div>
+          <div class="header-actions">
+            <div class="date-display d-none d-md-block">
+              <i class="far fa-calendar-alt me-2"></i>
+              <span
+                ><%= new Date().toLocaleDateString('en-US', { weekday: 'long',
+                year: 'numeric', month: 'long', day: 'numeric' }) %></span
+              >
+            </div>
+            <button
+              class="btn-modern btn-modern-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addContestantModal"
+            >
+              <i class="fas fa-plus"></i>
+              Add Contestant
+            </button>
+          </div>
+        </div>
+
+        <!-- Flash Messages -->
+        <% if (messages.error) { %>
+        <div class="alert-modern alert-modern-danger" data-aos="fade-up">
+          <div class="alert-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div><strong>Error:</strong> <%= messages.error %></div>
+        </div>
+        <% } %> <% if (messages.success) { %>
+        <div class="alert-modern alert-modern-success" data-aos="fade-up">
+          <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div><strong>Success:</strong> <%= messages.success %></div>
+        </div>
+        <% } %>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" data-aos="fade-up" data-aos-delay="100">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+              <h3><%= contestants ? contestants.length : 0 %></h3>
+              <p>Total Contestants</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <i class="fas fa-sitemap"></i>
+            </div>
+            <div class="stat-info">
+              <h3><%= positions ? positions.length : 0 %></h3>
+              <p>Positions</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <i class="fas fa-poll"></i>
+            </div>
+            <div class="stat-info">
+              <h3>
+                <%= contestants ? contestants.reduce((sum, c) => sum + (c.votes
+                || 0), 0) : 0 %>
+              </h3>
+              <p>Total Votes</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" data-aos="fade-up" data-aos-delay="200">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search contestants by name, position, or level..."
+            />
+          </div>
+          <select class="filter-select" id="positionFilter">
+            <option value="">All Positions</option>
+            <% positions.forEach(position => { %>
+            <option value="<%= position._id %>"><%= position.title %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <!-- Contestants Grid -->
+        <div
+          class="contestants-container"
+          data-aos="fade-up"
+          data-aos-delay="300"
+        >
+          <% if (contestants && contestants.length > 0) { %>
+          <div class="contestants-grid" id="contestantsGrid">
+            <% contestants.forEach(contestant => { %>
+            <div
+              class="contestant-card"
+              data-contestant-id="<%= contestant._id %>"
+              data-position="<%= contestant.position._id || contestant.position %>"
+            >
+              <div class="contestant-image">
+                <% // Prepare the image path with proper error handling let
+                photoPath = ''; if (contestant.photo &&
+                contestant.photo.startsWith('/')) { // Already a path starting
+                with slash photoPath = contestant.photo; } else if
+                (contestant.photo) { // Add path prefix if needed photoPath =
+                `/uploads/${contestant.photo}`; } else { // Default image
+                photoPath = '/images/default-contestant.png'; } %>
+                <img
+                  src="<%= photoPath %>"
+                  alt="<%= contestant.nickname || contestant.name %>"
+                  onerror="this.onerror=null; this.src='/images/default-contestant.png';"
+                />
+                <div class="position-badge">
+                  <% let positionTitle = 'Unknown Position'; if
+                  (contestant.position) { if (contestant.position.title) {
+                  positionTitle = contestant.position.title; } else { const
+                  foundPosition = positions.find(p => p._id &&
+                  contestant.position && p._id.toString() ===
+                  contestant.position.toString() ); positionTitle =
+                  foundPosition ? foundPosition.title : 'Unknown Position'; } }
+                  %> <%= positionTitle %>
+                </div>
+              </div>
+              <div class="contestant-info">
+                <h3 class="contestant-name"><%= contestant.nickname %></h3>
+                <div class="contestant-details">
+                  <div class="detail-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Level <%= contestant.level || 'N/A' %></span>
+                  </div>
+                  <div class="votes-count">
+                    <i class="fas fa-poll"></i>
+                    <%= contestant.votes || 0 %> votes
+                  </div>
+                </div>
+                <div class="contestant-actions">
+                  <button
+                    class="action-btn action-btn-edit"
+                    data-contestant-id="<%= contestant._id %>"
+                  >
+                    <i class="fas fa-edit"></i>
+                    Edit
+                  </button>
+                  <button
+                    class="action-btn action-btn-delete delete-btn"
+                    data-contestant-id="<%= contestant._id %>"
+                    data-contestant-name="<%= contestant.nickname %>"
+                  >
+                    <i class="fas fa-trash"></i>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>No Contestants Yet</h3>
+            <p>Start by adding your first contestant to the election</p>
+            <button
+              class="btn-modern btn-modern-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addContestantModal"
+            >
+              <i class="fas fa-plus"></i>
+              Add First Contestant
+            </button>
+          </div>
+          <% } %>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Contestant Modal -->
+    <div
+      class="modal fade"
+      id="addContestantModal"
+      tabindex="-1"
+      aria-labelledby="addContestantModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addContestantModalLabel">
+              <i class="fas fa-user-plus me-2"></i>Add New Contestant
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form
+            action="/admin/contestants/add"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="nickname" class="form-label"
+                    >Nickname/Display Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nickname"
+                    name="nickname"
+                    placeholder="How the contestant will be displayed"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="position" class="form-label">Position</label>
+                  <select
+                    class="form-select"
+                    id="position"
+                    name="position"
+                    required
+                  >
+                    <option value="" disabled selected>
+                      Select a position
+                    </option>
+                    <% positions.forEach(position => { %>
+                    <option value="<%= position._id %>">
+                      <%= position.title %>
+                    </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="level" class="form-label">Level</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="level"
+                    name="level"
+                    placeholder="e.g. 300L"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="slogan" class="form-label">Campaign Slogan</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="slogan"
+                    name="slogan"
+                  />
+                </div>
+                <div class="col-12">
+                  <label for="manifesto" class="form-label">Manifesto</label>
+                  <textarea
+                    class="form-control"
+                    id="manifesto"
+                    name="manifesto"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <label for="photo" class="form-label">Photo</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="photo"
+                    name="photo"
+                    accept="image/*"
+                  />
+                  <div class="form-text">
+                    Max size: 2MB. Recommended: square image (1:1 ratio)
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-modern btn-modern-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn-modern btn-modern-primary">
+                <i class="fas fa-save"></i>
+                Add Contestant
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      class="modal fade"
+      id="deleteContestantModal"
+      tabindex="-1"
+      aria-labelledby="deleteContestantModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteContestantModalLabel">
+              <i class="fas fa-exclamation-triangle me-2 text-danger"></i
+              >Confirm Delete
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert-modern alert-modern-danger">
+              <div class="alert-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div><strong>Warning:</strong> This action cannot be undone!</div>
+            </div>
+            <p>
+              Are you sure you want to delete the contestant
+              <strong id="deleteContestantName"></strong>?
+            </p>
+            <p class="text-muted">
+              This will also delete any votes associated with this contestant.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn-modern btn-modern-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <form
+              action="/admin/contestants/delete/"
+              method="POST"
+              id="deleteContestantForm"
+            >
+              <!-- No need for hidden input as we'll update the form action directly -->
+              <button
+                type="submit"
+                class="btn-modern"
+                style="background: var(--danger-color); color: white"
+              >
+                <i class="fas fa-trash"></i>
+                Delete Contestant
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Contestant Modal -->
+    <div
+      class="modal fade"
+      id="editContestantModal"
+      tabindex="-1"
+      aria-labelledby="editContestantModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editContestantModalLabel">
+              <i class="fas fa-user-edit me-2"></i>Edit Contestant
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form
+            action="/admin/contestants/edit"
+            method="POST"
+            enctype="multipart/form-data"
+            id="editContestantForm"
+          >
+            <input type="hidden" id="editContestantId" name="contestantId" />
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="editName" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editName"
+                    name="name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="editNickname" class="form-label"
+                    >Nickname/Display Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editNickname"
+                    name="nickname"
+                    placeholder="How the contestant will be displayed"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="editPosition" class="form-label">Position</label>
+                  <select
+                    class="form-select"
+                    id="editPosition"
+                    name="position"
+                    required
+                  >
+                    <option value="" disabled>Select a position</option>
+                    <% positions.forEach(position => { %>
+                    <option value="<%= position._id %>">
+                      <%= position.title %>
+                    </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="editLevel" class="form-label">Level</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editLevel"
+                    name="level"
+                    placeholder="e.g. 300L"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="editVotes" class="form-label">Votes</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editVotes"
+                    name="votes"
+                    min="0"
+                  />
+                </div>
+                <div class="col-12">
+                  <label for="editManifesto" class="form-label"
+                    >Manifesto</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="editManifesto"
+                    name="manifesto"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <div class="mb-3">
+                    <p class="mb-1">Current Photo:</p>
+                    <img
+                      id="editCurrentPhoto"
+                      src=""
+                      alt="Current Photo"
+                      style="max-width: 100px; max-height: 100px"
+                      class="img-thumbnail"
+                    />
+                  </div>
+                  <label for="editPhoto" class="form-label">Update Photo</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="editPhoto"
+                    name="photo"
+                    accept="image/*"
+                  />
+                  <div class="form-text">
+                    Max size: 2MB. Recommended: square image (1:1 ratio). Leave
+                    empty to keep current photo.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-modern btn-modern-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn-modern btn-modern-primary">
+                <i class="fas fa-save"></i>
+                Update Contestant
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize AOS
+        AOS.init({
+          duration: 600,
+          once: true,
+          offset: 50,
+        });
+
+        // Show loading overlay initially
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        loadingOverlay.classList.add("show");
+        setTimeout(() => {
+          loadingOverlay.classList.remove("show");
+        }, 1000);
+
+        // Sidebar functionality
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+        const mobileOverlay = document.getElementById("mobileOverlay");
+
+        sidebarToggle?.addEventListener("click", () => {
+          sidebar.classList.toggle("collapsed");
+          const icon = sidebarToggle.querySelector("i");
+          icon.classList.toggle("fa-chevron-left");
+          icon.classList.toggle("fa-chevron-right");
+        });
+
+        mobileMenuBtn?.addEventListener("click", () => {
+          sidebar.classList.add("mobile-open");
+          mobileOverlay.classList.add("show");
+        });
+
+        mobileOverlay?.addEventListener("click", () => {
+          sidebar.classList.remove("mobile-open");
+          mobileOverlay.classList.remove("show");
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById("searchInput");
+        const positionFilter = document.getElementById("positionFilter");
+        const contestantCards = document.querySelectorAll(".contestant-card");
+
+        function filterContestants() {
+          const searchTerm = searchInput.value.toLowerCase();
+          const selectedPosition = positionFilter.value;
+
+          contestantCards.forEach((card) => {
+            const name = card
+              .querySelector(".contestant-name")
+              .textContent.toLowerCase();
+            const position = card
+              .querySelector(".position-badge")
+              .textContent.toLowerCase();
+            const level = card
+              .querySelector(".contestant-details span")
+              .textContent.toLowerCase();
+            const positionId = card.dataset.position;
+
+            const matchesSearch =
+              name.includes(searchTerm) ||
+              position.includes(searchTerm) ||
+              level.includes(searchTerm);
+            const matchesPosition =
+              !selectedPosition || positionId === selectedPosition;
+
+            if (matchesSearch && matchesPosition) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        }
+
+        searchInput?.addEventListener("input", filterContestants);
+        positionFilter?.addEventListener("change", filterContestants);
+
+        // Delete contestant functionality
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        const deleteModal = document.getElementById("deleteContestantModal");
+        const deleteContestantName = document.getElementById(
+          "deleteContestantName"
+        );
+        const deleteContestantForm = document.getElementById(
+          "deleteContestantForm"
+        );
+
+        deleteButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const contestantId = button.dataset.contestantId;
+            const contestantName = button.dataset.contestantName;
+
+            // Update the contestant name in the modal
+            deleteContestantName.textContent = contestantName;
+
+            // Update the form action to include the contestant ID
+            if (deleteContestantForm) {
+              // Ensure the action always ends with the contestant ID
+              deleteContestantForm.action = `/admin/contestants/delete/${contestantId}`;
+              console.log(
+                "Delete form action set to:",
+                deleteContestantForm.action
+              );
+            } else {
+              console.error("Delete form not found!");
+            }
+
+            new bootstrap.Modal(deleteModal).show();
+          });
+        });
+
+        // Edit contestant functionality
+        const editButtons = document.querySelectorAll(".action-btn-edit");
+        const editModal = document.getElementById("editContestantModal");
+        const editForm = document.getElementById("editContestantForm");
+
+        editButtons.forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Get the contestant card that contains this button
+            const contestantCard = button.closest(".contestant-card");
+            if (!contestantCard) return;
+
+            const contestantId = contestantCard.dataset.contestantId;
+
+            // Get contestant details from the card
+            const name =
+              contestantCard.querySelector(".contestant-name").textContent;
+            const positionText = contestantCard
+              .querySelector(".position-badge")
+              .textContent.trim();
+            const level = contestantCard
+              .querySelector(".detail-item span")
+              .textContent.replace("Level", "")
+              .trim();
+            const votes = contestantCard
+              .querySelector(".votes-count")
+              .textContent.replace("votes", "")
+              .trim();
+            const photo = contestantCard
+              .querySelector(".contestant-image img")
+              .getAttribute("src");
+
+            // Set values in the form
+            document.getElementById("editContestantId").value = contestantId;
+            document.getElementById("editName").value = name;
+            document.getElementById("editNickname").value = name; // Same as name by default
+            document.getElementById("editLevel").value = level;
+            document.getElementById("editVotes").value = votes;
+
+            // Set position dropdown
+            const positionSelect = document.getElementById("editPosition");
+            for (let i = 0; i < positionSelect.options.length; i++) {
+              if (positionSelect.options[i].text.trim() === positionText) {
+                positionSelect.selectedIndex = i;
+                break;
+              }
+            }
+
+            // Set current photo
+            const currentPhotoImg = document.getElementById("editCurrentPhoto");
+            if (currentPhotoImg) {
+              currentPhotoImg.src = photo;
+            }
+
+            // Show the modal
+            new bootstrap.Modal(editModal).show();
+          });
+        });
+
+        // Form validation
+        const forms = document.querySelectorAll("form");
+        forms.forEach((form) => {
+          form.addEventListener("submit", function (e) {
+            if (!form.checkValidity()) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            form.classList.add("was-validated");
+          });
+        });
+
+        // Auto-hide alerts
+        const alerts = document.querySelectorAll(".alert-modern");
+        alerts.forEach((alert) => {
+          setTimeout(() => {
+            alert.style.opacity = "0";
+            setTimeout(() => {
+              alert.remove();
+            }, 300);
+          }, 5000);
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> USING | LINCSSA VOTES Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chart.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css"
+    />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/styles/admin-ultramodern.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chart.js -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css"
+    />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Custom Styles -->
+    <style>
+      :root {
+        /* Color variables */
+        --primary: #4f46e5;
+        --primary-light: #6366f1;
+        --primary-dark: #4338ca;
+        --secondary: #0ea5e9;
+        --secondary-light: #38bdf8;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #6366f1;
+        --dark: #1e293b;
+        --darker: #0f172a;
+        --light: #f8fafc;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+
+        /* Border radius */
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
+        --radius-2xl: 2rem;
+        --radius-full: 9999px;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Base styles */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: var(--gray-800);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      /* Background Effects */
+      .bg-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+            rgba(99, 102, 241, 0.1) 1px,
+            transparent 1px
+          ),
+          radial-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        z-index: -1;
+        opacity: 0.4;
+      }
+
+      .bg-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          rgba(79, 70, 229, 0.03) 0%,
+          rgba(14, 165, 233, 0.03) 100%
+        );
+        z-index: -2;
+      }
+
+      /* Layout components */
+      .layout-wrapper {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: white;
+        box-shadow: var(--shadow-lg);
+        overflow-y: auto;
+        z-index: 100;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .sidebar-logo {
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .sidebar-logo h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        white-space: nowrap;
+      }
+
+      .sidebar-logo span {
+        font-weight: 400;
+      }
+
+      .sidebar-toggle {
+        background: transparent;
+        border: none;
+        color: var(--gray-500);
+        cursor: pointer;
+        height: 40px;
+        width: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .sidebar-toggle:hover {
+        background-color: var(--gray-100);
+        color: var(--primary);
+      }
+
+      .sidebar-admin-info {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .admin-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: linear-gradient(
+          45deg,
+          var(--primary-light),
+          var(--primary)
+        );
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border-radius: var(--radius-full);
+        box-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        padding: 1rem 0;
+        margin: 0;
+      }
+
+      .menu-item {
+        padding: 0;
+        margin-bottom: 0.25rem;
+        position: relative;
+      }
+
+      .menu-item a {
+        display: flex;
+        align-items: center;
+        padding: 0.875rem 1.5rem;
+        color: var(--gray-700);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+      }
+
+      .menu-item.active a {
+        background-color: rgba(99, 102, 241, 0.08);
+        color: var(--primary);
+        border-left: 3px solid var(--primary);
+        font-weight: 500;
+      }
+
+      .menu-item a:hover {
+        background-color: var(--gray-50);
+        color: var(--primary-dark);
+      }
+
+      .menu-item i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        width: 1.25rem;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+
+      .sidebar.collapsed .menu-item span {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-admin-info,
+      .sidebar.collapsed .admin-badge,
+      .sidebar.collapsed .sidebar-logo h1 span {
+        display: none;
+      }
+
+      /* Main content area */
+      .main-content {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+      }
+
+      /* Header */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--gray-900);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .date-display {
+        background-color: white;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* Alert styles */
+      .alert-modern {
+        border-radius: var(--radius-md);
+        border-left: 4px solid transparent;
+        background-color: white;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow-md);
+        animation: fadeInUp 0.5s ease forwards;
+      }
+
+      .alert-modern-success {
+        border-left-color: var(--success);
+      }
+
+      .alert-modern-danger {
+        border-left-color: var(--danger);
+      }
+
+      .alert-modern-info {
+        border-left-color: var(--info);
+      }
+
+      .alert-modern-warning {
+        border-left-color: var(--warning);
+      }
+
+      .alert-icon {
+        margin-right: 1rem;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-full);
+      }
+
+      .alert-modern-success .alert-icon {
+        color: var(--success);
+        background-color: rgba(16, 185, 129, 0.1);
+      }
+
+      .alert-modern-danger .alert-icon {
+        color: var(--danger);
+        background-color: rgba(239, 68, 68, 0.1);
+      }
+
+      .alert-modern-info .alert-icon {
+        color: var(--info);
+        background-color: rgba(99, 102, 241, 0.1);
+      }
+
+      .alert-modern-warning .alert-icon {
+        color: var(--warning);
+        background-color: rgba(245, 158, 11, 0.1);
+      }
+
+      .alert-content {
+        flex: 1;
+      }
+
+      .alert-content p {
+        margin: 0;
+      }
+
+      /* Stat cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background-color: white;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(99, 102, 241, 0.08)
+        );
+        border-radius: 50%;
+        transform: translate(50%, -50%);
+      }
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .stat-icon-1 {
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--primary);
+      }
+
+      .stat-icon-2 {
+        background-color: rgba(14, 165, 233, 0.1);
+        color: var(--secondary);
+      }
+
+      .stat-icon-3 {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+      }
+
+      .stat-icon-4 {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--gray-900);
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+        margin: 0.25rem 0 0;
+      }
+
+      .stat-change {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+      }
+
+      .stat-change.positive {
+        color: var(--success);
+      }
+
+      .stat-change.negative {
+        color: var(--danger);
+      }
+
+      /* System status cards */
+      .system-status {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .status-card {
+        background-color: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .status-card:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .status-card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .status-card-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--gray-900);
+      }
+
+      .status-card-body {
+        padding: 1.5rem;
+      }
+
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+
+      .status-indicator i {
+        margin-right: 0.5rem;
+      }
+
+      .status-indicator.enabled {
+        color: var(--success);
+      }
+
+      .status-indicator.disabled {
+        color: var(--danger);
+      }
+
+      .status-details {
+        display: flex;
+        gap: 1.5rem;
+        color: var(--gray-600);
+        margin-bottom: 1.25rem;
+        font-size: 0.875rem;
+      }
+
+      .status-details span {
+        display: flex;
+        align-items: center;
+      }
+
+      .status-details i {
+        margin-right: 0.375rem;
+      }
+
+      /* Results table card */
+      .results-card {
+        background-color: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        overflow: hidden;
+      }
+
+      .results-card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .results-card-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--gray-900);
+      }
+
+      .results-card-body {
+        padding: 1.5rem;
+      }
+
+      .results-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .results-table th {
+        background-color: var(--gray-50);
+        color: var(--gray-700);
+        font-weight: 500;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--gray-200);
+        font-size: 0.875rem;
+      }
+
+      .results-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--gray-100);
+        color: var(--gray-800);
+        font-size: 0.875rem;
+      }
+
+      .results-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .results-table tr:hover td {
+        background-color: var(--gray-50);
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--gray-200);
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .badge-success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+      }
+
+      .badge-danger {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+      }
+
+      .badge-info {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: var(--info);
+      }
+
+      .badge-warning {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+      }
+
+      /* Modern buttons */
+      .btn-modern {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          45deg,
+          var(--primary),
+          var(--primary-light)
+        );
+        color: white;
+        box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        color: white;
+      }
+
+      .btn-secondary {
+        background-color: white;
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--gray-50);
+        color: var(--primary);
+      }
+
+      .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+      }
+
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+      }
+
+      /* Loading animation */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .loading-container.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid rgba(99, 102, 241, 0.2);
+        border-top-color: var(--primary);
+        animation: spin 1s linear infinite;
+      }
+
+      /* Animations */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+        }
+      }
+
+      .live-indicator {
+        position: relative;
+        animation: pulse 2s infinite;
+      }
+
+      /* Responsive design */
+      @media (max-width: 991.98px) {
+        .layout-wrapper {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: fixed;
+          left: -280px;
+          height: 100vh;
+        }
+
+        .sidebar.show {
+          left: 0;
+        }
+
+        .mobile-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 99;
+          display: none;
+        }
+
+        .mobile-overlay.show {
+          display: block;
+        }
+
+        .mobile-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem;
+          background-color: white;
+          box-shadow: var(--shadow-md);
+          margin-bottom: 1.5rem;
+          border-radius: var(--radius-md);
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .system-status {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 767.98px) {
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 575.98px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .page-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-pattern"></div>
+    <div class="bg-gradient"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Layout Wrapper -->
+    <div class="layout-wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+          <h1>LINCSSA <span>VOTES</span></h1>
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+
+        <div class="sidebar-admin-info">
+          <span class="admin-badge">Administrator</span>
+        </div>
+
+        <ul class="sidebar-menu">
+          <li class="menu-item active">
+            <a href="/admin/dashboard">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/settings">
+              <i class="fas fa-cogs"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/positions">
+              <i class="fas fa-sitemap"></i>
+              <span>Positions</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/contestants">
+              <i class="fas fa-users"></i>
+              <span>Contestants</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/voters">
+              <i class="fas fa-user-check"></i>
+              <span>Voters</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/results">
+              <i class="fas fa-chart-bar"></i>
+              <span>Results</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="/admin/logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Mobile Header (visible on mobile only) -->
+        <div class="mobile-header d-flex d-lg-none">
+          <button class="sidebar-toggle" id="mobileSidebarToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title m-0">Dashboard</h1>
+        </div>
+
+        <!-- Main Header -->
+        <header class="main-header d-none d-lg-flex">
+          <h1 class="page-title">Admin Dashboard</h1>
+          <div class="header-actions">
+            <div class="date-display">
+              <i class="far fa-calendar-alt me-2"></i>
+              <span
+                ><%= new Date().toLocaleDateString('en-US', { weekday: 'long',
+                year: 'numeric', month: 'long', day: 'numeric' }) %></span
+              >
+            </div>
+            <a href="/admin/logout" class="btn-modern btn-secondary">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </header>
+
+        <!-- Flash Messages -->
+        <% if (messages.error) { %>
+        <div class="alert-modern alert-modern-danger" data-aos="fade-up">
+          <div class="alert-icon">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <div class="alert-content">
+            <p><%= messages.error %></p>
+          </div>
+        </div>
+        <% } %> <% if (messages.success) { %>
+        <div class="alert-modern alert-modern-success" data-aos="fade-up">
+          <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="alert-content">
+            <p><%= messages.success %></p>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-icon stat-icon-1">
+              <i class="fas fa-sitemap"></i>
+            </div>
+            <h3 class="stat-value"><%= stats.positionCount %></h3>
+            <p class="stat-label">Positions</p>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up me-1"></i>
+              <span>Active</span>
+            </div>
+          </div>
+
+          <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-icon stat-icon-2">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="stat-value"><%= stats.contestantCount %></h3>
+            <p class="stat-label">Contestants</p>
+          </div>
+
+          <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-icon stat-icon-3">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <h3 class="stat-value"><%= stats.voterCount %></h3>
+            <p class="stat-label">Registered Voters</p>
+          </div>
+
+          <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-icon stat-icon-4">
+              <i class="fas fa-vote-yea"></i>
+            </div>
+            <h3 class="stat-value"><%= stats.votingRate %>%</h3>
+            <p class="stat-label">Voting Rate</p>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="system-status">
+          <div class="status-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="status-card-header">
+              <h3>Voting Status</h3>
+            </div>
+            <div class="status-card-body">
+              <% if (settings.votingEnabled) { %>
+              <div class="status-indicator enabled">
+                <i class="fas fa-check-circle"></i>
+                <span>Voting is Enabled</span>
+              </div>
+              <% } else { %>
+              <div class="status-indicator disabled">
+                <i class="fas fa-times-circle"></i>
+                <span>Voting is Disabled</span>
+              </div>
+              <% } %>
+
+              <div class="status-details">
+                <% if (settings.votingStartDate) { %>
+                <span>
+                  <i class="far fa-calendar"></i>
+                  Start: <%= new
+                  Date(settings.votingStartDate).toLocaleDateString() %>
+                </span>
+                <% } %> <% if (settings.votingEndDate) { %>
+                <span>
+                  <i class="far fa-calendar"></i>
+                  End: <%= new Date(settings.votingEndDate).toLocaleDateString()
+                  %>
+                </span>
+                <% } %>
+              </div>
+
+              <a href="/admin/settings" class="btn-modern btn-primary">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="status-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="status-card-header">
+              <h3>Registration Status</h3>
+            </div>
+            <div class="status-card-body">
+              <% if (settings.registrationEnabled) { %>
+              <div class="status-indicator enabled">
+                <i class="fas fa-check-circle"></i>
+                <span>Registration is Open</span>
+              </div>
+              <% } else { %>
+              <div class="status-indicator disabled">
+                <i class="fas fa-times-circle"></i>
+                <span>Registration is Closed</span>
+              </div>
+              <% } %>
+
+              <div class="status-details">
+                <% if (settings.displayResults) { %>
+                <span>
+                  <i class="fas fa-eye"></i>
+                  Results are visible to voters
+                </span>
+                <% } else { %>
+                <span>
+                  <i class="fas fa-eye-slash"></i>
+                  Results are hidden from voters
+                </span>
+                <% } %>
+              </div>
+
+              <a href="/admin/voters" class="btn-modern btn-primary">
+                <i class="fas fa-users"></i>
+                <span>Manage Voters</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="results-card-header">
+            <h3>Election Results Preview</h3>
+            <a href="/admin/results" class="btn-modern btn-primary btn-sm">
+              <i class="fas fa-chart-bar"></i>
+              <span>View Full Results</span>
+            </a>
+          </div>
+          <div class="results-card-body">
+            <% if (positions && positions.length > 0) { %>
+            <div class="table-responsive">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Position</th>
+                    <th>Status</th>
+                    <th>Leading Candidate</th>
+                    <th>Votes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% positions.forEach(position => { %>
+                  <tr>
+                    <td>
+                      <strong><%= position.title %></strong>
+                    </td>
+                    <td>
+                      <% if (position.isActive) { %>
+                      <span class="status-badge badge-success">Active</span>
+                      <% } else { %>
+                      <span class="status-badge badge-danger">Inactive</span>
+                      <% } %> <% if (position.displayResults) { %>
+                      <span class="status-badge badge-info"
+                        >Results Visible</span
+                      >
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (position.contestants && position.contestants.length
+                      > 0) { %>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar me-2">
+                          <img
+                            src="/uploads/<%= position.contestants[0].photo %>"
+                            alt="<%= position.contestants[0].name %>"
+                          />
+                        </div>
+                        <span><%= position.contestants[0].name %></span>
+                      </div>
+                      <% } else { %>
+                      <em>No contestants</em>
+                      <% } %>
+                    </td>
+                    <td>
+                      <% if (position.contestants && position.contestants.length
+                      > 0) { %> <%= position.contestants[0].votes || 0 %> <% }
+                      else { %> 0 <% } %>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-2">
+                        <a
+                          href="/admin/positions"
+                          class="btn-modern btn-secondary btn-icon"
+                        >
+                          <i class="fas fa-cog"></i>
+                        </a>
+                        <a
+                          href="/admin/contestants"
+                          class="btn-modern btn-secondary btn-icon"
+                        >
+                          <i class="fas fa-users"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <% } else { %>
+            <div class="alert-modern alert-modern-info">
+              <div class="alert-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="alert-content">
+                <p>No positions have been set up yet.</p>
+                <a href="/admin/positions" class="btn-modern btn-primary mt-3">
+                  Create Positions
+                </a>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Dashboard JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize AOS animations
+        AOS.init({
+          duration: 800,
+          once: true,
+          offset: 50,
+        });
+
+        // Loading screen
+        const loadingContainer = document.getElementById("loadingContainer");
+        loadingContainer.classList.add("show");
+
+        // Hide loading screen after a short delay
+        setTimeout(() => {
+          loadingContainer.classList.remove("show");
+        }, 800);
+
+        // Sidebar toggle functionality
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const mobileSidebarToggle = document.getElementById(
+          "mobileSidebarToggle"
+        );
+        const mobileOverlay = document.getElementById("mobileOverlay");
+
+        sidebarToggle.addEventListener("click", () => {
+          sidebar.classList.toggle("collapsed");
+        });
+
+        mobileSidebarToggle.addEventListener("click", () => {
+          sidebar.classList.toggle("show");
+          mobileOverlay.classList.toggle("show");
+        });
+
+        mobileOverlay.addEventListener("click", () => {
+          sidebar.classList.remove("show");
+          mobileOverlay.classList.remove("show");
+        });
+
+        // Counter animation for stat values
+        function animateCounters() {
+          const counters = document.querySelectorAll(".stat-value");
+
+          counters.forEach((counter) => {
+            const value = parseInt(counter.innerText);
+            let currentCount = 0;
+            const increment = value / 25; // Adjust for animation speed
+
+            const updateCount = () => {
+              if (currentCount < value) {
+                currentCount += increment;
+                counter.innerText = Math.ceil(currentCount);
+                setTimeout(updateCount, 20);
+              } else {
+                counter.innerText = value;
+              }
+            };
+
+            updateCount();
+          });
+        }
+
+        // Call counter animation after page load
+        setTimeout(animateCounters, 1000);
+
+        // Responsive behavior
+        function handleResponsiveLayout() {
+          if (window.innerWidth < 992) {
+            sidebar.classList.remove("collapsed");
+          }
+        }
+
+        window.addEventListener("resize", handleResponsiveLayout);
+        handleResponsiveLayout();
+      });
+    </script>
+  </body>
+</html>

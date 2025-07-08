@@ -1,0 +1,70 @@
+<div class="sidebar-header">
+  <div class="sidebar-logo">LINCSSA <span>VOTES</span></div>
+  <div class="sidebar-subtitle">Admin Dashboard</div>
+</div>
+
+<div class="sidebar-menu">
+  <ul>
+    <li>
+      <a
+        href="/admin/dashboard"
+        class="<%= active === 'dashboard' ? 'active' : '' %>"
+      >
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/settings"
+        class="<%= active === 'settings' ? 'active' : '' %>"
+      >
+        <i class="fas fa-cog"></i> System Settings
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/positions"
+        class="<%= active === 'positions' ? 'active' : '' %>"
+      >
+        <i class="fas fa-sitemap"></i> Positions
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/contestants"
+        class="<%= active === 'contestants' ? 'active' : '' %>"
+      >
+        <i class="fas fa-users"></i> Contestants
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/voters"
+        class="<%= active === 'voters' ? 'active' : '' %>"
+      >
+        <i class="fas fa-user-check"></i> Voters
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/results"
+        class="<%= active === 'results' ? 'active' : '' %>"
+      >
+        <i class="fas fa-chart-bar"></i> Results
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="sidebar-menu mt-auto">
+  <ul>
+    <li>
+      <a href="/" target="_blank">
+        <i class="fas fa-external-link-alt"></i> View Site
+      </a>
+    </li>
+    <li>
+      <a href="/admin/logout"> <i class="fas fa-sign-out-alt"></i> Logout </a>
+    </li>
+  </ul>
+</div>

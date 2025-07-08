@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | LINCSSA VOTES Admin</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Google Fonts - Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Flatpickr for date picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    /* Layout */
+    .main-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #212529;
+      color: #fff;
+      position: fixed;
+      height: 100%;
+      z-index: 100;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar-header h3 {
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .sidebar-header span {
+      color: #0d6efd;
+    }
+    
+    .sidebar-menu {
+      padding: 0;
+      list-style: none;
+      margin: 20px 0;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 20px;
+      color: #adb5bd;
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu a:hover, 
+    .sidebar-menu li.active a {
+      background-color: rgba(13, 110, 253, 0.1);
+      color: #fff;
+      border-left-color: #0d6efd;
+    }
+    
+    .sidebar-menu i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main Content */
+    .content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s;
+    }
+    
+    /* Card Styles */
+    .settings-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    
+    .settings-card-header {
+      background: #0d6efd;
+      color: white;
+      padding: 15px 20px;
+      font-weight: 500;
+    }
+    
+    .settings-card-body {
+      padding: 20px;
+    }
+    
+    /* Settings Item */
+    .setting-row {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .setting-row:last-child {
+      border-bottom: none;
+    }
+    
+    /* Color Swatches */
+    .color-swatch {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+      border: 2px solid #eee;
+      transition: all 0.2s;
+    }
+    
+    .color-swatch.active {
+      border-color: #0d6efd;
+      transform: scale(1.1);
+    }
+    
+    .color-swatch.blue { background-color: #0d6efd; }
+    .color-swatch.green { background-color: #198754; }
+    .color-swatch.orange { background-color: #fd7e14; }
+    .color-swatch.purple { background-color: #6f42c1; }
+    .color-swatch.red { background-color: #dc3545; }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 0;
+        overflow: hidden;
+      }
+      
+      .content {
+        margin-left: 0;
+      }
+      
+      .sidebar.active {
+        width: 250px;
+      }
+      
+      .mobile-header {
+        display: flex;
+      }
+    }
+    
+    .mobile-header {
+      display: none;
+      padding: 15px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    
+    /* Basic utilities */
+    .logo-preview {
+      max-height: 100px;
+      max-width: 100%;
+    }
+    
+    .preview-container {
+      padding: 10px;
+      border: 1px dashed #dee2e6;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .stat-card i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    /* Theme preview */
+    .theme-preview {
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .theme-preview-header {
+      padding: 10px;
+      color: white;
+    }
+    
+    .theme-preview-content {
+      padding: 10px;
+    }
+    
+    .theme-preview-item {
+      height: 8px;
+      background: #e9ecef;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    
+    .theme-preview-button {
+      height: 20px;
+      width: 80px;
+      border-radius: 4px;
+    }
+    
+    /* Overlay for mobile sidebar */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay"></div>
+  
+  <div class="main-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>LINCSSA <span>VOTES</span></h3>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/admin/dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li class="active">
+          <a href="/admin/settings">
+            <i class="fas fa-cogs"></i> Settings
+          </a>
+        </li>
+        <li>
+          <a href="/admin/positions">
+            <i class="fas fa-sitemap"></i> Positions
+          </a>
+        </li>
+        <li>
+          <a href="/admin/contestants">
+            <i class="fas fa-users"></i> Contestants
+          </a>
+        </li>
+        <li>
+          <a href="/admin/voters">
+            <i class="fas fa-user-check"></i> Voters
+          </a>
+        </li>
+        <li>
+          <a href="/admin/results">
+            <i class="fas fa-chart-bar"></i> Results
+          </a>
+        </li>
+        <li>
+          <a href="/admin/logout" class="text-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Mobile Header -->
+      <div class="mobile-header d-md-none">
+        <button class="btn btn-light" id="sidebarToggleBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h4 class="mb-0 ms-3">Settings</h4>
+      </div>
+      
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3">System Settings</h1>
+          <p class="text-muted">Configure and manage your voting system</p>
+        </div>
+        
+        <div class="d-none d-md-block">
+          <span class="me-3">
+            <i class="far fa-calendar-alt me-2"></i>
+            <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+          </span>
+        </div>
+      </div>
+      
+      <!-- Flash Messages -->
+      <% if (messages.error) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <%= messages.error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <% } %>
+      <% if (messages.success) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <%= messages.success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <% } %>
+
+      <div class="row">
+        <!-- Tab Navigation -->
+        <div class="col-md-3 mb-4">
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <i class="fas fa-sliders-h me-2"></i> Settings Menu
+            </div>
+            <div class="settings-card-body p-0">
+              <!-- Using standard Bootstrap 5 tabs -->
+              <div class="list-group list-group-flush" id="settingsTabs" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="general-list" data-bs-toggle="list" href="#general" role="tab">
+                  <i class="fas fa-cog me-2"></i> General
+                </a>
+                <a class="list-group-item list-group-item-action" id="voting-list" data-bs-toggle="list" href="#voting" role="tab">
+                  <i class="fas fa-vote-yea me-2"></i> Voting
+                </a>
+                <a class="list-group-item list-group-item-action" id="appearance-list" data-bs-toggle="list" href="#appearance" role="tab">
+                  <i class="fas fa-paint-brush me-2"></i> Appearance
+                </a>
+                <a class="list-group-item list-group-item-action" id="security-list" data-bs-toggle="list" href="#security" role="tab">
+                  <i class="fas fa-shield-alt me-2"></i> Security
+                </a>
+                <a class="list-group-item list-group-item-action" id="system-list" data-bs-toggle="list" href="#system" role="tab">
+                  <i class="fas fa-server me-2"></i> System
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- System Status Card -->
+          <div class="settings-card mt-4">
+            <div class="settings-card-header">
+              <i class="fas fa-info-circle me-2"></i> System Status
+            </div>
+            <div class="settings-card-body">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fas fa-server fa-fw fa-lg text-<%= settings.maintenanceMode ? 'warning' : 'success' %> me-3"></i>
+                <div>
+                  <div class="text-muted small">Status</div>
+                  <div class="fw-bold"><%= settings.maintenanceMode ? 'Maintenance Mode' : 'Online' %></div>
+                </div>
+              </div>
+              
+              <div class="d-flex align-items-center mb-3">
+                <i class="fas fa-calendar-check fa-fw fa-lg text-primary me-3"></i>
+                <div>
+                  <div class="text-muted small">Last Updated</div>
+                  <div class="fw-bold">2025-07-06 10:47:10</div>
+                </div>
+              </div>
+              
+              <div class="d-flex align-items-center">
+                <i class="fas fa-code-branch fa-fw fa-lg text-secondary me-3"></i>
+                <div>
+                  <div class="text-muted small">Version</div>
+                  <div class="fw-bold">v2.1.0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="col-md-9">
+          <form id="settingsForm" action="/admin/settings" method="POST" enctype="multipart/form-data">
+            <div class="tab-content">
+              <!-- General Settings Tab -->
+              <div class="tab-pane fade show active" id="general" role="tabpanel">
+                <div class="settings-card">
+                  <div class="settings-card-header">
+                    <i class="fas fa-cog me-2"></i> General Settings
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Election Title</label>
+                          <p class="text-muted small mb-md-0">The title displayed on the voting portal</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                            <input type="text" class="form-control" id="electionTitle" name="electionTitle" 
+                              value="<%= settings.electionTitle || 'LINCSSA Elections' %>" required>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Maintenance Mode</label>
+                          <p class="text-muted small mb-md-0">When enabled, the system will show a maintenance page</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="maintenanceMode" 
+                              name="maintenanceMode" <%= settings.maintenanceMode ? 'checked' : '' %>>
+                            <label class="form-check-label" for="maintenanceMode">
+                              <span class="badge bg-<%= settings.maintenanceMode ? 'warning' : 'success' %>">
+                                <%= settings.maintenanceMode ? 'Maintenance Mode On' : 'System Online' %>
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Election Description</label>
+                          <p class="text-muted small mb-md-0">A brief description of the election</p>
+                        </div>
+                        <div class="col-md-8">
+                          <textarea class="form-control" id="electionDescription" name="electionDescription" 
+                            rows="3"><%= settings.electionDescription || '' %></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Organization Name</label>
+                          <p class="text-muted small mb-md-0">The name of your organization</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                            <input type="text" class="form-control" id="organizationName" name="organizationName" 
+                              value="<%= settings.organizationName || 'LINCSSA' %>">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Contact Email</label>
+                          <p class="text-muted small mb-md-0">Email address displayed for voter support</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="contactEmail" name="contactEmail" 
+                              value="<%= settings.contactEmail || 'support@lincssa.com' %>">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Voting Settings Tab -->
+              <div class="tab-pane fade" id="voting" role="tabpanel">
+                <div class="settings-card">
+                  <div class="settings-card-header">
+                    <i class="fas fa-vote-yea me-2"></i> Voting Configuration
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Voting Status</label>
+                          <p class="text-muted small mb-md-0">Enable or disable voting across the system</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="votingEnabled" 
+                              name="votingEnabled" <%= settings.votingEnabled ? 'checked' : '' %>>
+                            <label class="form-check-label" for="votingEnabled">
+                              <span class="badge bg-<%= settings.votingEnabled ? 'success' : 'danger' %>">
+                                <%= settings.votingEnabled ? 'Voting Open' : 'Voting Closed' %>
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Voter Registration</label>
+                          <p class="text-muted small mb-md-0">Allow new voters to register</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="registrationEnabled" 
+                              name="registrationEnabled" <%= settings.registrationEnabled ? 'checked' : '' %>>
+                            <label class="form-check-label" for="registrationEnabled">
+                              <span class="badge bg-<%= settings.registrationEnabled ? 'success' : 'danger' %>">
+                                <%= settings.registrationEnabled ? 'Registration Open' : 'Registration Closed' %>
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Results Visibility</label>
+                          <p class="text-muted small mb-md-0">Show election results to voters</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="displayResults" 
+                              name="displayResults" <%= settings.displayResults ? 'checked' : '' %>>
+                            <label class="form-check-label" for="displayResults">
+                              <span class="badge bg-<%= settings.displayResults ? 'success' : 'danger' %>">
+                                <%= settings.displayResults ? 'Results Visible' : 'Results Hidden' %>
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Voting Schedule</label>
+                          <p class="text-muted small mb-md-0">Set the voting period start and end times</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label class="form-label">Start Date & Time</label>
+                              <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-plus"></i></span>
+                                <input type="text" class="form-control datepicker" id="votingStartDate" 
+                                  name="votingStartDate" placeholder="Select date & time" 
+                                  value="<%= settings.votingStartDate || '' %>">
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <label class="form-label">End Date & Time</label>
+                              <div class="input-group">
+                                <span class="input-group-text"><i class="far fa-calendar-minus"></i></span>
+                                <input type="text" class="form-control datepicker" id="votingEndDate" 
+                                  name="votingEndDate" placeholder="Select date & time" 
+                                  value="<%= settings.votingEndDate || '' %>">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Vote Verification</label>
+                          <p class="text-muted small mb-md-0">Require voters to verify their identity before voting</p>
+                        </div>
+                        <div class="col-md-8">
+                          <select class="form-select" name="verificationMethod" id="verificationMethod">
+                            <option value="email" <%= settings.verificationMethod === 'email' ? 'selected' : '' %>>Email Verification</option>
+                            <option value="id" <%= settings.verificationMethod === 'id' ? 'selected' : '' %>>ID Number</option>
+                            <option value="code" <%= settings.verificationMethod === 'code' ? 'selected' : '' %>>Access Code</option>
+                            <option value="none" <%= settings.verificationMethod === 'none' ? 'selected' : '' %>>No Verification</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Voting Statistics -->
+                <div class="settings-card mt-4">
+                  <div class="settings-card-header">
+                    <i class="fas fa-chart-bar me-2"></i> Voting Statistics
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="row g-4">
+                      <div class="col-md-4">
+                        <div class="stat-card">
+                          <i class="fas fa-users text-primary"></i>
+                          <div class="stat-value">583</div>
+                          <div class="text-muted">Total Voters</div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="stat-card">
+                          <i class="fas fa-check-circle text-success"></i>
+                          <div class="stat-value">328</div>
+                          <div class="text-muted">Votes Cast</div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="stat-card">
+                          <i class="fas fa-percentage text-info"></i>
+                          <div class="stat-value">56%</div>
+                          <div class="text-muted">Participation Rate</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Appearance Settings Tab -->
+              <div class="tab-pane fade" id="appearance" role="tabpanel">
+                <div class="settings-card">
+                  <div class="settings-card-header">
+                    <i class="fas fa-paint-brush me-2"></i> Appearance Settings
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Primary Color Theme</label>
+                          <p class="text-muted small mb-md-0">Select a color theme for the voting portal</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="d-flex mb-3">
+                            <div class="color-swatch blue <%= settings.colorTheme === 'blue' ? 'active' : '' %>" data-value="blue" data-bs-toggle="tooltip" title="Blue"></div>
+                            <div class="color-swatch green <%= settings.colorTheme === 'green' ? 'active' : '' %>" data-value="green" data-bs-toggle="tooltip" title="Green"></div>
+                            <div class="color-swatch orange <%= settings.colorTheme === 'orange' ? 'active' : '' %>" data-value="orange" data-bs-toggle="tooltip" title="Orange"></div>
+                            <div class="color-swatch purple <%= settings.colorTheme === 'purple' ? 'active' : '' %>" data-value="purple" data-bs-toggle="tooltip" title="Purple"></div>
+                            <div class="color-swatch red <%= settings.colorTheme === 'red' ? 'active' : '' %>" data-value="red" data-bs-toggle="tooltip" title="Red"></div>
+                          </div>
+                          <input type="hidden" name="colorTheme" id="colorTheme" value="<%= settings.colorTheme || 'blue' %>">
+                          
+                          <!-- Theme Preview -->
+                          <div class="theme-preview mt-3">
+                            <div class="theme-preview-header bg-primary">
+                              <i class="fas fa-vote-yea me-2"></i> LINCSSA VOTES
+                            </div>
+                            <div class="theme-preview-content">
+                              <div class="theme-preview-item"></div>
+                              <div class="theme-preview-item" style="width: 75%"></div>
+                              <div class="theme-preview-item" style="width: 60%"></div>
+                              <div class="theme-preview-button bg-primary mt-2"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Layout Style</label>
+                          <p class="text-muted small mb-md-0">Choose the overall layout style of the voting portal</p>
+                        </div>
+                        <div class="col-md-8">
+                          <select class="form-select" name="layoutStyle" id="layoutStyle">
+                            <option value="modern" <%= settings.layoutStyle === 'modern' ? 'selected' : '' %>>Modern</option>
+                            <option value="classic" <%= settings.layoutStyle === 'classic' ? 'selected' : '' %>>Classic</option>
+                            <option value="minimal" <%= settings.layoutStyle === 'minimal' ? 'selected' : '' %>>Minimal</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Show Animations</label>
+                          <p class="text-muted small mb-md-0">Enable or disable animations throughout the voting portal</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="showAnimations" 
+                              name="showAnimations" <%= settings.showAnimations ? 'checked' : '' %>>
+                            <label class="form-check-label" for="showAnimations"></label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Custom Logo</label>
+                          <p class="text-muted small mb-md-0">Upload a custom logo for the voting portal</p>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="file" class="form-control mb-3" id="customLogo" name="customLogo" accept="image/*">
+                          <div class="preview-container">
+                            <% if (settings.customLogoUrl) { %>
+                              <img src="<%= settings.customLogoUrl %>" alt="Custom logo" class="logo-preview" id="logoPreview">
+                            <% } else { %>
+                              <img src="" alt="Custom logo" class="logo-preview" id="logoPreview" style="display: none;">
+                              <div class="text-muted" id="logoPlaceholder">
+                                <i class="fas fa-image fa-2x mb-2"></i><br>
+                                Logo preview
+                              </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Security Settings Tab -->
+              <div class="tab-pane fade" id="security" role="tabpanel">
+                <div class="settings-card">
+                  <div class="settings-card-header">
+                    <i class="fas fa-shield-alt me-2"></i> Security Settings
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Admin Password</label>
+                          <p class="text-muted small mb-md-0">Change the administrator password</p>
+                        </div>
+                        <div class="col-md-8">
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                            data-bs-target="#changePasswordModal">
+                            <i class="fas fa-key me-2"></i> Change Password
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Two-Factor Authentication</label>
+                          <p class="text-muted small mb-md-0">Add an extra layer of security to your account</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="twoFactorAuth" 
+                              name="twoFactorAuth" <%= settings.twoFactorAuth ? 'checked' : '' %>>
+                            <label class="form-check-label" for="twoFactorAuth"></label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Login Attempts Limit</label>
+                          <p class="text-muted small mb-md-0">Set maximum number of failed login attempts before lockout</p>
+                        </div>
+                        <div class="col-md-8">
+                          <select class="form-select" name="loginAttemptsLimit" id="loginAttemptsLimit">
+                            <option value="3" <%= settings.loginAttemptsLimit === 3 ? 'selected' : '' %>>3 attempts</option>
+                            <option value="5" <%= settings.loginAttemptsLimit === 5 ? 'selected' : '' %>>5 attempts</option>
+                            <option value="10" <%= settings.loginAttemptsLimit === 10 ? 'selected' : '' %>>10 attempts</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Session Timeout</label>
+                          <p class="text-muted small mb-md-0">Automatically log out inactive users after specified time</p>
+                        </div>
+                        <div class="col-md-8">
+                          <select class="form-select" name="sessionTimeout" id="sessionTimeout">
+                            <option value="15" <%= settings.sessionTimeout === 15 ? 'selected' : '' %>>15 minutes</option>
+                            <option value="30" <%= settings.sessionTimeout === 30 ? 'selected' : '' %>>30 minutes</option>
+                            <option value="60" <%= settings.sessionTimeout === 60 ? 'selected' : '' %>>1 hour</option>
+                            <option value="120" <%= settings.sessionTimeout === 120 ? 'selected' : '' %>>2 hours</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Email Notifications -->
+                <div class="settings-card mt-4">
+                  <div class="settings-card-header">
+                    <i class="fas fa-bell me-2"></i> Notification Settings
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Email Notifications</label>
+                          <p class="text-muted small mb-md-0">Receive email notifications for important system events</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" 
+                              name="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications"></label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Admin Email</label>
+                          <p class="text-muted small mb-md-0">Email address for system notifications</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="adminEmail" name="adminEmail" 
+                              value="admin@lincssa.com" placeholder="Email address">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Notification Events</label>
+                          <p class="text-muted small mb-md-0">Select which events trigger notifications</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="notifyLogin" name="notifyLogin" checked>
+                            <label class="form-check-label" for="notifyLogin">
+                              Admin login attempts
+                            </label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="notifyVoting" name="notifyVoting" checked>
+                            <label class="form-check-label" for="notifyVoting">
+                              Voting starts/ends
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="notifySystem" name="notifySystem" checked>
+                            <label class="form-check-label" for="notifySystem">
+                              System changes
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- System Settings Tab -->
+              <div class="tab-pane fade" id="system" role="tabpanel">
+                <div class="settings-card">
+                  <div class="settings-card-header">
+                    <i class="fas fa-server me-2"></i> System Management
+                  </div>
+                  <div class="settings-card-body">
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Settings Backup</label>
+                          <p class="text-muted small mb-md-0">Download a backup of system settings</p>
+                        </div>
+                        <div class="col-md-8">
+                          <button type="button" id="backupSettingsBtn" class="btn btn-primary">
+                            <i class="fas fa-download me-2"></i> Backup Settings
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Restore Settings</label>
+                          <p class="text-muted small mb-md-0">Restore settings from a backup file</p>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="input-group">
+                            <input type="file" class="form-control" id="settingsRestoreFile" accept=".json">
+                            <button type="button" id="restoreSettingsBtn" class="btn btn-primary">
+                              <i class="fas fa-upload me-2"></i> Restore
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">Reset All Votes</label>
+                          <p class="text-muted small mb-md-0">Delete all votes from the system. This action cannot be undone.</p>
+                        </div>
+                        <div class="col-md-8">
+                          <button type="button" class="btn btn-danger" 
+                            data-bs-toggle="modal" data-bs-target="#resetVotesModal">
+                            <i class="fas fa-trash-alt me-2"></i> Reset Votes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                          <label class="form-label fw-medium">System Logs</label>
+                          <p class="text-muted small mb-md-0">Download system logs for troubleshooting</p>
+                        </div>
+                        <div class="col-md-8">
+                          <a href="/admin/logs" class="btn btn-secondary">
+                            <i class="fas fa-file-alt me-2"></i> Download Logs
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Activity Log -->
+                <div class="settings-card mt-4">
+                  <div class="settings-card-header">
+                    <i class="fas fa-history me-2"></i> Recent Activity
+                  </div>
+                  <div class="settings-card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item d-flex align-items-center px-0">
+                        <div class="bg-primary rounded-circle text-white p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Admin Login</h6>
+                          <p class="text-muted small mb-0">Today, 10:45 AM</p>
+                        </div>
+                      </li>
+                      <li class="list-group-item d-flex align-items-center px-0">
+                        <div class="bg-success rounded-circle text-white p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-cog"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Settings Updated</h6>
+                          <p class="text-muted small mb-0">Yesterday, 3:15 PM</p>
+                        </div>
+                      </li>
+                      <li class="list-group-item d-flex align-items-center px-0">
+                        <div class="bg-warning rounded-circle text-white p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-vote-yea"></i>
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Voting Opened</h6>
+                          <p class="text-muted small mb-0">Jul 3, 2025, 9:00 AM</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-end mt-4 mb-5">
+              <button type="submit" class="btn btn-primary px-4 py-2">
+                <i class="fas fa-save me-2"></i> Save Settings
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Reset Votes Confirmation Modal -->
+  <div class="modal fade" id="resetVotesModal" tabindex="-1" aria-labelledby="resetVotesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="resetVotesModalLabel">
+            <i class="fas fa-exclamation-triangle me-2"></i> Confirm Reset All Votes
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Warning:</strong> This action cannot be undone!
+          </div>
+          <p>You are about to reset all votes in the system. This will:</p>
+          <ul>
+            <li>Delete all votes cast by voters</li>
+            <li>Reset vote counts for all contestants</li>
+            <li>Clear voting history records</li>
+          </ul>
+          <p>Are you absolutely sure you want to continue?</p>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="confirmText" placeholder="Type RESET to confirm">
+            <label for="confirmText">Type RESET to confirm</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <form action="/admin/reset-votes" method="POST">
+            <button type="submit" class="btn btn-danger" id="confirmResetBtn" disabled>
+              <i class="fas fa-trash-alt me-2"></i>Reset All Votes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="changePasswordModalLabel">
+            <i class="fas fa-key me-2"></i> Change Admin Password
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="/admin/change-password" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i> Change Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Flatpickr -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
+  <script>
+    // Mobile Sidebar Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sidebar toggle
+      const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.querySelector('.sidebar-overlay');
+      
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('active');
+          sidebarOverlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        });
+      }
+      
+      // Close sidebar when clicking overlay
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+          sidebar.classList.remove('active');
+          sidebarOverlay.style.display = 'none';
+        });
+      }
+      
+      // Initialize date pickers
+      flatpickr(".datepicker", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        time_24hr: true
+      });
+      
+      // Color swatches functionality
+      const colorSwatches = document.querySelectorAll('.color-swatch');
+      const colorThemeInput = document.getElementById('colorTheme');
+      const themePreviewHeader = document.querySelector('.theme-preview-header');
+      const themePreviewButton = document.querySelector('.theme-preview-button');
+      
+      colorSwatches.forEach(swatch => {
+        swatch.addEventListener('click', function() {
+          colorSwatches.forEach(s => s.classList.remove('active'));
+          this.classList.add('active');
+          
+          const colorValue = this.getAttribute('data-value');
+          colorThemeInput.value = colorValue;
+          
+          // Update theme preview colors
+          let themeColor;
+          switch(colorValue) {
+            case 'blue': themeColor = '#0d6efd'; break;
+            case 'green': themeColor = '#198754'; break;
+            case 'orange': themeColor = '#fd7e14'; break;
+            case 'purple': themeColor = '#6f42c1'; break;
+            case 'red': themeColor = '#dc3545'; break;
+            default: themeColor = '#0d6efd';
+          }
+          
+          themePreviewHeader.style.backgroundColor = themeColor;
+          themePreviewButton.style.backgroundColor = themeColor;
+        });
+      });
+      
+      // Logo preview functionality
+      const logoInput = document.getElementById('customLogo');
+      const logoPreview = document.getElementById('logoPreview');
+      const logoPlaceholder = document.getElementById('logoPlaceholder');
+      
+      if (logoInput && logoPreview && logoPlaceholder) {
+        logoInput.addEventListener('change', function() {
+          if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              logoPreview.src = e.target.result;
+              logoPreview.style.display = 'block';
+              logoPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(this.files[0]);
+          }
+        });
+      }
+      
+      // Reset votes confirmation
+      const confirmTextInput = document.getElementById('confirmText');
+      const confirmResetBtn = document.getElementById('confirmResetBtn');
+      
+      if (confirmTextInput && confirmResetBtn) {
+        confirmTextInput.addEventListener('input', function() {
+          confirmResetBtn.disabled = this.value !== 'RESET';
+        });
+      }
+      
+      // Backup settings functionality
+      const backupSettingsBtn = document.getElementById('backupSettingsBtn');
+      if (backupSettingsBtn) {
+        backupSettingsBtn.addEventListener('click', function() {
+          alert('Settings backup file generated successfully!');
+        });
+      }
+      
+      // Restore settings functionality
+      const restoreSettingsBtn = document.getElementById('restoreSettingsBtn');
+      if (restoreSettingsBtn) {
+        restoreSettingsBtn.addEventListener('click', function() {
+          const fileInput = document.getElementById('settingsRestoreFile');
+          if (fileInput.files.length > 0) {
+            alert('Settings restored successfully!');
+          } else {
+            alert('Please select a backup file to restore.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

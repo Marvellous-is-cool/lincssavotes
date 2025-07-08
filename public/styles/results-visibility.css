@@ -1,0 +1,36 @@
+/* Results page enhanced visibility styles */
+.card-body {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.votes-count {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.contestant-item h5 {
+  color: white !important;
+}
+
+.alert {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.contestant-name {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.position-title h2 {
+  color: white !important;
+}
+
+/* Enhanced progress bar visibility */
+.progress-bar {
+  box-shadow: 0 0 10px rgba(94, 96, 206, 0.5) !important;
+}

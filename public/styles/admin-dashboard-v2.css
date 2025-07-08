@@ -1,0 +1,750 @@
+/* 
+ * LINCSSA VOTES - Modern Admin Dashboard Styles v4.0
+ * Clean, minimal, and contemporary interface design
+ * July 2025
+ */
+
+/* Base styles with contemporary color scheme */
+:root {
+  /* Enhanced color palette for better readability and contrast */
+  --dashboard-bg: #f8fafc;
+  --sidebar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --card-alt-bg: #f1f5f9;
+  --text-primary: #0a101f; /* Further darkened for better contrast */
+  --text-secondary: #334155; /* Further darkened for better readability */
+  --text-muted: #64748b; /* Adjusted for better visibility */
+  --border-color: #e2e8f0;
+  --accent-primary: #3730a3; /* Deepened for better contrast */
+  --accent-primary-light: #4f46e5; /* Adjusted for consistency */
+  --accent-secondary: #0369a1; /* Deepened for better visibility */
+  --accent-danger: #b91c1c; /* Adjusted for better contrast */
+  --accent-success: #047857; /* Adjusted for better contrast */
+  --accent-warning: #b45309; /* Adjusted for better visibility */
+
+  /* Subtle gradients */
+  --gradient-primary: linear-gradient(135deg, #4f46e5, #6366f1);
+  --gradient-secondary: linear-gradient(135deg, #06b6d4, #0ea5e9);
+  --gradient-accent: linear-gradient(135deg, #ec4899, #f43f5e);
+
+  /* Modern shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* UI Constants */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease-in-out;
+
+  /* Dark mode variables for later toggle */
+  --dark-bg: #0f172a;
+  --dark-card: #1e293b;
+  --dark-text: #f1f5f9;
+  --dark-text-secondary: #cbd5e1;
+  --dark-border: #334155;
+}
+
+/* Modern body and layout styles */
+body.admin-page {
+  font-family: "Outfit", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  background-color: var(--dashboard-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  line-height: 1.6; /* Increased line height for better text readability */
+  font-size: 1rem; /* Base font size */
+  -webkit-font-smoothing: antialiased; /* Better font rendering on macOS/iOS */
+  -moz-osx-font-smoothing: grayscale; /* Better font rendering on macOS */
+}
+
+/* Clean background pattern */
+.admin-bg-grid {
+  display: none; /* Remove the grid background for cleaner design */
+}
+
+/* Modern depth overlay */
+.depth-overlay {
+  display: none; /* Remove depth overlay for cleaner design */
+}
+
+/* Admin container layout */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Clean modern sidebar */
+.admin-sidebar {
+  width: 280px;
+  background: var(--sidebar-bg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 10;
+  transition: all 0.3s ease;
+  border-right: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.admin-sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.admin-sidebar-header {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.brand-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.brand-logo span {
+  color: var(--accent-primary);
+}
+
+.admin-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  background-color: var(--accent-primary-light);
+  color: white;
+  margin-top: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0 0.5rem;
+}
+
+.admin-menu li {
+  margin-bottom: 0.25rem;
+  border-radius: var(--radius-md);
+}
+
+.admin-menu li a {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+}
+
+.admin-menu li a:hover {
+  color: var(--accent-primary);
+  background-color: rgba(79, 70, 229, 0.08);
+}
+
+.admin-menu li.active a {
+  color: var(--accent-primary);
+  background-color: rgba(79, 70, 229, 0.12);
+  font-weight: 600;
+}
+
+.admin-menu li a i {
+  margin-right: 0.75rem;
+  width: 20px;
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.nav-hover-effect {
+  display: none; /* Remove for cleaner design */
+}
+
+/* Main content area */
+.admin-main {
+  margin-left: 280px;
+  padding-top: 70px;
+  width: calc(100% - 280px);
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  background-color: var(--dashboard-bg);
+}
+
+.admin-main.expanded {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Modern clean header */
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 280px;
+  right: 0;
+  height: 70px;
+  background: var(--dashboard-bg);
+  z-index: 5;
+  border-bottom: 1px solid var(--border-color);
+  transition: left 0.3s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.admin-main.expanded .admin-header {
+  left: 0;
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Enhanced Typography for Readability */
+.section-header h2 {
+  font-size: 1.625rem; /* Further increased for better hierarchy */
+  font-weight: 700; /* Bolder weight for better prominence */
+  color: var(--text-primary);
+  margin-bottom: 1.25rem; /* More spacing below */
+  margin-top: 1.25rem; /* More spacing above */
+  letter-spacing: -0.02em; /* Tighter letter spacing for headers */
+}
+
+.page-title {
+  font-size: 1.375rem; /* Further increased for better visibility */
+  font-weight: 700; /* Bolder weight */
+  letter-spacing: -0.01em; /* Slightly tighter letter spacing */
+}
+
+.stat-card-body .stat-value {
+  font-size: 1.875rem; /* Further increased for better visibility */
+  font-weight: 700;
+  margin-bottom: 0.375rem; /* More space below the value */
+  color: var(--text-primary);
+  line-height: 1.2; /* Tighter line height for numbers */
+}
+
+.stat-card-body .stat-label {
+  font-size: 1.0625rem; /* Slightly larger for better readability */
+  color: var(--text-secondary);
+  font-weight: 500; /* Medium weight for better visibility */
+}
+
+.system-card-header h3,
+.chart-header h3,
+.results-card-header h3,
+.card-header h3 {
+  font-size: 1.25rem; /* Increased for consistency */
+  font-weight: 600;
+}
+
+.system-card-body h4 {
+  font-size: 1.1rem; /* Increased for readability */
+  margin-bottom: 0.5rem;
+}
+
+.quick-action-btn span {
+  font-size: 0.95rem; /* Increased for better visibility */
+  margin-top: 0.5rem;
+}
+
+/* Improved table typography */
+.modern-table {
+  font-size: 0.95rem; /* Increased from default */
+}
+
+.modern-table th {
+  font-size: 1rem; /* Increased for better column headers */
+  font-weight: 600;
+}
+
+/* Enhanced modern table styles */
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+}
+
+.modern-table th {
+  background-color: var(--card-alt-bg);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem; /* Increased padding */
+  border-bottom: 2px solid var(--border-color);
+}
+
+.modern-table td {
+  padding: 1rem; /* Increased padding */
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.modern-table tr:last-child td {
+  border-bottom: none;
+}
+
+.modern-table tr:hover td {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Enhanced status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.375rem 0.75rem; /* Increased padding */
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  margin-right: 0.5rem;
+}
+
+.badge-success {
+  background-color: rgba(5, 150, 105, 0.1);
+  color: var(--accent-success);
+}
+
+.badge-danger {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: var(--accent-danger);
+}
+
+.badge-info {
+  background-color: rgba(2, 132, 199, 0.1);
+  color: var(--accent-secondary);
+}
+
+/* Modern alert styles to replace futuristic ones */
+.alert {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.alert-info {
+  background-color: rgba(79, 70, 229, 0.1);
+  border-left: 4px solid var(--accent-primary);
+}
+
+.alert-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid var(--accent-success);
+}
+
+.alert-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid var(--accent-warning);
+}
+
+.alert-danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--accent-danger);
+}
+
+.alert-icon {
+  margin-right: 1rem;
+  font-size: 1.25rem; /* Increased icon size */
+}
+
+/* Enhanced button styles */
+.btn-modern {
+  padding: 0.5rem 1rem; /* Increased padding */
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-light);
+  transform: translateY(-1px);
+}
+
+/* Quick actions improved */
+.quick-action-btn {
+  padding: 1.25rem; /* Increased padding */
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-primary-light);
+  color: var(--text-primary);
+}
+
+.quick-action-btn i {
+  font-size: 1.5rem; /* Increased icon size */
+  color: var(--accent-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Chart and visualization styles */
+.chart-container-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-container {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md); /* Enhanced shadow */
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem; /* Increased padding */
+  background-color: var(--card-alt-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-body {
+  padding: 1.5rem; /* Increased padding */
+  height: 300px; /* Set consistent height */
+}
+
+.refresh-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.refresh-btn:hover {
+  background-color: var(--card-alt-bg);
+  color: var(--accent-primary);
+}
+
+.refresh-btn.refreshing {
+  animation: spin 1s linear infinite;
+  color: var(--accent-primary);
+}
+
+.refreshing-subtle {
+  position: relative;
+}
+
+.refreshing-subtle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.refreshing-subtle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(79, 70, 229, 0.3);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  z-index: 3;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Toast notification system */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+  width: calc(100% - 3rem);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.75rem 1rem;
+  transform: translateX(120%);
+  transition: transform var(--transition-normal),
+    opacity var(--transition-normal);
+  opacity: 0;
+}
+
+.toast-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast-hiding {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.toast-icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-info .toast-icon {
+  color: var(--accent-primary);
+}
+
+.toast-success .toast-icon {
+  color: var(--accent-success);
+}
+
+.toast-warning .toast-icon {
+  color: var(--accent-warning);
+}
+
+.toast-error .toast-icon {
+  color: var(--accent-danger);
+}
+
+.toast-content {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-left: 0.75rem;
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.toast-close:hover {
+  background-color: var(--card-alt-bg);
+  color: var(--text-primary);
+}
+
+/* Keyboard shortcuts panel */
+.shortcuts-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 600px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.shortcuts-panel.active {
+  display: block;
+}
+
+.shortcuts-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shortcuts-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-shortcuts {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.close-shortcuts:hover {
+  background-color: var(--card-alt-bg);
+  color: var(--accent-danger);
+}
+
+.shortcuts-body {
+  padding: 1.25rem;
+}
+
+.shortcut-group {
+  margin-bottom: 1.5rem;
+}
+
+.shortcut-group h4 {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.shortcut-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.shortcut-keys {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+kbd {
+  background-color: var(--card-alt-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  white-space: nowrap;
+}
+
+.shortcut-desc {
+  color: var(--text-secondary);
+}
+
+/* Accessibility enhancements */
+#skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-primary);
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+#skip-to-content:focus {
+  top: 0;
+}
+
+/* Focus styles only for keyboard users */
+.keyboard-user *:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Last update indicator */
+.last-update-indicator {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

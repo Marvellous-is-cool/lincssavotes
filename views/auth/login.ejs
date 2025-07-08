@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Particle Background -->
+    <div class="particles"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <a href="/">
+              <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+              <h2>LINCSSA <span>VOTES</span></h2>
+            </a>
+          </div>
+
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <% if (settings.displayResults) { %>
+            <li><a href="/results">Results</a></li>
+            <% } %>
+            <li><a href="/register">Register</a></li>
+            <li class="active">
+              <a href="/login" class="btn btn-primary btn-sm btn-rounded"
+                >Login</a
+              >
+            </li>
+          </ul>
+
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <button class="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Login Form Section -->
+    <section
+      class="py-5"
+      style="
+        min-height: calc(100vh - 180px);
+        display: flex;
+        align-items: center;
+      "
+    >
+      <div class="container">
+        <div class="flex justify-center">
+          <div style="width: 100%; max-width: 500px" data-aos="fade-up">
+            <div class="card">
+              <div class="card-header text-center">
+                <h2>Login to Vote</h2>
+                <p>Access your account to participate in the election</p>
+              </div>
+
+              <div class="card-body">
+                <!-- Flash messages -->
+                <% if (messages.error) { %>
+                <div class="alert alert-danger">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  <%= messages.error %>
+                </div>
+                <% } %> <% if (messages.success) { %>
+                <div class="alert alert-success">
+                  <i class="fas fa-check-circle me-2"></i>
+                  <%= messages.success %>
+                </div>
+                <% } %> <% if (messages.info) { %>
+                <div class="alert alert-info">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <%= messages.info %>
+                </div>
+                <% } %>
+
+                <form action="/login" method="POST" class="needs-validation">
+                  <div class="form-group">
+                    <label for="matricNumber" class="form-label">
+                      <i class="fas fa-id-card me-2"></i>Matric Number
+                    </label>
+                    <input
+                      type="text"
+                      id="matricNumber"
+                      name="matricNumber"
+                      class="form-control"
+                      placeholder="Enter matric number (e.g. 2021/34825)"
+                      required
+                      onchange="LINCSSA.validateMatricNumber(this)"
+                    />
+                    <div class="form-text">
+                      Format: XXXX/XXXXX (e.g., 2021/34825)
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phoneNumber" class="form-label">
+                      <i class="fas fa-phone me-2"></i>Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      class="form-control"
+                      placeholder="Enter phone number"
+                      required
+                      onchange="LINCSSA.validatePhoneNumber(this)"
+                    />
+                    <div class="form-text">
+                      Enter your 11-digit phone number
+                    </div>
+                  </div>
+
+                  <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">
+                      <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                  </div>
+
+                  <div class="text-center mt-4">
+                    <p>
+                      Don't have an account?
+                      <a href="/register" class="text-primary">Register here</a>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <a href="/" class="btn btn-sm btn-outline">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: auto">
+      <div class="container">
+        <div class="footer-bottom py-4">
+          <p class="text-center mb-0">
+            &copy; <%= new Date().getFullYear() %> LINCSSA VOTES. All rights
+            reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/modern.js"></script>
+    <script>
+      // Initialize AOS animations
+      AOS.init({
+        once: true,
+        duration: 800,
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - LINCSSA VOTES</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <style>
+      :root {
+        --primary: #5d49d2;
+        --primary-dark: #392983;
+        --primary-light: #9f92f0;
+        --secondary: #2bc3d7;
+        --secondary-dark: #1297a8;
+        --secondary-light: #7ae4f4;
+        --accent: #ff6b6b;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+      }
+
+      body {
+        font-family: var(--font-primary);
+        background: radial-gradient(
+          circle at top right,
+          var(--primary-light) 0%,
+          var(--primary) 25%,
+          var(--primary-dark) 50%,
+          var(--dark) 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        pointer-events: none;
+        z-index: -1;
+        animation: float 8s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0) rotate(0);
+        }
+        25% {
+          transform: translateY(-20px) translateX(10px) rotate(5deg);
+        }
+        50% {
+          transform: translateY(10px) translateX(-15px) rotate(-5deg);
+        }
+        75% {
+          transform: translateY(15px) translateX(15px) rotate(5deg);
+        }
+      }
+
+      .login-container {
+        max-width: 420px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2),
+          0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+        padding: 40px;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: appear 0.6s cubic-bezier(0.26, 1.36, 0.68, 0.91) forwards;
+      }
+
+      @keyframes appear {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .logo-container {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      .logo-container img {
+        width: 80px;
+        height: auto;
+        margin-bottom: 15px;
+        filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+        animation: pulse 3s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .brand-logo {
+        font-weight: 800;
+        font-size: 28px;
+        margin-bottom: 5px;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-light),
+          var(--primary-light)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+
+      .brand-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+        letter-spacing: 1px;
+        font-weight: 400;
+      }
+
+      .login-form h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 700;
+        color: var(--light);
+        position: relative;
+        padding-bottom: 15px;
+      }
+
+      .login-form h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, var(--secondary), var(--primary));
+        border-radius: 3px;
+      }
+
+      .form-floating {
+        position: relative;
+        margin-bottom: 24px;
+      }
+
+      .form-floating input {
+        height: 60px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-md);
+        padding: 20px 15px 10px;
+        font-size: 16px;
+        color: var(--light);
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+      }
+
+      .form-floating label {
+        position: absolute;
+        top: 20px;
+        left: 46px;
+        color: rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition: all 0.3s;
+        font-size: 16px;
+      }
+
+      .form-floating input:focus,
+      .form-floating input:not(:placeholder-shown) {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 2px rgba(43, 195, 215, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .form-floating input:focus ~ label,
+      .form-floating input:not(:placeholder-shown) ~ label {
+        transform: translateY(-14px) scale(0.85);
+        color: var(--secondary-light);
+      }
+
+      .form-floating input::placeholder {
+        color: transparent;
+      }
+
+      .form-floating .icon {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        color: rgba(255, 255, 255, 0.7);
+        z-index: 2;
+      }
+
+      .btn-login {
+        height: 54px;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        border: none;
+        margin-top: 10px;
+        width: 100%;
+        color: white;
+        box-shadow: 0 5px 15px rgba(93, 73, 210, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .btn-login:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        transition: 0.5s;
+        z-index: -1;
+      }
+
+      .btn-login:hover:before {
+        left: 0;
+      }
+
+      .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(93, 73, 210, 0.5);
+      }
+
+      .return-link {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .return-link:hover {
+        color: var(--secondary-light);
+      }
+
+      .alert {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 15px;
+        margin-bottom: 20px;
+        color: white;
+        border-left: 4px solid;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .alert-danger {
+        border-left-color: var(--accent);
+      }
+
+      .alert-success {
+        border-left-color: var(--success);
+      }
+
+      /* Create animated particles */
+      .particles-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      /* Decorative Elements */
+      .decoration-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .floating-circle {
+        position: absolute;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at center,
+          rgba(43, 195, 215, 0.2) 0%,
+          rgba(93, 73, 210, 0.1) 50%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        left: var(--x-pos);
+        top: var(--y-pos);
+        filter: blur(8px);
+        animation: float-around var(--duration) ease-in-out infinite;
+        animation-delay: var(--delay);
+        opacity: 0.7;
+      }
+
+      @keyframes float-around {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0) scale(1);
+          opacity: 0.7;
+        }
+        25% {
+          transform: translateY(-30px) translateX(20px) scale(1.1);
+          opacity: 0.9;
+        }
+        50% {
+          transform: translateY(0) translateX(40px) scale(1);
+          opacity: 0.7;
+        }
+        75% {
+          transform: translateY(30px) translateX(20px) scale(0.9);
+          opacity: 0.5;
+        }
+      }
+
+      .glowing-line {
+        position: absolute;
+        width: var(--width);
+        height: 1px;
+        background: linear-gradient(
+          var(--angle),
+          rgba(43, 195, 215, 0) 0%,
+          rgba(43, 195, 215, 0.5) 50%,
+          rgba(43, 195, 215, 0) 100%
+        );
+        left: var(--x-pos);
+        top: var(--y-pos);
+        transform: rotate(var(--angle));
+        animation: pulse-opacity 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes pulse-opacity {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Animated particles background -->
+    <div class="particles-wrapper" id="particles"></div>
+
+    <!-- Decorative Elements -->
+    <div class="decoration-container">
+      <div
+        class="floating-circle"
+        style="
+          --size: 120px;
+          --delay: 0s;
+          --duration: 20s;
+          --x-pos: 10%;
+          --y-pos: 20%;
+        "
+      ></div>
+      <div
+        class="floating-circle"
+        style="
+          --size: 80px;
+          --delay: 5s;
+          --duration: 15s;
+          --x-pos: 85%;
+          --y-pos: 15%;
+        "
+      ></div>
+      <div
+        class="floating-circle"
+        style="
+          --size: 60px;
+          --delay: 10s;
+          --duration: 25s;
+          --x-pos: 70%;
+          --y-pos: 70%;
+        "
+      ></div>
+      <div
+        class="floating-circle"
+        style="
+          --size: 40px;
+          --delay: 15s;
+          --duration: 18s;
+          --x-pos: 20%;
+          --y-pos: 80%;
+        "
+      ></div>
+
+      <div
+        class="glowing-line"
+        style="--width: 150px; --angle: 30deg; --x-pos: 15%; --y-pos: 30%"
+      ></div>
+      <div
+        class="glowing-line"
+        style="--width: 100px; --angle: 120deg; --x-pos: 80%; --y-pos: 60%"
+      ></div>
+      <div
+        class="glowing-line"
+        style="--width: 80px; --angle: 210deg; --x-pos: 40%; --y-pos: 75%"
+      ></div>
+    </div>
+
+    <div class="login-container" data-aos="fade-up" data-aos-duration="800">
+      <div class="logo-container">
+        <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+        <div class="brand-logo">LINCSSA <span>VOTES</span></div>
+        <div class="brand-subtitle">ADMINISTRATION PANEL</div>
+      </div>
+
+      <% if (messages.error) { %>
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <%= messages.error %>
+      </div>
+      <% } %> <% if (messages.success) { %>
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>
+        <%= messages.success %>
+      </div>
+      <% } %>
+
+      <form class="login-form" method="POST" action="/admin/login">
+        <h2>Admin Access</h2>
+
+        <div class="form-floating">
+          <i class="fas fa-user-shield icon"></i>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control"
+            placeholder="Username"
+            required
+          />
+          <label for="username">Username</label>
+        </div>
+
+        <div class="form-floating">
+          <i class="fas fa-lock icon"></i>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="Password"
+            required
+          />
+          <label for="password">Password</label>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="fas fa-sign-in-alt me-2"></i> Access Admin Panel
+        </button>
+      </form>
+
+      <a href="/" class="return-link">
+        <i class="fas fa-arrow-left me-1"></i> Return to Main Site
+      </a>
+    </div>
+
+    <!-- Animation Libraries -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Admin Login Animation Script -->
+    <script src="/script/admin-login.js"></script>
+
+    <script>
+      // Initialize AOS animation library
+      AOS.init({
+        once: false,
+        duration: 800,
+        easing: "ease-in-out",
+      });
+    </script>
+
+    <style>
+      /* Additional animations */
+      @keyframes ripple-effect {
+        0% {
+          transform: scale(0);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(100);
+          opacity: 0;
+        }
+      }
+
+      .ripple {
+        position: fixed;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        pointer-events: none;
+        width: 1px;
+        height: 1px;
+        z-index: 0;
+      }
+
+      .particle-glow {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: -2;
+        animation: float 10s infinite ease-in-out;
+        filter: blur(8px);
+      }
+
+      .focus-flash {
+        animation: input-flash 0.5s ease-out;
+      }
+
+      @keyframes input-flash {
+        0% {
+          box-shadow: 0 0 0 0 rgba(43, 195, 215, 0.5);
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(43, 195, 215, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(43, 195, 215, 0);
+        }
+      }
+    </style>
+
+    <style>
+      @keyframes ripple-effect {
+        0% {
+          transform: scale(0);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(100);
+          opacity: 0;
+        }
+      }
+
+      .ripple {
+        position: fixed;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        pointer-events: none;
+        width: 1px;
+        height: 1px;
+        z-index: 0;
+      }
+    </style>
+  </body>
+</html>

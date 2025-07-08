@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote Successful | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Ultra-modern voting styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance-v2.css" />
+    <style>
+      /* Specific styles for success page */
+      .success-container {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .success-icon {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .success-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .success-title {
+        font-size: 4.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradient-shift 3s ease infinite;
+        background-size: 200% 200%;
+      }
+
+      .success-message {
+        font-size: 2rem;
+        color: var(--gray-400);
+        max-width: 700px;
+        margin: 0 auto 4rem;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: var(--primary);
+        opacity: 0.7;
+        top: 0;
+        animation: confetti-fall linear forwards;
+      }
+
+      @keyframes confetti-fall {
+        from {
+          transform: translateY(-10px) rotate(0deg);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.2rem 2.5rem;
+        border-radius: var(--radius-full);
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        font-size: 1.6rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .share-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+      }
+
+      .share-button i {
+        font-size: 1.8rem;
+      }
+
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+
+      .contestant-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(94, 96, 206, 0.2);
+        border-radius: var(--radius-lg);
+        margin-bottom: 2rem;
+      }
+
+      .contestant-badge img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .badge-info h4 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: var(--light);
+      }
+
+      .badge-info p {
+        margin: 0;
+        font-size: 1.4rem;
+        color: var(--gray-400);
+      }
+
+      .checkmark-animation {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 2s ease-in-out forwards;
+      }
+
+      .circle-animation {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash 2s ease-in-out 0.3s forwards;
+      }
+
+      @keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="vote-page">
+    <!-- Background particles for a dynamic effect -->
+    <div class="particles-container"></div>
+
+    <!-- Wave background animation -->
+    <div class="wave-background"></div>
+
+    <!-- Navbar with glass effect -->
+    <nav class="glass-card" style="margin-bottom: 2rem; border-radius: 0.5rem">
+      <div class="vote-container">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div class="site-logo">
+            <h2
+              style="
+                margin: 0;
+                font-weight: 800;
+                background: linear-gradient(
+                  90deg,
+                  var(--primary),
+                  var(--secondary)
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              LINCSSA VOTES
+            </h2>
+          </div>
+
+          <div class="vote-time-display">
+            <div
+              id="current-time"
+              style="
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 1.8rem;
+              "
+            ></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="vote-container">
+      <div class="success-container">
+        <!-- Success icon with animated SVG -->
+        <div class="success-icon" data-aos="zoom-in">
+          <svg
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              class="circle-animation"
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="#4CC9F0"
+              stroke-width="4"
+            />
+            <path
+              class="checkmark-animation"
+              d="M30 50L45 65L70 35"
+              stroke="#4CC9F0"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <!-- Success message -->
+        <h1 class="success-title" data-aos="fade-up">Vote Successful!</h1>
+
+        <!-- Show chosen candidates if available -->
+        <div data-aos="fade-up" data-aos-delay="200">
+          <% if (locals.selectedContestants && selectedContestants.length > 0) {
+          %>
+          <div class="contestant-badge">
+            <img
+              src="<%= selectedContestants[0].avatar || '/images/cat_1.svg' %>"
+              alt="Selected Contestant"
+            />
+            <div class="badge-info">
+              <h4><%= selectedContestants[0].name %></h4>
+              <p><%= selectedContestants[0].position %></p>
+            </div>
+          </div>
+          <% } else { %>
+          <!-- Fallback if no contestant data is provided -->
+          <div class="contestant-badge">
+            <img src="/images/cat_1.svg" alt="Your Selection" />
+            <div class="badge-info">
+              <h4>Your Selection</h4>
+              <p>Vote recorded successfully</p>
+            </div>
+          </div>
+          <% } %>
+        </div>
+
+        <p class="success-message" data-aos="fade-up" data-aos-delay="300">
+          Thank you for participating in the LINCSSA election! Your vote has
+          been securely recorded. The results will be announced when the voting
+          period ends.
+        </p>
+
+        <!-- Action buttons -->
+        <div class="action-buttons" data-aos="fade-up" data-aos-delay="400">
+          <a href="/results" class="btn-vote">
+            <i class="fas fa-chart-bar"></i>
+            View Live Results
+          </a>
+
+          <button id="share-vote-btn" class="share-button pulse-animation">
+            <i class="fas fa-share-alt"></i>
+            Share I Voted
+          </button>
+        </div>
+
+        <!-- Additional information card -->
+        <div
+          class="glass-card"
+          style="margin-top: 5rem; max-width: 600px"
+          data-aos="fade-up"
+          data-aos-delay="500"
+        >
+          <h3 style="margin-top: 0">What's Next?</h3>
+          <p>
+            The voting period will end on
+            <span
+              style="
+                color: var(--secondary);
+                font-family: 'JetBrains Mono', monospace;
+              "
+              >July 5th, 2025</span
+            >. After that, votes will be counted and verified before the
+            official results are announced.
+          </p>
+          <p style="margin-bottom: 0">
+            Stay connected with LINCSSA social media for updates and
+            announcements about the election results!
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer section -->
+      <footer
+        class="glass-card"
+        style="margin-top: 5rem; padding: 2rem; text-align: center"
+      >
+        <div class="footer-content">
+          <p>
+            © 2025 LINCSSA VOTES - Osun State University, Ikire Campus
+            Departmental Election
+          </p>
+          <div class="social-links" style="margin-top: 1rem">
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Toast notification container -->
+    <div class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance-v2.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Create confetti effect
+        createConfetti();
+
+        // Share button functionality
+        const shareButton = document.getElementById("share-vote-btn");
+        if (shareButton) {
+          shareButton.addEventListener("click", function () {
+            // Check if Web Share API is available
+            if (navigator.share) {
+              navigator
+                .share({
+                  title: "I Voted in the LINCSSA Election!",
+                  text: "I just cast my vote in the Lincoln University Student Union election. Make your voice heard too!",
+                  url: window.location.origin + "/vote",
+                })
+                .catch((err) => {
+                  showToast("Could not share, please share manually", "info");
+                });
+            } else {
+              // Fallback for browsers that don't support Web Share API
+              const shareUrl = window.location.origin + "/vote";
+              const tempInput = document.createElement("input");
+              tempInput.value =
+                "I just voted in the LINCSSA Election! Cast your vote too at: " +
+                shareUrl;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              document.execCommand("copy");
+              document.body.removeChild(tempInput);
+
+              showToast("Share text copied to clipboard!", "success");
+            }
+          });
+        }
+      });
+
+      // Function to create confetti animation
+      function createConfetti() {
+        const colors = ["#5E60CE", "#4CC9F0", "#7400B8", "#00F5A0", "#FFFFFF"];
+        const confettiCount = 100;
+
+        for (let i = 0; i < confettiCount; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div");
+            confetti.classList.add("confetti");
+
+            // Random position, size, color and animation duration
+            const left = Math.random() * 100;
+            const size = Math.random() * 10 + 5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 3;
+
+            confetti.style.left = left + "vw";
+            confetti.style.width = size + "px";
+            confetti.style.height = size + "px";
+            confetti.style.backgroundColor = color;
+            confetti.style.animationDuration = duration + "s";
+            confetti.style.animationDelay = delay + "s";
+
+            document.body.appendChild(confetti);
+
+            // Remove confetti after animation ends
+            setTimeout(() => {
+              confetti.remove();
+            }, (duration + delay) * 1000);
+          }, i * 50);
+        }
+      }
+
+      // Toast notification function (simplified version)
+      function showToast(message, type) {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<div class="toast-content">${message}</div>`;
+
+        const container =
+          document.querySelector(".toast-container") || document.body;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

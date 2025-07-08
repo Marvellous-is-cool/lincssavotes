@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font A          document.querySelector('.sidebar').classList.toggle('collapsed');
+      });
+      
+      // Display current time
+      function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit'
+        });
+        document.getElementById('current-time').textContent = timeString;
+      }
+      
+      // Update time every minute
+      updateTime();
+      setInterval(updateTime, 60000);
+      
+      // Add hover effects to position cards
+      const positionCards = document.querySelectorAll('.position-card');
+      positionCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.classList.add('hover');
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.classList.remove('hover');
+        });
+      });
+    </script>
+  </body>
+</html>e for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body class="dashboard-page">
+    <!-- Particle Background with reduced opacity -->
+    <div class="particles particles-subtle"></div>
+
+    <div class="dashboard-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar glass-sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+        </div>
+
+        <div class="user-profile">
+          <div class="avatar glow">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <h4><%= voter.matricNumber %></h4>
+            <span class="user-role">Voter</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active pulse-item">
+              <a href="/dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="/results">
+                <i class="fas fa-chart-pie"></i>
+                <span>Results</span>
+              </a>
+            </li>
+            <li class="bottom-nav-item">
+              <a href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="time-display" id="current-time"></div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dash-header glass">
+          <div class="header-left">
+            <button class="menu-toggle" id="sidebar-toggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="page-title text-gradient">Voter Dashboard</h2>
+          </div>
+
+          <div class="header-right">
+            <div class="date-badge">
+              <i class="fas fa-calendar-alt"></i>
+              <span
+                ><%= new Date().toLocaleDateString('en-US', { weekday: 'short',
+                year: 'numeric', month: 'short', day: 'numeric' }) %></span
+              >
+            </div>
+
+            <% if (settings.votingEnabled) { %>
+            <div class="status-badge success">
+              <i class="fas fa-vote-yea"></i> Voting Active
+            </div>
+            <% } else { %>
+            <div class="status-badge danger">
+              <i class="fas fa-lock"></i> Voting Closed
+            </div>
+            <% } %>
+          </div>
+        </header>
+
+        <div class="content-wrapper">
+          <!-- Flash messages -->
+          <% if (messages.error) { %>
+          <div class="alert alert-danger fade-in">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <%= messages.error %>
+          </div>
+          <% } %> <% if (messages.success) { %>
+          <div class="alert alert-success fade-in">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <%= messages.success %>
+          </div>
+          <% } %> <% if (messages.info) { %>
+          <div class="alert alert-info fade-in">
+            <i class="fas fa-info-circle alert-icon"></i>
+            <%= messages.info %>
+          </div>
+          <% } %>
+
+          <!-- Welcome Section -->
+          <div class="welcome-card glass" data-aos="fade-up">
+            <div class="welcome-content">
+              <div class="welcome-text">
+                <h1>
+                  Welcome,
+                  <span class="text-gradient"><%= voter.matricNumber %></span>
+                </h1>
+                <p class="lead">Your vote is your voice. Make it count!</p>
+              </div>
+              <div class="welcome-image">
+                <img
+                  src="/images/robot_pack_1.svg"
+                  alt="Voting Illustration"
+                  class="floating-image"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Positions Grid -->
+          <h3 class="section-title" data-aos="fade-up">Available Positions</h3>
+
+          <div class="positions-grid">
+            <% positions.forEach((position, index) => { %>
+            <div
+              class="position-card glass"
+              data-aos="fade-up"
+              data-aos-delay="<%= index * 100 %>"
+            >
+              <div class="position-header">
+                <h3 class="position-title"><%= position.title %></h3>
+
+                <% if (position.hasVoted) { %>
+                <div class="status-pill success">
+                  <i class="fas fa-check-circle"></i> Vote Cast
+                </div>
+                <% } else if (!settings.votingEnabled) { %>
+                <div class="status-pill neutral">
+                  <i class="fas fa-lock"></i> Closed
+                </div>
+                <% } else if (!position.isActive) { %>
+                <div class="status-pill warning">
+                  <i class="fas fa-pause-circle"></i> Paused
+                </div>
+                <% } else { %>
+                <div class="status-pill primary pulse-slow">
+                  <i class="fas fa-vote-yea"></i> Ready
+                </div>
+                <% } %>
+              </div>
+
+              <div class="position-body">
+                <p class="position-description"><%= position.description %></p>
+
+                <div class="position-icon">
+                  <% const iconClass = position.hasVoted ? 'fa-check-double' :
+                  (!settings.votingEnabled || !position.isActive) ? 'fa-lock' :
+                  'fa-person-booth'; %>
+                  <i class="fas <%= iconClass %>"></i>
+                </div>
+              </div>
+
+              <div class="position-footer">
+                <% if (!position.hasVoted && settings.votingEnabled &&
+                position.isActive) { %>
+                <a
+                  href="/vote/<%= position._id %>"
+                  class="btn btn-primary btn-block btn-glow"
+                >
+                  <i class="fas fa-vote-yea"></i> Cast Your Vote
+                </a>
+                <% } else if (position.hasVoted) { %>
+                <button class="btn btn-success btn-block" disabled>
+                  <i class="fas fa-check-circle"></i> Vote Recorded
+                </button>
+                <% } else { %>
+                <button class="btn btn-outline-secondary btn-block" disabled>
+                  <i class="fas fa-lock"></i> Voting Unavailable
+                </button>
+                <% } %>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/modern.js"></script>
+    <script>
+      AOS.init({
+        duration: 800,
+        easing: "ease-in-out",
+        once: true,
+      });
+
+      // Sidebar toggle
+      document
+        .getElementById("sidebar-toggle")
+        .addEventListener("click", function () {
+          document.querySelector(".sidebar").classList.toggle("collapsed");
+        });
+    </script>
+  </body>
+</html>

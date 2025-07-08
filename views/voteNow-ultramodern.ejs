@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote Now | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Ultra-modern voting styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance-v2.css" />
+  </head>
+  <body class="vote-page">
+    <!-- Background particles for a dynamic effect -->
+    <div class="particles-container"></div>
+
+    <!-- Wave background animation -->
+    <div class="wave-background"></div>
+
+    <!-- Navbar with glass effect -->
+    <nav class="glass-card" style="margin-bottom: 2rem; border-radius: 0.5rem">
+      <div class="vote-container">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div class="site-logo">
+            <h2
+              style="
+                margin: 0;
+                font-weight: 800;
+                background: linear-gradient(
+                  90deg,
+                  var(--primary),
+                  var(--secondary)
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              LINCSSA VOTES
+            </h2>
+          </div>
+
+          <div class="vote-time-display">
+            <div
+              id="current-time"
+              style="
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 1.8rem;
+              "
+            ></div>
+          </div>
+
+          <div class="user-actions">
+            <button
+              id="copy-link-btn"
+              class="btn-3d"
+              style="background: rgba(255, 255, 255, 0.1); color: var(--light)"
+            >
+              <i class="fas fa-link"></i> Copy Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="vote-container">
+      <!-- Header section -->
+      <header class="vote-header" data-aos="fade-down">
+        <h1>Cast Your Vote</h1>
+        <p>
+          Select your preferred candidate for each position and submit your vote
+          to make your voice count in the LINCSSA election.
+        </p>
+      </header>
+
+      <!-- Voting timer and stats -->
+      <div class="vote-stats" data-aos="fade-up">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div
+            id="voting-countdown"
+            data-endtime="<%= new Date(Date.now() + 1000 * 60 * 60 * 24 * 2).toISOString() %>"
+          >
+            <!-- Countdown will be dynamically populated by JavaScript -->
+          </div>
+          <div class="stat-label">Until Voting Ends</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-value" data-count="<%= totalVoters || 254 %>">0</div>
+          <div class="stat-label">Total Voters</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-value" data-count="<%= totalPositions || 5 %>">
+            0
+          </div>
+          <div class="stat-label">Positions</div>
+        </div>
+      </div>
+
+      <!-- Instructions box -->
+      <div class="instruction-box" data-aos="fade-up">
+        <div class="instruction-box-icon">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="instruction-box-content">
+          <h3>How to Vote</h3>
+          <p>Follow these simple steps to cast your vote:</p>
+          <ul>
+            <li>Review the available positions and candidates</li>
+            <li>Click on a candidate card to select your preferred choice</li>
+            <li>Confirm your selection when prompted</li>
+            <li>Submit your vote using the button at the bottom of the page</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Position category tabs -->
+      <div
+        class="position-tabs glass-card"
+        data-aos="fade-up"
+        style="
+          padding: 1rem;
+          margin-bottom: 3rem;
+          display: flex;
+          gap: 1rem;
+          overflow-x: auto;
+          justify-content: center;
+        "
+      >
+        <button class="category-tab active" data-category="all">
+          All Positions
+        </button>
+        <% const categories = ['Executive', 'Senate', 'Committee']; %> <%
+        categories.forEach(category => { %>
+        <button
+          class="category-tab"
+          data-category="<%= category.toLowerCase() %>"
+        >
+          <%= category %>
+        </button>
+        <% }); %>
+      </div>
+
+      <!-- Position sections - These would be dynamic in actual implementation -->
+      <% const positions = [ { id: 1, name: 'President', icon: 'crown',
+      description: 'The President represents and leads the entire student
+      body.', category: 'executive', contestants: [ { id: 101, name: 'Alex
+      Johnson', bio: 'Third-year Law student passionate about student rights',
+      avatar: '/images/cat_1.svg' }, { id: 102, name: 'Maria Rodriguez', bio:
+      'Business major with leadership experience', avatar: '/images/cat_2.svg'
+      }, { id: 103, name: 'David Chen', bio: 'Computer Science major focused on
+      innovation', avatar: '/images/cat_3.svg' } ] }, { id: 2, name: 'Vice
+      President', icon: 'user-tie', description: 'The Vice President supports
+      the President and oversees internal affairs.', category: 'executive',
+      contestants: [ { id: 201, name: 'Emma Wilson', bio: 'Social Sciences major
+      with strong organizational skills', avatar: '/images/cat_1.svg' }, { id:
+      202, name: 'Michael Brown', bio: 'Economics student with financial
+      expertise', avatar: '/images/cat_2.svg' } ] }, { id: 3, name: 'Secretary
+      General', icon: 'book', description: 'The Secretary General handles
+      documentation and communications.', category: 'executive', contestants: [
+      { id: 301, name: 'Sophia Lee', bio: 'Communications major with excellent
+      writing skills', avatar: '/images/cat_3.svg' }, { id: 302, name: 'James
+      Miller', bio: 'Literature student with strong attention to detail',
+      avatar: '/images/cat_1.svg' }, { id: 303, name: 'Olivia Davis', bio:
+      'Political Science major with administrative experience', avatar:
+      '/images/cat_2.svg' } ] }, { id: 4, name: 'Senate Representative', icon:
+      'landmark', description: 'Senate Representatives advocate for student
+      concerns in university governance.', category: 'senate', contestants: [ {
+      id: 401, name: 'William Garcia', bio: 'Law student focused on educational
+      policy', avatar: '/images/cat_3.svg' }, { id: 402, name: 'Ava Martinez',
+      bio: 'History major with debate team experience', avatar:
+      '/images/cat_1.svg' } ] }, { id: 5, name: 'Event Coordinator', icon:
+      'calendar', description: 'The Event Coordinator plans and organizes
+      student activities and events.', category: 'committee', contestants: [ {
+      id: 501, name: 'Noah Taylor', bio: 'Event Management student with proven
+      success', avatar: '/images/cat_2.svg' }, { id: 502, name: 'Isabella
+      White', bio: 'Marketing major with creative ideas', avatar:
+      '/images/cat_3.svg' } ] } ]; %>
+
+      <form id="voting-form" method="POST" action="/vote/submit">
+        <% positions.forEach(position => { %>
+        <section
+          class="position-section"
+          data-category="<%= position.category %>"
+          data-aos="fade-up"
+        >
+          <div class="glass-card position-card">
+            <div class="position-icon">
+              <i class="fas fa-<%= position.icon %>"></i>
+            </div>
+            <h2 class="position-title"><%= position.name %></h2>
+            <p class="position-description"><%= position.description %></p>
+
+            <div class="contestants-grid">
+              <% position.contestants.forEach(contestant => { %>
+              <div
+                class="contestant-card"
+                data-aos="fade-up"
+                data-aos-delay="<%= 100 * (contestant.id % 10) %>"
+              >
+                <div class="contestant-card-inner">
+                  <div class="contestant-avatar">
+                    <img
+                      src="<%= contestant.avatar %>"
+                      alt="<%= contestant.name %>"
+                    />
+                  </div>
+
+                  <div class="contestant-details">
+                    <h3 class="contestant-name"><%= contestant.name %></h3>
+                    <span class="contestant-id">ID: <%= contestant.id %></span>
+                    <p class="contestant-bio"><%= contestant.bio %></p>
+                  </div>
+
+                  <div class="contestant-select">
+                    <label class="radio-button">
+                      <input
+                        type="radio"
+                        name="position_<%= position.id %>"
+                        value="<%= contestant.id %>"
+                      />
+                      <span class="radio-icon"></span>
+                      <span class="radio-label">Select</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+        </section>
+        <% }); %>
+
+        <!-- Voting action button -->
+        <div class="vote-action" data-aos="zoom-in">
+          <button type="submit" class="btn-vote">
+            <i class="fas fa-check-circle"></i>
+            Submit Your Vote
+          </button>
+          <p style="margin-top: 1rem; color: var(--gray-400)">
+            Make sure you've selected a candidate for each position
+          </p>
+        </div>
+      </form>
+
+      <!-- Footer section -->
+      <footer
+        class="glass-card"
+        style="margin-top: 5rem; padding: 2rem; text-align: center"
+      >
+        <div class="footer-content">
+          <p>
+            © 2025 LINCSSA VOTES - Osun State University, Ikire Campus
+            Departmental Election
+          </p>
+          <div class="social-links" style="margin-top: 1rem">
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Toast notification container -->
+    <div class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance-v2.js"></script>
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Particle Background -->
+    <div class="particles"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <% if (settings.displayResults) { %>
+            <li><a href="/results">Results</a></li>
+            <% } %>
+            <li class="active"><a href="/register">Register</a></li>
+            <li>
+              <a href="/login" class="btn btn-primary btn-sm btn-rounded"
+                >Login</a
+              >
+            </li>
+          </ul>
+
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <button class="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Registration Section -->
+    <section class="auth-section">
+      <div class="container">
+        <div class="card glass" data-aos="zoom-in" data-aos-duration="800">
+          <div class="card-header">
+            <h2 class="text-gradient">Register to Vote</h2>
+            <p class="text-muted">
+              Create an account to participate in the election
+            </p>
+          </div>
+
+          <!-- Flash messages -->
+          <% if (messages.error) { %>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <%= messages.error %>
+          </div>
+          <% } %> <% if (messages.success) { %>
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <%= messages.success %>
+          </div>
+          <% } %>
+
+          <div class="card-body">
+            <form action="/register" method="POST" class="form-floating">
+              <div class="form-group">
+                <div class="input-icon-wrapper">
+                  <i class="fas fa-id-card icon-left"></i>
+                  <input
+                    type="text"
+                    id="matricNumber"
+                    name="matricNumber"
+                    class="form-control"
+                    placeholder="Enter matric number (e.g. 2021/34825)"
+                    required
+                  />
+                  <label for="matricNumber">Matric Number</label>
+                </div>
+                <small class="form-text text-muted">
+                  <i class="fas fa-info-circle"></i>
+                  Format: XXXX/XXXXX (e.g., 2021/34825)
+                </small>
+              </div>
+
+              <div class="form-group">
+                <div class="input-icon-wrapper">
+                  <i class="fas fa-phone icon-left"></i>
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    class="form-control"
+                    placeholder="Enter phone number"
+                    required
+                  />
+                  <label for="phoneNumber">Phone Number</label>
+                </div>
+                <small class="form-text text-muted">
+                  <i class="fas fa-info-circle"></i>
+                  Enter your phone number (e.g., 08012345678)
+                </small>
+              </div>
+
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-block pulse-on-hover"
+                >
+                  <i class="fas fa-user-plus"></i> Register Now
+                </button>
+              </div>
+
+              <div class="text-center mt-4">
+                <p class="text-muted">
+                  Already have an account?
+                  <a href="/login" class="text-gradient fw-semibold hover-float"
+                    >Login here</a
+                  >
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-mini">
+      <div class="container">
+        <div class="footer-content">
+          <p>
+            © <%= new Date().getFullYear() %> LINCSSA VOTES. All Rights
+            Reserved.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-link"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/modern.js"></script>
+    <script>
+      AOS.init();
+
+      // Form validation animation
+      document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll(".form-control");
+
+        inputs.forEach((input) => {
+          // Add floating effect
+          input.addEventListener("focus", () => {
+            input.parentElement.classList.add("focus");
+          });
+
+          input.addEventListener("blur", () => {
+            if (!input.value.trim()) {
+              input.parentElement.classList.remove("focus");
+            }
+          });
+
+          // Initial state check
+          if (input.value.trim()) {
+            input.parentElement.classList.add("focus");
+          }
+        });
+
+        // Form validation for matric number
+        document
+          .getElementById("matricNumber")
+          .addEventListener("input", function () {
+            const matricPattern = /^\d{4}\/\d{5}$/;
+            if (!matricPattern.test(this.value) && this.value) {
+              this.classList.add("is-invalid");
+              this.setCustomValidity(
+                "Matric number must be in the format XXXX/XXXXX (e.g., 2021/34825)"
+              );
+            } else {
+              this.classList.remove("is-invalid");
+              this.setCustomValidity("");
+            }
+          });
+
+        // Form validation for phone number
+        document
+          .getElementById("phoneNumber")
+          .addEventListener("input", function () {
+            const phonePattern = /^[0-9]{11}$/;
+            if (!phonePattern.test(this.value) && this.value) {
+              this.classList.add("is-invalid");
+              this.setCustomValidity(
+                "Please enter a valid 11-digit phone number"
+              );
+            } else {
+              this.classList.remove("is-invalid");
+              this.setCustomValidity("");
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

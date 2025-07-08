@@ -1,0 +1,44 @@
+{
+  "name": "votingbash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "stats": "node scripts/view-stats.js",
+    "clean-logs": "rm -f logs/*.log || true",
+    "export-db": "node scripts/export-schema.js",
+    "configure-planetscale": "node scripts/configure-planetscale.js",
+    "init-db": "node scripts/initialize-votes-db.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ngrok/ngrok": "^0.9.1",
+    "axios": "^1.6.3",
+    "body-parser": "^1.20.2",
+    "connect-mongo": "^5.1.0",
+    "connect-session-firebase": "^11.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.3",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "firebase": "^11.10.0",
+    "firebase-admin": "^13.4.0",
+    "fs": "^0.0.1-security",
+    "got": "^14.4.7",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.1",
+    "node-fetch": "^3.3.2",
+    "uuid": "^11.1.0",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

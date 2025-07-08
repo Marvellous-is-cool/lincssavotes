@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Robot Head -->
+  <rect x="50" y="40" width="100" height="80" rx="20" fill="#5D49D2" />
+  <rect x="65" y="60" width="70" height="40" rx="10" fill="#1A1A2E" />
+  
+  <!-- Robot Eyes -->
+  <circle cx="80" cy="80" r="10" fill="#2BC3D7">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="120" cy="80" r="10" fill="#2BC3D7">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Robot Antenna -->
+  <rect x="95" y="25" width="10" height="15" fill="#7AE4F4" />
+  <circle cx="100" cy="20" r="7" fill="#FF6B6B">
+    <animate attributeName="fill" values="#FF6B6B;#FFD166;#FF6B6B" dur="3s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Robot Body -->
+  <rect x="60" y="120" width="80" height="60" rx="10" fill="#5D49D2" />
+  <rect x="70" y="130" width="60" height="30" rx="5" fill="#1A1A2E" />
+  
+  <!-- Robot Arms -->
+  <rect x="30" y="130" width="30" height="10" rx="5" fill="#7AE4F4">
+    <animateTransform attributeName="transform" type="rotate" values="0 40 135;15 40 135;0 40 135;-15 40 135;0 40 135" dur="5s" repeatCount="indefinite" />
+  </rect>
+  <rect x="140" y="130" width="30" height="10" rx="5" fill="#7AE4F4">
+    <animateTransform attributeName="transform" type="rotate" values="0 140 135;-15 140 135;0 140 135;15 140 135;0 140 135" dur="5s" repeatCount="indefinite" />
+  </rect>
+  
+  <!-- Robot Legs -->
+  <rect x="70" y="180" width="15" height="20" rx="5" fill="#7AE4F4" />
+  <rect x="115" y="180" width="15" height="20" rx="5" fill="#7AE4F4" />
+  
+  <!-- Robot Details -->
+  <circle cx="100" cy="150" r="5" fill="#FF6B6B" />
+  <rect x="90" y="165" width="20" height="5" rx="2" fill="#2BC3D7" />
+  
+  <!-- Robot Status Light -->
+  <circle cx="100" cy="110" r="5" fill="#FF6B6B">
+    <animate attributeName="fill" values="#FF6B6B;#4CAF50;#FF6B6B" dur="4s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite" />
+  </circle>
+</svg>

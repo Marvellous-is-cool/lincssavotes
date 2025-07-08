@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/styles/auth-redesign.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <div class="logo-container">
+          <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+          <a href="/" class="logo-text">LINCSSA <span>VOTES</span></a>
+        </div>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          <a href="/register" class="active">Register</a>
+          <a href="/login">Login</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Split screen layout -->
+    <div class="auth-layout container">
+      <!-- Right side - Brand/Visual -->
+      <div class="auth-brand-container">
+        <!-- Decorative shapes -->
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+
+        <!-- Brand content -->
+        <div class="brand-content">
+          <h2>LINCSSA <span>VOTES</span></h2>
+          <p>
+            Join our digital democracy and make your voice heard. Register now
+            to participate in the upcoming elections.
+          </p>
+          <img
+            src="/images/robot_pack_2.svg"
+            alt="LINCSSA Registration Illustration"
+            class="brand-illustration"
+          />
+        </div>
+      </div>
+
+      <!-- Left side - Registration Form -->
+      <div class="auth-form-container">
+        <div class="auth-form-wrapper">
+          <div class="auth-header">
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Register to participate in the election</p>
+          </div>
+
+          <!-- Flash messages -->
+          <% if (messages && messages.error) { %>
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <%= messages.error %>
+          </div>
+          <% } %> <% if (messages && messages.success) { %>
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <%= messages.success %>
+          </div>
+          <% } %> <% if (messages && messages.info) { %>
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <%= messages.info %>
+          </div>
+          <% } %>
+
+          <!-- Registration form -->
+          <form action="/register" method="POST">
+            <div class="form-group">
+              <label for="fullName" class="form-label">Full Name</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                class="form-control"
+                placeholder="Enter your full name"
+                required
+              />
+              <div class="form-text">
+                Enter your complete name as in official records
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="matricNumber" class="form-label">Matric Number</label>
+              <input
+                type="text"
+                id="matricNumber"
+                name="matricNumber"
+                class="form-control"
+                placeholder="Enter matric number (e.g. 2021/34825)"
+                required
+              />
+              <div class="form-text">Format: XXXX/XXXXX (e.g., 2021/34825)</div>
+            </div>
+
+            <div class="form-group">
+              <label for="level" class="form-label">Level</label>
+              <select id="level" name="level" class="form-control" required>
+                <option value="" disabled selected>Select your level</option>
+                <option value="100">100 Level</option>
+                <option value="200">200 Level</option>
+                <option value="300">300 Level</option>
+                <option value="400">400 Level</option>
+              </select>
+              <div class="form-text">Select your current academic level</div>
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <input
+                type="text"
+                id="phoneNumber"
+                name="phoneNumber"
+                class="form-control"
+                placeholder="Enter your phone number"
+                required
+              />
+              <div class="form-text">Enter your 11-digit phone number</div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn">
+                <i class="fas fa-user-plus"></i> Register Now
+              </button>
+            </div>
+          </form>
+
+          <div class="auth-footer">
+            <p>Already have an account? <a href="/login">Login here</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p>
+          &copy; <%= new Date().getFullYear() %> LINCSSA VOTES. All rights
+          reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Form validation script -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const fullNameInput = document.getElementById("fullName");
+        const matricInput = document.getElementById("matricNumber");
+        const levelInput = document.getElementById("level");
+        const phoneInput = document.getElementById("phoneNumber");
+
+        form.addEventListener("submit", function (e) {
+          let isValid = true;
+
+          // Validate full name (not empty and at least 3 characters)
+          if (fullNameInput.value.trim().length < 3) {
+            isValid = false;
+            showError(
+              fullNameInput,
+              "Please enter your complete full name (at least 3 characters)"
+            );
+          }
+
+          // Validate matric number format (XXXX/XXXXX)
+          const matricRegex = /^\d{4}\/\d{5}$/;
+          if (!matricRegex.test(matricInput.value)) {
+            isValid = false;
+            showError(
+              matricInput,
+              "Please enter a valid matric number in the format XXXX/XXXXX"
+            );
+          }
+
+          // Validate level selection
+          if (levelInput.value === "") {
+            isValid = false;
+            showError(levelInput, "Please select your academic level");
+          } else {
+            clearError(matricInput);
+          }
+
+          // Validate phone number (11 digits)
+          const phoneRegex = /^\d{11}$/;
+          if (!phoneRegex.test(phoneInput.value)) {
+            isValid = false;
+            showError(phoneInput, "Please enter a valid 11-digit phone number");
+          } else {
+            clearError(phoneInput);
+          }
+
+          if (!isValid) {
+            e.preventDefault();
+          }
+        });
+
+        function showError(input, message) {
+          // Get the parent form-group
+          const formGroup = input.closest(".form-group");
+
+          // Remove any existing error messages
+          const existingError = formGroup.querySelector(".error-message");
+          if (existingError) {
+            existingError.remove();
+          }
+
+          // Add error class to input
+          input.style.borderColor = "#ef4444";
+
+          // Create error message
+          const errorDiv = document.createElement("div");
+          errorDiv.className = "error-message";
+          errorDiv.style.color = "#ef4444";
+          errorDiv.style.fontSize = "0.8rem";
+          errorDiv.style.marginTop = "0.4rem";
+          errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+
+          // Insert error after the form text if it exists
+          const formText = formGroup.querySelector(".form-text");
+          if (formText) {
+            formText.after(errorDiv);
+          } else {
+            formGroup.appendChild(errorDiv);
+          }
+        }
+
+        function clearError(input) {
+          // Get the parent form-group
+          const formGroup = input.closest(".form-group");
+
+          // Remove any existing error messages
+          const existingError = formGroup.querySelector(".error-message");
+          if (existingError) {
+            existingError.remove();
+          }
+
+          // Reset input style
+          input.style.borderColor = "";
+        }
+
+        // Add input event listeners to clear errors as user types
+        matricInput.addEventListener("input", function () {
+          clearError(matricInput);
+        });
+
+        phoneInput.addEventListener("input", function () {
+          clearError(phoneInput);
+        });
+      });
+    </script>
+  </body>
+</html>

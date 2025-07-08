@@ -1,0 +1,250 @@
+<%- include('../partials/admin_header') %>
+
+<div class="admin-container">
+  <div class="admin-sidebar">
+    <%- include('../partials/admin_sidebar', {active: 'results'}) %>
+  </div>
+
+  <div class="admin-content">
+    <div class="admin-header">
+      <h1>Election Results</h1>
+      <p>View and manage election results</p>
+    </div>
+
+    <% if (messages.error) { %>
+    <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %> <% if (messages.success) { %>
+    <div class="alert alert-success"><%= messages.success %></div>
+    <% } %>
+
+    <!-- Results Control Card -->
+    <div class="card mb-4">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <h2>Results Controls</h2>
+        <div>
+          <button
+            class="btn btn-danger"
+            data-toggle="modal"
+            data-target="#resetAllVotesModal"
+          >
+            <i class="fas fa-exclamation-triangle"></i> Reset All Votes
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          <h4><i class="fas fa-info-circle"></i> Results Visibility</h4>
+          <p>
+            To control whether results are publicly visible, go to
+            <a href="/admin/settings">System Settings</a> and toggle the
+            "Display Results Publicly" option.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Display -->
+    <% if (positions && positions.length > 0) { %> <% positions.forEach(position
+    => { %>
+    <div class="card mb-4 position-results-card">
+      <div class="card-header">
+        <h2><%= position.title %></h2>
+      </div>
+      <div class="card-body">
+        <% if (position.contestants && position.contestants.length > 0) { %>
+        <div class="results-chart-container">
+          <canvas
+            id="resultsChart<%= position._id %>"
+            data-contestants="<%- JSON.stringify(position.contestants) %>"
+          ></canvas>
+        </div>
+
+        <div class="table-responsive mt-4">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th>Rank</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Votes</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% /* Calculate total votes for this position */ const totalVotes
+              = position.contestants.reduce((sum, contestant) => sum +
+              (contestant.votes || 0), 0); /* Sort contestants by votes */ const
+              sortedContestants = [...position.contestants].sort((a, b) =>
+              (b.votes || 0) - (a.votes || 0));
+              sortedContestants.forEach((contestant, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td>
+                  <img
+                    src="/uploads/<%= contestant.photo %>"
+                    class="thumbnail"
+                    alt="<%= contestant.name %>"
+                    width="50"
+                  />
+                </td>
+                <td>
+                  <%= contestant.name %> <% if (contestant.nickname) { %>
+                  <br /><small class="text-muted"
+                    >"<%= contestant.nickname %>"</small
+                  >
+                  <% } %>
+                </td>
+                <td><%= contestant.votes || 0 %></td>
+                <td>
+                  <% const percentage = totalVotes > 0 ? ((contestant.votes ||
+                  0) / totalVotes * 100).toFixed(2) : '0.00'; %> <%= percentage
+                  %>%
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            try {
+              const canvas = document.getElementById(
+                "resultsChart<%= position._id %>"
+              );
+              const ctx = canvas.getContext("2d");
+              const contestantsData = canvas.getAttribute("data-contestants");
+
+              if (contestantsData) {
+                const contestants = JSON.parse(contestantsData);
+                const labels = contestants.map((c) => c.name);
+                const votes = contestants.map((c) => c.votes || 0);
+
+                // Generate colors
+                const baseColors = [
+                  "rgba(75, 192, 192, 0.7)",
+                  "rgba(54, 162, 235, 0.7)",
+                  "rgba(153, 102, 255, 0.7)",
+                  "rgba(255, 159, 64, 0.7)",
+                  "rgba(255, 99, 132, 0.7)",
+                  "rgba(255, 205, 86, 0.7)",
+                ];
+
+                const chartColors = votes.map(
+                  (_, i) => baseColors[i % baseColors.length]
+                );
+
+                new Chart(ctx, {
+                  type: "bar",
+                  data: {
+                    labels: labels,
+                    datasets: [
+                      {
+                        label: "Votes",
+                        data: votes,
+                        backgroundColor: chartColors,
+                        borderColor: chartColors.map((color) => color + "88"),
+                        borderWidth: 1,
+                      },
+                    ],
+                  },
+                  options: {
+                    responsive: true,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        precision: 0,
+                      },
+                    },
+                    plugins: {
+                      legend: {
+                        display: false,
+                      },
+                      title: {
+                        display: true,
+                        text: "Vote Results for <%= position.title %>",
+                      },
+                    },
+                  },
+                });
+              }
+            } catch (error) {
+              console.error(
+                "Error creating chart for position <%= position._id %>:",
+                error
+              );
+            }
+          });
+        </script>
+        <% } else { %>
+        <div class="alert alert-warning">
+          No contestants found for this position.
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% }) %> <% } else { %>
+    <div class="alert alert-info">
+      No positions or contestants found. Add positions and contestants to see
+      results.
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Reset All Votes Modal -->
+<div
+  class="modal fade"
+  id="resetAllVotesModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="resetAllVotesModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resetAllVotesModalLabel">
+          Reset All Votes
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger">
+          <h4><i class="fas fa-exclamation-triangle"></i> Warning!</h4>
+          <p>
+            This action will permanently reset <strong>ALL</strong> votes in the
+            system!
+          </p>
+        </div>
+        <p>This will:</p>
+        <ul>
+          <li>Set all contestant vote counts to zero</li>
+          <li>Clear voting history for all voters</li>
+          <li>Allow all voters to vote again</li>
+        </ul>
+        <p class="font-weight-bold">This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <form method="POST" action="/admin/results/reset-all">
+          <button type="submit" class="btn btn-danger">Reset All Votes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/script/results-charts.js"></script>
+<%- include('../partials/admin_footer') %>

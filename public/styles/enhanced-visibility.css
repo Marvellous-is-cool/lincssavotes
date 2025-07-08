@@ -1,0 +1,108 @@
+/* Enhanced text visibility for LINCSSA Voting Application */
+
+:root {
+  /* Color variables with enhanced contrast */
+  --primary: #5e60ce;
+  --secondary: #4cc9f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --gray-300: #e5e7eb;
+  --gray-400: #d1d5db;
+  --gray-500: #9ca3af;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.9);
+  --text-muted: rgba(255, 255, 255, 0.8);
+}
+
+/* Text elements */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+}
+
+/* Card elements */
+.card {
+  background-color: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+.card-header {
+  background-color: rgba(94, 96, 206, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-body {
+  color: var(--text-secondary);
+}
+
+/* Status badges */
+.status-badge {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.status-badge.active {
+  background: rgba(16, 185, 129, 0.25);
+  color: rgb(34, 211, 150);
+}
+
+.status-badge.voted,
+.status-badge.completed {
+  background: rgba(94, 96, 206, 0.25);
+  color: rgb(118, 120, 237);
+}
+
+.status-badge.pending,
+.status-badge.waiting {
+  background: rgba(245, 158, 11, 0.25);
+  color: rgb(253, 186, 73);
+}
+
+.status-badge.closed {
+  background: rgba(239, 68, 68, 0.25);
+  color: rgb(248, 114, 114);
+}
+
+/* Alert messages */
+.alert {
+  color: white;
+  font-weight: 500;
+}
+
+/* Progress bar */
+.progress-bar {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+/* Links */
+a:not(.btn) {
+  color: var(--secondary);
+}
+
+a:not(.btn):hover {
+  color: var(--primary);
+}
+
+/* Info elements */
+.info-label {
+  color: var(--gray-300);
+}
+
+.info-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}

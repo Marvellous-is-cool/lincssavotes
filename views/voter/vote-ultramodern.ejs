@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Ultra-modern voting styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance-v2.css" />
+  </head>
+  <body class="vote-page">
+    <!-- Background particles for a dynamic effect -->
+    <div class="particles-container"></div>
+
+    <!-- Wave background animation -->
+    <div class="wave-background"></div>
+
+    <!-- Navbar with glass effect -->
+    <nav class="glass-card" style="margin-bottom: 2rem; border-radius: 0.5rem">
+      <div class="vote-container">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div class="site-logo">
+            <h2
+              style="
+                margin: 0;
+                font-weight: 800;
+                background: linear-gradient(
+                  90deg,
+                  var(--primary),
+                  var(--secondary)
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              LINCSSA VOTES
+            </h2>
+          </div>
+
+          <div class="vote-time-display">
+            <div
+              id="current-time"
+              style="
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 1.8rem;
+              "
+            ></div>
+          </div>
+
+          <div class="user-actions">
+            <a
+              href="/dashboard"
+              class="btn-3d"
+              style="background: rgba(255, 255, 255, 0.1); color: var(--light)"
+            >
+              <i class="fas fa-home"></i> Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="vote-container">
+      <header class="vote-header">
+        <h1 class="vote-title glow-text" data-aos="fade-up">
+          <%= position.title %>
+        </h1>
+        <p class="vote-description" data-aos="fade-up" data-aos-delay="100">
+          <%= position.description || 'Please select your preferred candidate by
+          clicking on their card below.' %>
+        </p>
+      </header>
+
+      <!-- Progress indicator -->
+      <div class="voting-progress" data-aos="fade-up" data-aos-delay="150">
+        <div class="progress-steps">
+          <div class="step active">
+            <div class="step-icon"><i class="fas fa-list"></i></div>
+            <div class="step-label">Select Candidate</div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><i class="fas fa-check"></i></div>
+            <div class="step-label">Confirm Vote</div>
+          </div>
+          <div class="step">
+            <div class="step-icon"><i class="fas fa-star"></i></div>
+            <div class="step-label">Vote Recorded</div>
+          </div>
+        </div>
+      </div>
+
+      <% if (messages.error) { %>
+      <div class="alert alert-error" role="alert" data-aos="fade-up">
+        <i class="fas fa-exclamation-circle"></i>
+        <p><%= messages.error %></p>
+      </div>
+      <% } %> <% if (messages.info) { %>
+      <div class="alert alert-info" role="alert" data-aos="fade-up">
+        <i class="fas fa-info-circle"></i>
+        <p><%= messages.info %></p>
+      </div>
+      <% } %>
+
+      <!-- Contestant cards -->
+      <div class="contestant-grid">
+        <% contestants.forEach((contestant, index) => { %>
+        <div
+          class="contestant-card glass-card"
+          data-contestant-id="<%= contestant._id %>"
+          data-aos="fade-up"
+          data-aos-delay="<%= 150 + (index * 50) %>"
+        >
+          <div class="contestant-header">
+            <% if (contestant.photoUrl) { %>
+            <div class="contestant-photo">
+              <img
+                src="<%= contestant.photoUrl %>"
+                alt="<%= contestant.name %>"
+              />
+            </div>
+            <% } else { %>
+            <div class="contestant-avatar">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <% } %>
+            <div class="contestant-badges">
+              <span class="badge"
+                ><%= contestant.department || 'Candidate' %></span
+              >
+            </div>
+          </div>
+
+          <div class="contestant-body">
+            <h3 class="contestant-name"><%= contestant.name %></h3>
+            <% if (contestant.slogan) { %>
+            <p class="contestant-slogan">"<%= contestant.slogan %>"</p>
+            <% } %>
+
+            <div class="contestant-details">
+              <% if (contestant.manifesto) { %>
+              <div class="manifesto-toggle">
+                <button class="view-manifesto-btn">View Manifesto</button>
+                <div class="manifesto-content">
+                  <p><%= contestant.manifesto %></p>
+                </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="contestant-footer">
+            <form action="/vote" method="POST">
+              <input
+                type="hidden"
+                name="positionId"
+                value="<%= position._id %>"
+              />
+              <input
+                type="hidden"
+                name="contestantId"
+                value="<%= contestant._id %>"
+              />
+              <button type="submit" class="vote-button">
+                <span>Vote</span>
+                <i class="fas fa-vote-yea"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <!-- Skip option (optional) -->
+      <div class="skip-option" data-aos="fade-up">
+        <a href="/dashboard" class="skip-link">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="vote-footer glass-card">
+      <div class="vote-container">
+        <p>
+          © 2025 LINCSSA VOTES - Osun State University, Ikire Campus
+          Departmental Election
+        </p>
+        <p>Your voice matters. Make it count.</p>
+      </div>
+    </footer>
+
+    <!-- Vote confirmation modal -->
+    <div class="modal" id="voteConfirmModal">
+      <div class="modal-content glass-card">
+        <div class="modal-header">
+          <h2>Confirm Your Vote</h2>
+          <button class="close-modal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to vote for
+            <span id="selectedContestant"></span>?
+          </p>
+          <p class="warning">
+            <i class="fas fa-exclamation-triangle"></i> This action cannot be
+            undone.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel">Cancel</button>
+          <button class="btn-confirm" id="confirmVoteBtn">Confirm Vote</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance-v2.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize AOS animations
+        AOS.init({
+          duration: 800,
+          easing: "ease-out",
+          once: false,
+        });
+
+        // Setup vote confirmation modal functionality
+        const contestantCards = document.querySelectorAll(".contestant-card");
+        const voteConfirmModal = document.getElementById("voteConfirmModal");
+        const selectedContestantSpan =
+          document.getElementById("selectedContestant");
+        const confirmVoteBtn = document.getElementById("confirmVoteBtn");
+        let currentForm;
+
+        contestantCards.forEach((card) => {
+          const voteButton = card.querySelector(".vote-button");
+          const contestantName =
+            card.querySelector(".contestant-name").textContent;
+          const form = card.querySelector("form");
+
+          voteButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentForm = form;
+            selectedContestantSpan.textContent = contestantName;
+            voteConfirmModal.classList.add("show");
+          });
+
+          // Add hover effect for cards
+          card.addEventListener("mouseenter", function () {
+            this.style.transform = "translateY(-5px)";
+          });
+
+          card.addEventListener("mouseleave", function () {
+            this.style.transform = "translateY(0)";
+          });
+
+          // View manifesto toggle functionality
+          const manifestoBtn = card.querySelector(".view-manifesto-btn");
+          if (manifestoBtn) {
+            manifestoBtn.addEventListener("click", function () {
+              const manifestoContent = this.nextElementSibling;
+              manifestoContent.classList.toggle("show");
+              this.textContent = manifestoContent.classList.contains("show")
+                ? "Hide Manifesto"
+                : "View Manifesto";
+            });
+          }
+        });
+
+        // Modal close button
+        const closeModalBtn = voteConfirmModal.querySelector(".close-modal");
+        closeModalBtn.addEventListener("click", function () {
+          voteConfirmModal.classList.remove("show");
+        });
+
+        // Cancel button
+        const cancelBtn = voteConfirmModal.querySelector(".btn-cancel");
+        cancelBtn.addEventListener("click", function () {
+          voteConfirmModal.classList.remove("show");
+        });
+
+        // Confirm vote button
+        confirmVoteBtn.addEventListener("click", function () {
+          if (currentForm) {
+            currentForm.submit();
+          }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", function (e) {
+          if (e.target === voteConfirmModal) {
+            voteConfirmModal.classList.remove("show");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

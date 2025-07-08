@@ -1,0 +1,376 @@
+/* 
+ * LINCSSA VOTES - Vote Enhancement
+ * Modern, professional and intuitive voting interface
+ * July 2025
+ */
+
+/* ===== Voting Page General Styles ===== */
+.vote-page {
+  background: linear-gradient(135deg, var(--gray-900), var(--dark));
+  color: var(--light);
+}
+
+/* Enhanced glass effect */
+.vote-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Position card enhancement */
+.position-detail-card {
+  padding: 2.5rem;
+  border-radius: var(--radius-lg);
+  position: relative;
+  margin-bottom: 3rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.position-detail-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(72, 49, 212, 0.1),
+    rgba(0, 228, 255, 0.05)
+  );
+  z-index: -1;
+}
+
+.position-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 20px rgba(0, 228, 255, 0.4);
+}
+
+.position-badge i {
+  font-size: 2.5rem;
+  color: white;
+}
+
+/* Instruction box */
+.instruction-box {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 228, 255, 0.1);
+  border-left: 4px solid var(--secondary);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-top: 2rem;
+}
+
+.instruction-box i {
+  font-size: 2.5rem;
+  margin-right: 1.5rem;
+  color: var(--secondary);
+}
+
+.instruction-box p {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+/* ===== Enhanced Contestant Cards ===== */
+.contestants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.contestant-card {
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.contestant-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.contestant-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.contestant-card:hover::after {
+  transform: scaleX(1);
+}
+
+.contestant-avatar {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.contestant-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contestant-avatar .status-indicator {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--success);
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.contestant-radio {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.contestant-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.contestant-radio label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 1.2rem 2.5rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  width: 100%;
+}
+
+.contestant-radio label:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.contestant-radio input[type="radio"]:checked + label {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 228, 255, 0.3);
+}
+
+.contestant-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+  background: linear-gradient(90deg, white, rgba(255, 255, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contestant-nickname {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--secondary);
+  margin-bottom: 1.5rem;
+}
+
+.contestant-bio {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+/* Vote button */
+.vote-button-container {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.vote-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 4rem;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border: none;
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.vote-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.6s ease;
+}
+
+.vote-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 228, 255, 0.4);
+}
+
+.vote-button:hover::before {
+  left: 100%;
+}
+
+.vote-button i {
+  margin-right: 1rem;
+  font-size: 2rem;
+}
+
+/* Vote success animation */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--primary);
+  border-radius: 50%;
+}
+
+/* ===== Dashboard Enhancements ===== */
+.position-status-card {
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.position-status-card.voted {
+  background: linear-gradient(
+    135deg,
+    rgba(12, 206, 107, 0.2),
+    rgba(12, 206, 107, 0.05)
+  );
+  border: 1px solid rgba(12, 206, 107, 0.3);
+}
+
+.position-status-card.not-voted {
+  background: linear-gradient(
+    135deg,
+    rgba(72, 49, 212, 0.2),
+    rgba(0, 228, 255, 0.05)
+  );
+  border: 1px solid rgba(0, 228, 255, 0.3);
+}
+
+.position-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.position-status-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.position-status-badge {
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.position-status-badge.voted {
+  background: var(--success);
+  color: white;
+}
+
+.position-status-badge.not-voted {
+  background: var(--primary);
+  color: white;
+}
+
+.position-status-card .btn {
+  margin-top: 1.5rem;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  .contestants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .position-detail-card {
+    padding: 2rem;
+  }
+
+  .vote-button {
+    width: 100%;
+  }
+}

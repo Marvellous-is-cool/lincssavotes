@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance - LINCSSA VOTES</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+
+      .maintenance-container {
+        max-width: 800px;
+        text-align: center;
+        padding: 60px 40px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .maintenance-icon {
+        font-size: 80px;
+        margin-bottom: 30px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+      }
+
+      .maintenance-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+
+      .maintenance-message {
+        font-size: 18px;
+        margin-bottom: 40px;
+        color: #7f8c8d;
+        line-height: 1.6;
+      }
+
+      .maintenance-footer {
+        margin-top: 50px;
+        font-size: 14px;
+        color: #95a5a6;
+      }
+
+      .logo {
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 40px;
+        color: #2c3e50;
+      }
+
+      .logo span {
+        color: var(--secondary-color);
+      }
+
+      .animated-gear {
+        animation: spin 10s linear infinite;
+        display: inline-block;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="maintenance-container">
+      <div class="logo">LINCSSA <span>VOTES</span></div>
+
+      <div class="maintenance-icon">
+        <i class="fas fa-cogs animated-gear"></i>
+      </div>
+
+      <h1 class="maintenance-title">We're Under Maintenance</h1>
+
+      <p class="maintenance-message">
+        The LINCSSA VOTES system is currently undergoing scheduled maintenance
+        to improve your voting experience. We apologize for any inconvenience
+        caused. The system will be back online shortly.
+      </p>
+
+      <div class="maintenance-footer">
+        &copy; <%= new Date().getFullYear() %> LINCSSA VOTES. All rights
+        reserved.
+      </div>
+    </div>
+  </body>
+</html>

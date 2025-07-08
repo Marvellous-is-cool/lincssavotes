@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- Vote Enhancement styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body class="vote-page">
+    <!-- Particle Background with reduced opacity -->
+    <div class="particles particles-subtle"></div>
+
+    <div class="dashboard-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar glass-sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+        </div>
+
+        <div class="user-profile" data-aos="fade-right">
+          <div class="avatar glow">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <h4><%= voter.matricNumber %></h4>
+            <span class="user-role">Voter</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active" data-aos="fade-right" data-aos-delay="100">
+              <a href="/dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li data-aos="fade-right" data-aos-delay="200">
+              <a href="/results">
+                <i class="fas fa-chart-pie"></i>
+                <span>Results</span>
+              </a>
+            </li>
+            <li
+              class="bottom-nav-item"
+              data-aos="fade-right"
+              data-aos-delay="300"
+            >
+              <a href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="dark-mode-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="time-display" id="current-time"></div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dash-header glass">
+          <div class="header-left">
+            <button
+              class="menu-toggle"
+              id="sidebar-toggle"
+              aria-label="Toggle sidebar"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="page-title text-gradient">
+              <i class="fas fa-tachometer-alt"></i> Voter Dashboard
+            </h2>
+          </div>
+
+          <div class="header-right">
+            <div class="voter-status">
+              <div
+                class="status-pill <%= voter.hasVoted ? 'voted' : 'not-voted' %>"
+              >
+                <i
+                  class="<%= voter.hasVoted ? 'fas fa-check-circle' : 'fas fa-clock' %>"
+                ></i>
+                <span><%= voter.hasVoted ? 'Voted' : 'Not Voted' %></span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="content-wrapper">
+          <!-- Flash messages -->
+          <% if (messages.error) { %>
+          <div class="alert alert-danger fade-in">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <%= messages.error %>
+          </div>
+          <% } %> <% if (messages.info) { %>
+          <div class="alert alert-info fade-in">
+            <i class="fas fa-info-circle alert-icon"></i>
+            <%= messages.info %>
+          </div>
+          <% } %> <% if (messages.success) { %>
+          <div class="alert alert-success fade-in">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <%= messages.success %>
+          </div>
+          <% } %>
+
+          <!-- Welcome Section -->
+          <div class="welcome-card vote-glass" data-aos="fade-up">
+            <div class="welcome-content">
+              <div class="welcome-icon">
+                <i class="fas fa-vote-yea"></i>
+              </div>
+              <div class="welcome-text">
+                <h2>Welcome, <%= voter.matricNumber %>!</h2>
+                <p>
+                  Thank you for participating in the LINCSSA election. Your vote
+                  matters!
+                </p>
+              </div>
+            </div>
+            <div class="welcome-stats">
+              <div class="stat-card vote-glass">
+                <div class="stat-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3><%= totalVotedPositions || 0 %></h3>
+                  <p>Positions Voted</p>
+                </div>
+              </div>
+              <div class="stat-card vote-glass">
+                <div class="stat-icon">
+                  <i class="fas fa-list"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>
+                    <%= positions ? positions.length - totalVotedPositions : 0
+                    %>
+                  </h3>
+                  <p>Remaining</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Voting Status and Cards -->
+          <div class="section-header" data-aos="fade-up">
+            <h2>Available Positions</h2>
+            <p>Select a position to cast your vote</p>
+          </div>
+
+          <% if (positions && positions.length > 0) { %>
+          <div class="positions-grid" data-aos="fade-up" data-aos-delay="200">
+            <% positions.forEach((position, index) => { const
+            hasVotedForPosition = voter.votedPositions &&
+            voter.votedPositions.includes(position._id.toString()); %>
+            <div
+              class="position-status-card <%= hasVotedForPosition ? 'voted' : 'not-voted' %> vote-glass"
+              data-aos="zoom-in"
+              data-aos-delay="<%= 300 + index * 100 %>"
+            >
+              <div class="position-status-header">
+                <h3 class="position-status-title"><%= position.title %></h3>
+                <div
+                  class="position-status-badge <%= hasVotedForPosition ? 'voted' : 'not-voted' %>"
+                >
+                  <% if (hasVotedForPosition) { %>
+                  <i class="fas fa-check-circle"></i> Voted <% } else { %>
+                  <i class="fas fa-clock"></i> Pending <% } %>
+                </div>
+              </div>
+
+              <p class="position-description"><%= position.description %></p>
+
+              <% if (!hasVotedForPosition && settings.votingEnabled) { %>
+              <a
+                href="/vote/<%= position._id %>"
+                class="btn btn-primary btn-block"
+              >
+                <i class="fas fa-vote-yea"></i> Cast Your Vote
+              </a>
+              <% } else if (hasVotedForPosition) { %>
+              <button class="btn btn-success btn-block" disabled>
+                <i class="fas fa-check-circle"></i> Vote Recorded
+              </button>
+              <% } else { %>
+              <button class="btn btn-disabled btn-block" disabled>
+                <i class="fas fa-lock"></i> Voting Disabled
+              </button>
+              <% } %>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <div class="empty-state" data-aos="fade-up">
+            <div class="empty-icon">
+              <i class="fas fa-ballot-check"></i>
+            </div>
+            <h3>No Positions Available</h3>
+            <p>There are currently no positions available for voting.</p>
+          </div>
+          <% } %>
+
+          <!-- Results Link -->
+          <div class="results-promo vote-glass" data-aos="fade-up">
+            <div class="results-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="results-content">
+              <h3>Check Current Results</h3>
+              <p>See the live voting results for all positions</p>
+            </div>
+            <a href="/results" class="btn btn-outline">
+              <i class="fas fa-external-link-alt"></i> View Results
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance.js"></script>
+  </body>
+</html>

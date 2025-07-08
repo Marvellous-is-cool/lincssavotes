@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LINCSSA VOTES - Modern Election Platform</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- Landing page enhancement styles -->
+    <link rel="stylesheet" href="/styles/landing-enhance.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Particle Background -->
+    <div class="particles"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+
+          <ul class="nav-links">
+            <li class="active"><a href="/">Home</a></li>
+            <% if (settings.displayResults) { %>
+            <li><a href="/results">Results</a></li>
+            <% } %> <% if (!voter) { %>
+            <li><a href="/register">Register</a></li>
+            <li>
+              <a href="/login" class="btn btn-primary btn-sm btn-rounded"
+                >Login</a
+              >
+            </li>
+            <% } else { %>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li>
+              <a href="/logout" class="btn btn-outline btn-sm btn-rounded"
+                >Logout</a
+              >
+            </li>
+            <% } %>
+          </ul>
+
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <button class="dark-mode-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 data-aos="fade-up" data-aos-duration="800">
+          <%= settings.electionTitle %>
+        </h1>
+        <p data-aos="fade-up" data-aos-delay="200" data-aos-duration="800">
+          <%= settings.electionDescription %>
+        </p>
+
+        <!-- Countdown Timer if voting is scheduled -->
+        <% if (settings.votingStartDate && settings.votingEndDate) { %>
+        <div
+          class="countdown-container glass-card py-3 px-4 mb-4"
+          data-aos="fade-up"
+          data-aos-delay="400"
+        >
+          <h4>Voting <%= settings.votingEnabled ? 'Ends' : 'Starts' %> In:</h4>
+          <div
+            class="countdown-timer"
+            data-end-date="<%= settings.votingEnabled ? settings.votingEndDate : settings.votingStartDate %>"
+          >
+            <div class="loading">
+              <div class="loading-circle"></div>
+              <div class="loading-circle"></div>
+              <div class="loading-circle"></div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <div class="hero-buttons" data-aos="fade-up" data-aos-delay="600">
+          <% if (!locals.voter) { %>
+          <a href="/register" class="btn btn-primary btn-lg btn-rounded"
+            >Register to Vote</a
+          >
+          <a href="/login" class="btn btn-outline btn-lg btn-rounded">Login</a>
+          <% } else { %>
+          <a href="/dashboard" class="btn btn-primary btn-lg btn-rounded"
+            >Go to Dashboard</a
+          >
+          <a href="/profile" class="btn btn-outline btn-lg btn-rounded"
+            >View Profile</a
+          >
+          <% } %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5" data-aos="fade-up">How It Works</h2>
+
+        <div class="flex flex-wrap justify-between">
+          <div
+            class="card mb-4"
+            style="width: 30%"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <div class="card-body text-center py-4">
+              <div class="feature-icon mb-4">
+                <i class="fas fa-user-plus fa-3x animate-float"></i>
+              </div>
+              <h3>Register</h3>
+              <p>
+                Create your account using your matric number and phone number to
+                participate in the election.
+              </p>
+              <a href="/register" class="btn btn-primary mt-3">Get Started</a>
+            </div>
+          </div>
+
+          <div
+            class="card mb-4"
+            style="width: 30%"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <div class="card-body text-center py-4">
+              <div class="feature-icon mb-4">
+                <i class="fas fa-check-circle fa-3x animate-float"></i>
+              </div>
+              <h3>Vote</h3>
+              <p>
+                Cast your vote for your preferred candidates across all
+                available positions.
+              </p>
+              <a href="/login" class="btn btn-primary mt-3">Login to Vote</a>
+            </div>
+          </div>
+
+          <div
+            class="card mb-4"
+            style="width: 30%"
+            data-aos="fade-up"
+            data-aos-delay="600"
+          >
+            <div class="card-body text-center py-4">
+              <div class="feature-icon mb-4">
+                <i class="fas fa-chart-bar fa-3x animate-float"></i>
+              </div>
+              <h3>Results</h3>
+              <p>
+                View real-time election results and statistics as they unfold.
+              </p>
+              <% if (settings.displayResults) { %>
+              <a href="/results" class="btn btn-primary mt-3">View Results</a>
+              <% } else { %>
+              <button class="btn btn-secondary mt-3" disabled>
+                Results Coming Soon
+              </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Results Section (if enabled) -->
+    <% if (settings.displayResults && positionsWithResults.length > 0) { %>
+    <section class="py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-5" data-aos="fade-up">
+          Live Election Results
+        </h2>
+
+        <% positionsWithResults.forEach((position, positionIndex) => { %>
+        <div
+          class="position-results mb-5"
+          data-aos="fade-up"
+          data-aos-delay="<%= positionIndex * 200 %>"
+        >
+          <h3><%= position.title %></h3>
+
+          <div class="results-grid mt-4">
+            <% if (position.contestants && position.contestants.length > 0) { %>
+            <% position.contestants.forEach((contestant, index) => { %> <% const
+            totalVotes = position.contestants.reduce((sum, c) => sum + c.votes,
+            0); %> <% const percentage = totalVotes > 0 ?
+            Math.round((contestant.votes / totalVotes) * 100) : 0; %>
+
+            <div
+              class="result-card"
+              data-aos="fade-up"
+              data-aos-delay="<%= (positionIndex + index) * 100 %>"
+            >
+              <img
+                src="/uploads/<%= contestant.photo %>"
+                alt="<%= contestant.name %>"
+                class="result-img"
+              />
+              <div class="result-info">
+                <h3><%= contestant.name %></h3>
+                <div class="progress">
+                  <div
+                    class="progress-bar"
+                    style="width: <%= percentage %>%"
+                    data-width="<%= percentage %>%"
+                  ></div>
+                </div>
+                <div class="result-votes">
+                  <span><%= contestant.votes %> votes</span>
+                  <span><%= percentage %>%</span>
+                </div>
+              </div>
+            </div>
+            <% }); %> <% } else { %>
+            <div class="alert alert-info" role="alert">
+              No contestants available for this position.
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+    <% } %>
+
+    <!-- Why Vote Section - Replacing Testimonials -->
+    <section class="py-5 bg-gradient">
+      <div class="container">
+        <h2 class="text-center mb-5" data-aos="fade-up" data-aos-duration="800">
+          Why Your Vote Matters
+        </h2>
+
+        <div class="flex flex-wrap justify-between">
+          <!-- Reason 1 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="100"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+            <h3>Amplify Your Voice</h3>
+            <p>
+              Your vote gives you direct influence on who represents student
+              interests and what issues get prioritized on campus.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+
+          <!-- Reason 2 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="300"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>Shape Your Community</h3>
+            <p>
+              Student leaders make decisions that affect your daily campus life,
+              from events to facilities improvements.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+
+          <!-- Reason 3 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="500"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <h3>Drive Innovation</h3>
+            <p>
+              Support candidates who champion fresh ideas and progressive
+              approaches to student governance.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+
+          <!-- Reason 4 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="700"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <h3>Build Leadership</h3>
+            <p>
+              Participating in elections helps develop civic engagement skills
+              that benefit you throughout your career.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+
+          <!-- Reason 5 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="900"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-university"></i>
+            </div>
+            <h3>Create Legacy</h3>
+            <p>
+              Your vote contributes to the ongoing story of student empowerment
+              and campus culture.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+
+          <!-- Reason 6 -->
+          <div
+            class="reason-card"
+            data-aos="flip-left"
+            data-aos-delay="1100"
+            data-aos-duration="800"
+          >
+            <div class="reason-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Easy & Secure</h3>
+            <p>
+              Our platform ensures your vote is counted accurately through a
+              secure and transparent process.
+            </p>
+            <div class="reason-glow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Call to Action -->
+    <section class="py-5 cta-section">
+      <div class="container text-center">
+        <div class="futuristic-cta" data-aos="zoom-in" data-aos-duration="1000">
+          <div class="cta-glow"></div>
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Shape the Future?</h2>
+            <div class="pulse-line"></div>
+            <p class="cta-text">
+              Your vote is your power. Take control of your campus experience.
+            </p>
+
+            <div class="cta-countdown">
+              <div class="countdown-item">
+                <div class="countdown-number" id="cta-days">00</div>
+                <div class="countdown-label">Days</div>
+              </div>
+              <div class="countdown-item">
+                <div class="countdown-number" id="cta-hours">00</div>
+                <div class="countdown-label">Hours</div>
+              </div>
+              <div class="countdown-item">
+                <div class="countdown-number" id="cta-mins">00</div>
+                <div class="countdown-label">Minutes</div>
+              </div>
+              <div class="countdown-item">
+                <div class="countdown-number" id="cta-secs">00</div>
+                <div class="countdown-label">Seconds</div>
+              </div>
+            </div>
+
+            <div class="cta-buttons">
+              <a href="/register" class="btn-neon">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Register Now
+              </a>
+              <a href="/login" class="btn-holographic">
+                <span class="btn-text">Login to Vote</span>
+                <span class="btn-glow"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div>
+            <div class="footer-logo">
+              <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+              <h3>LINCSSA <span>VOTES</span></h3>
+            </div>
+            <p>
+              A modern election platform for Osun State University, Ikire Campus
+              Student Union.
+            </p>
+            <div class="footer-social">
+              <a href="#" class="social-link"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/register">Register</a></li>
+              <li><a href="/login">Login</a></li>
+              <% if (settings.displayResults) { %>
+              <li><a href="/results">Results</a></li>
+              <% } %>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>Contact</h4>
+            <ul>
+              <li><i class="fas fa-envelope me-2"></i> support@lincssa.edu</li>
+              <li><i class="fas fa-phone me-2"></i> +123 456 7890</li>
+              <li>
+                <i class="fas fa-map-marker-alt me-2"></i> Lincoln University
+                College
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>
+            &copy; <%= new Date().getFullYear() %> LINCSSA VOTES. All rights
+            reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/modern.js"></script>
+    <script>
+      // Initialize AOS animations
+      AOS.init({
+        once: true,
+        duration: 800,
+      });
+    </script>
+  </body>
+</html>

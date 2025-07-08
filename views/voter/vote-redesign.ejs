@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- Vote Enhancement styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body class="vote-page">
+    <!-- Particle Background with reduced opacity -->
+    <div class="particles particles-subtle"></div>
+
+    <div class="dashboard-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar glass-sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+        </div>
+
+        <div class="user-profile" data-aos="fade-right">
+          <div class="avatar glow">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <h4><%= voter.matricNumber %></h4>
+            <span class="user-role">Voter</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li data-aos="fade-right" data-aos-delay="100">
+              <a href="/dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li data-aos="fade-right" data-aos-delay="200">
+              <a href="/results">
+                <i class="fas fa-chart-pie"></i>
+                <span>Results</span>
+              </a>
+            </li>
+            <li
+              class="bottom-nav-item"
+              data-aos="fade-right"
+              data-aos-delay="300"
+            >
+              <a href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="dark-mode-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
+          </button>
+          <div class="time-display" id="current-time"></div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dash-header glass">
+          <div class="header-left">
+            <button
+              class="menu-toggle"
+              id="sidebar-toggle"
+              aria-label="Toggle sidebar"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="page-title text-gradient">
+              <i class="fas fa-vote-yea"></i> Vote for <%= position.title %>
+            </h2>
+          </div>
+
+          <div class="header-right">
+            <a href="/dashboard" class="btn btn-outline btn-with-icon">
+              <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+          </div>
+        </header>
+
+        <div class="content-wrapper">
+          <!-- Flash messages -->
+          <% if (messages.error) { %>
+          <div class="alert alert-danger fade-in">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <%= messages.error %>
+          </div>
+          <% } %> <% if (messages.info) { %>
+          <div class="alert alert-info fade-in">
+            <i class="fas fa-info-circle alert-icon"></i>
+            <%= messages.info %>
+          </div>
+          <% } %> <% if (messages.success) { %>
+          <div class="alert alert-success fade-in">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <%= messages.success %>
+          </div>
+          <% } %>
+
+          <div class="vote-section" data-aos="fade-up">
+            <div class="position-detail-card vote-glass">
+              <div class="position-badge">
+                <i class="fas fa-star"></i>
+              </div>
+              <h2 class="text-gradient"><%= position.title %></h2>
+              <p class="lead"><%= position.description %></p>
+              <div class="instruction-box">
+                <i class="fas fa-info-circle"></i>
+                <p>Please select one candidate to vote for this position</p>
+              </div>
+            </div>
+
+            <% if (contestants && contestants.length > 0) { %>
+            <form action="/vote" method="POST" id="vote-form">
+              <input
+                type="hidden"
+                name="positionId"
+                value="<%= position._id %>"
+              />
+
+              <div
+                class="contestants-grid"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
+                <% contestants.forEach((contestant, index) => { %>
+                <div
+                  class="contestant-card vote-glass"
+                  data-aos="zoom-in"
+                  data-aos-delay="<%= 300 + index * 100 %>"
+                >
+                  <div class="contestant-avatar">
+                    <% if (contestant.image) { %>
+                    <img
+                      src="<%= contestant.image %>"
+                      alt="<%= contestant.name %>"
+                    />
+                    <% } else { %>
+                    <img
+                      src="https://ui-avatars.com/api/?name=<%= contestant.name %>&background=4831d4&color=fff&size=200"
+                      alt="<%= contestant.name %>"
+                    />
+                    <% } %>
+                    <div class="status-indicator">
+                      <i class="fas fa-thumbs-up"></i>
+                    </div>
+                  </div>
+
+                  <h3 class="contestant-name"><%= contestant.name %></h3>
+                  <div class="contestant-nickname">
+                    <%= contestant.nickname %>
+                  </div>
+                  <p class="contestant-bio">
+                    <%= contestant.bio || 'No bio available' %>
+                  </p>
+
+                  <div class="contestant-radio">
+                    <input
+                      type="radio"
+                      name="contestantId"
+                      value="<%= contestant._id %>"
+                      id="contestant<%= contestant._id %>"
+                      required
+                    />
+                    <label for="contestant<%= contestant._id %>">
+                      <i class="fas fa-check-circle"></i> Select <%=
+                      contestant.nickname || contestant.name %>
+                    </label>
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+
+              <div
+                class="vote-button-container"
+                data-aos="fade-up"
+                data-aos-delay="400"
+              >
+                <button type="submit" class="vote-button">
+                  <i class="fas fa-vote-yea"></i> Submit My Vote
+                </button>
+              </div>
+            </form>
+            <% } else { %>
+            <div class="empty-state" data-aos="fade-up">
+              <div class="empty-icon">
+                <i class="fas fa-user-slash"></i>
+              </div>
+              <h3>No Contestants Available</h3>
+              <p>There are currently no contestants for this position.</p>
+              <a href="/dashboard" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+              </a>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance.js"></script>
+  </body>
+</html>

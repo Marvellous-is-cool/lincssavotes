@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vote Now | LINCSSA VOTES</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <!-- Google Fonts: Outfit and JetBrains Mono -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Modern UI stylesheet -->
+    <link rel="stylesheet" href="/styles/modern.css" />
+    <!-- Vote Enhancement styles -->
+    <link rel="stylesheet" href="/styles/vote-enhance.css" />
+    <!-- AOS Animation library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <style>
+      /* Additional styles specific to this page */
+      .vote-now-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+      }
+
+      .vote-now-header::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: var(--radius-full);
+      }
+
+      .vote-now-header h1 {
+        font-size: 3.6rem;
+        margin-bottom: 1rem;
+      }
+
+      .vote-now-header p {
+        font-size: 1.8rem;
+        color: var(--gray-600);
+      }
+
+      .contestants-container {
+        padding: 2rem 0;
+      }
+
+      .vote-now-card {
+        border-radius: var(--radius-lg);
+        padding: 3rem;
+        margin-bottom: 3rem;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .vote-btn {
+        padding: 1.2rem 3rem;
+        border-radius: var(--radius-md);
+        font-size: 1.6rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .vote-btn i {
+        margin-right: 1rem;
+      }
+
+      .vote-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .vote-btn:active {
+        transform: translateY(0);
+      }
+
+      .vote-now-bg {
+        background-image: linear-gradient(
+          135deg,
+          rgba(72, 49, 212, 0.05),
+          rgba(0, 228, 255, 0.05)
+        );
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body class="vote-now-bg">
+    <!-- Header with glass effect -->
+    <header class="site-header sticky glass">
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h2>LINCSSA <span>VOTES</span></h2>
+          </div>
+
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <% if (settings.displayResults) { %>
+            <li><a href="/results">Results</a></li>
+            <% } %> <% if (!locals.voter) { %>
+            <li><a href="/register">Register</a></li>
+            <li>
+              <a href="/login" class="btn btn-primary btn-sm btn-rounded"
+                >Login</a
+              >
+            </li>
+            <% } else { %>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li>
+              <a href="/logout" class="btn btn-outline btn-sm btn-rounded"
+                >Logout</a
+              >
+            </li>
+            <% } %>
+          </ul>
+
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container py-5">
+      <div class="vote-now-header" data-aos="fade-up">
+        <h1 class="text-gradient">Vote Now</h1>
+        <p>Cast your vote for <%= position.title %></p>
+      </div>
+
+      <% if (messages.error) { %>
+      <div class="alert alert-danger fade-in" data-aos="fade-up">
+        <i class="fas fa-exclamation-circle alert-icon"></i>
+        <%= messages.error %>
+      </div>
+      <% } %>
+
+      <div class="vote-now-card glass" data-aos="fade-up">
+        <div class="position-detail-card">
+          <div class="position-badge">
+            <i class="fas fa-star"></i>
+          </div>
+          <h2 class="text-gradient"><%= position.title %></h2>
+          <p class="lead"><%= position.description %></p>
+          <div class="instruction-box">
+            <i class="fas fa-info-circle"></i>
+            <p>Please select one candidate to vote for this position</p>
+          </div>
+        </div>
+
+        <% if (contestants && contestants.length > 0) { %>
+        <form
+          action="/vote"
+          method="POST"
+          id="vote-form"
+          class="contestants-container"
+        >
+          <input type="hidden" name="positionId" value="<%= position._id %>" />
+
+          <div class="contestants-grid" data-aos="fade-up" data-aos-delay="100">
+            <% contestants.forEach((contestant, index) => { %>
+            <div
+              class="contestant-card vote-glass"
+              data-aos="zoom-in"
+              data-aos-delay="<%= 200 + index * 100 %>"
+            >
+              <div class="contestant-avatar">
+                <% if (contestant.image) { %>
+                <img
+                  src="<%= contestant.image %>"
+                  alt="<%= contestant.name %>"
+                />
+                <% } else { %>
+                <img
+                  src="https://ui-avatars.com/api/?name=<%= contestant.name %>&background=4831d4&color=fff&size=200"
+                  alt="<%= contestant.name %>"
+                />
+                <% } %>
+                <div class="status-indicator">
+                  <i class="fas fa-thumbs-up"></i>
+                </div>
+              </div>
+
+              <h3 class="contestant-name"><%= contestant.name %></h3>
+              <div class="contestant-nickname"><%= contestant.nickname %></div>
+              <p class="contestant-bio">
+                <%= contestant.bio || 'No bio available' %>
+              </p>
+
+              <div class="contestant-radio">
+                <input
+                  type="radio"
+                  name="contestantId"
+                  value="<%= contestant._id %>"
+                  id="contestant<%= contestant._id %>"
+                  required
+                />
+                <label for="contestant<%= contestant._id %>">
+                  <i class="fas fa-check-circle"></i> Select <%=
+                  contestant.nickname || contestant.name %>
+                </label>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+
+          <div
+            class="vote-button-container text-center mt-5"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <button type="submit" class="vote-button">
+              <i class="fas fa-vote-yea"></i> Submit My Vote
+            </button>
+            <a href="/" class="btn btn-outline mt-3 d-block">
+              <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+          </div>
+        </form>
+        <% } else { %>
+        <div class="empty-state text-center py-5" data-aos="fade-up">
+          <div class="empty-icon mb-4">
+            <i class="fas fa-user-slash fa-4x"></i>
+          </div>
+          <h3 class="mb-3">No Contestants Available</h3>
+          <p class="mb-4">
+            There are currently no contestants for this position.
+          </p>
+          <a href="/" class="btn btn-primary vote-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+          </a>
+        </div>
+        <% } %>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <img src="/images/logo.png" alt="LINCSSA VOTES Logo" />
+            <h3>LINCSSA <span>VOTES</span></h3>
+          </div>
+          <div class="footer-text">
+            <p>
+              &copy; <%= new Date().getFullYear() %> LINCSSA VOTES. All rights
+              reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/script/vote-enhance.js"></script>
+  </body>
+</html>
