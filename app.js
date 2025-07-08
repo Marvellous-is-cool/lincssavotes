@@ -203,9 +203,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
+// Start the server only if not in serverless environment
+if (!process.env.NETLIFY && !process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Connected - ${process.env.NODE_ENV || "development"}`);
+  });
+}
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Connected - ${process.env.NODE_ENV || "development"}`);
-});
+// Export the app for serverless functions
+module.exports = app;
