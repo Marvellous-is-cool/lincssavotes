@@ -1,8 +1,9 @@
 const fs = require("fs");
 const path = require("path");
+const { isServerless, envLog } = require("./envUtils");
 
 /**
- * Log vote activity to a file
+ * Log vote activity to a file (local) or console (serverless)
  * @param {string} nickname - Contestant's nickname
  * @param {number} votes - Number of votes cast
  * @param {string} status - Status of the vote (success/failed)
@@ -10,12 +11,6 @@ const path = require("path");
  */
 function logVoteActivity(nickname, votes, status, contestantInfo = {}) {
   const timestamp = new Date().toISOString();
-  const logDir = path.join(__dirname, "..", "logs");
-
-  // Ensure log directory exists
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true });
-  }
 
   const logMessage = {
     timestamp,
@@ -30,13 +25,35 @@ function logVoteActivity(nickname, votes, status, contestantInfo = {}) {
     },
   };
 
-  const logFilePath = path.join(logDir, "votes.log");
+  // Use console logging in serverless environments
+  if (isServerless()) {
+    envLog(`VOTE_ACTIVITY: ${JSON.stringify(logMessage)}`);
+    return;
+  }
 
-  fs.appendFile(logFilePath, JSON.stringify(logMessage) + "\n", (err) => {
-    if (err) {
-      console.error("Error writing to vote log file:", err);
+  // Use file logging in local environments
+  const logDir = path.join(__dirname, "..", "logs");
+
+  try {
+    // Ensure log directory exists
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
     }
-  });
+
+    const logFilePath = path.join(logDir, "votes.log");
+
+    fs.appendFile(logFilePath, JSON.stringify(logMessage) + "\n", (err) => {
+      if (err) {
+        console.error("Error writing to vote log file:", err);
+        // Fallback to console logging if file write fails
+        envLog(`VOTE_ACTIVITY_FALLBACK: ${JSON.stringify(logMessage)}`, "warn");
+      }
+    });
+  } catch (error) {
+    console.error("Error creating log directory or writing log:", error);
+    // Fallback to console logging
+    envLog(`VOTE_ACTIVITY_FALLBACK: ${JSON.stringify(logMessage)}`, "error");
+  }
 }
 
 module.exports = {

@@ -8,6 +8,12 @@ const path = require("path");
 const validator = require("validator");
 const cors = require("cors");
 const fs = require("fs");
+const {
+  isServerless,
+  canWriteFiles,
+  envLog,
+  getTempDir,
+} = require("./helpers/envUtils");
 require("dotenv").config(); // Load environment variables
 
 // Import MongoDB connection
@@ -52,7 +58,18 @@ app.locals.basedir = path.join(__dirname, "views");
 
 // Serve static files
 app.use(express.static("public"));
-app.use(fileUpload({ tempFileDir: "/temp" }));
+
+// Configure file upload with proper temp directory for serverless environments
+const fileUploadConfig = {
+  tempFileDir: getTempDir(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+  abortOnLimit: true,
+  createParentPath: true,
+};
+app.use(fileUpload(fileUploadConfig));
+
+envLog(`File upload configured with temp directory: ${getTempDir()}`, "info");
+
 app.use(express.static("uploads"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -61,17 +78,38 @@ app.use((req, res, next) => {
   res.locals.validator = validator;
   next();
 });
-
-app.use(cors()); // Enable CORS
-
 // Simple logging middleware
 app.use((req, res, next) => {
-  const logMessage = `[${new Date().toISOString()}] ${req.method} ${req.url}\n`;
-  fs.appendFile(path.join(__dirname, "logs", "app.log"), logMessage, (err) => {
-    if (err) {
-      console.error("Error writing to log file:", err);
+  envLog(`${req.method} ${req.url}`, "info");
+
+  // Only use file logging in non-serverless environments
+  if (canWriteFiles()) {
+    const logMessage = `[${new Date().toISOString()}] ${req.method} ${
+      req.url
+    }\n`;
+
+    // Create logs directory if it doesn't exist
+    const logDir = path.join(__dirname, "logs");
+    if (!fs.existsSync(logDir)) {
+      try {
+        fs.mkdirSync(logDir, { recursive: true });
+      } catch (err) {
+        envLog(`Error creating logs directory: ${err.message}`, "error");
+        return next();
+      }
     }
-  });
+
+    fs.appendFile(
+      path.join(__dirname, "logs", "app.log"),
+      logMessage,
+      (err) => {
+        if (err) {
+          envLog(`Error writing to log file: ${err.message}`, "error");
+        }
+      }
+    );
+  }
+
   next();
 });
 
@@ -137,18 +175,34 @@ app.use(async (req, res, next) => {
 // 404 handler
 app.use((req, res, next) => {
   // Log 404 errors
-  const log404Message = `[${new Date().toISOString()}] 404 NOT FOUND: ${
-    req.method
-  } ${req.url}\n`;
-  fs.appendFile(
-    path.join(__dirname, "logs", "404.log"),
-    log404Message,
-    (err) => {
-      if (err) {
-        console.error("Error writing to 404 log file:", err);
+  envLog(`404 NOT FOUND: ${req.method} ${req.url}`, "warn");
+
+  // Only use file logging in non-serverless environments
+  if (canWriteFiles()) {
+    const log404Message = `[${new Date().toISOString()}] 404 NOT FOUND: ${
+      req.method
+    } ${req.url}\n`;
+
+    // Create logs directory if it doesn't exist
+    const logDir = path.join(__dirname, "logs");
+    if (!fs.existsSync(logDir)) {
+      try {
+        fs.mkdirSync(logDir, { recursive: true });
+      } catch (err) {
+        envLog(`Error creating logs directory: ${err.message}`, "error");
       }
+    } else {
+      fs.appendFile(
+        path.join(__dirname, "logs", "404.log"),
+        log404Message,
+        (err) => {
+          if (err) {
+            envLog(`Error writing to 404 log file: ${err.message}`, "error");
+          }
+        }
+      );
     }
-  );
+  }
 
   // Check if the request is for an admin page
   const isAdminRequest = req.path.startsWith("/admin");
@@ -169,19 +223,38 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
 
-  // Log the error to file
+  // Log the error to console and optionally to file
   const errorLog = `[${new Date().toISOString()}] ERROR: ${
     err.stack || err.message || err
   }\n`;
-  fs.appendFile(
-    path.join(__dirname, "logs", "error.log"),
-    errorLog,
-    (writeErr) => {
-      if (writeErr) {
-        console.error("Error writing to error log file:", writeErr);
+
+  envLog(`ERROR: ${err.message || "Unknown error"}`, "error");
+
+  // Only use file logging in non-serverless environments
+  if (canWriteFiles()) {
+    // Create logs directory if it doesn't exist
+    const logDir = path.join(__dirname, "logs");
+    if (!fs.existsSync(logDir)) {
+      try {
+        fs.mkdirSync(logDir, { recursive: true });
+      } catch (err) {
+        envLog(`Error creating logs directory: ${err.message}`, "error");
       }
+    } else {
+      fs.appendFile(
+        path.join(__dirname, "logs", "error.log"),
+        errorLog,
+        (writeErr) => {
+          if (writeErr) {
+            envLog(
+              `Error writing to error log file: ${writeErr.message}`,
+              "error"
+            );
+          }
+        }
+      );
     }
-  );
+  }
 
   // Check if the request is for an admin page
   const isAdminRequest = req.path.startsWith("/admin");
@@ -204,10 +277,13 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server only if not in serverless environment
-if (!process.env.NETLIFY && !process.env.VERCEL) {
+if (!isServerless()) {
   app.listen(port, () => {
-    console.log(`Connected - ${process.env.NODE_ENV || "development"}`);
+    envLog(`Server running on port ${port}`, "info");
+    envLog(`Connected - ${process.env.NODE_ENV || "development"}`, "info");
   });
+} else {
+  envLog("Running in serverless environment - server startup skipped", "info");
 }
 
 // Export the app for serverless functions

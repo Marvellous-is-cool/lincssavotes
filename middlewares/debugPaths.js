@@ -4,15 +4,28 @@
 
 const path = require("path");
 const fs = require("fs");
+const { isServerless, envLog } = require("../helpers/envUtils");
 
 const debugPathsMiddleware = (req, res, next) => {
   // Add a logger function to res.locals
   res.locals.debugLog = (message) => {
-    const logMessage = `[${new Date().toISOString()}] ${message}\n`;
-    fs.appendFileSync(
-      path.join(process.cwd(), "logs", "path-debug.log"),
-      logMessage
-    );
+    const logMessage = `[${new Date().toISOString()}] ${message}`;
+
+    // Use console logging in serverless environments
+    if (isServerless()) {
+      envLog(`DEBUG_PATH: ${logMessage}`, "info");
+    } else {
+      // Use file logging in local environments
+      try {
+        const logDir = path.join(process.cwd(), "logs");
+        if (!fs.existsSync(logDir)) {
+          fs.mkdirSync(logDir, { recursive: true });
+        }
+        fs.appendFileSync(logDir + "/path-debug.log", logMessage + "\n");
+      } catch (error) {
+        envLog(`DEBUG_PATH_FALLBACK: ${logMessage}`, "warn");
+      }
+    }
   };
 
   // Add helper to check if a file exists
