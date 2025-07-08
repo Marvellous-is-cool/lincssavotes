@@ -44,12 +44,26 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Serve static files
-app.use(express.static("public"));
+app.use(express.static("public", {
+  maxAge: "1d", // Cache static files for 1 day
+  etag: false
+}));
 app.use(fileUpload({ tempFileDir: "/tmp" }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads"), {
+  maxAge: "1d",
+  etag: false
+}));
 
-// Add validator to res.locals
+app.use(cors());
+app.use(express.json());
+
+// Debug middleware for static files
 app.use((req, res, next) => {
+  if (req.url.includes('.css') || req.url.includes('.js') || req.url.includes('.png') || req.url.includes('.jpg')) {
+    console.log(`Static file request: ${req.method} ${req.url}`);
+  }
+  next();
+}); => {
   res.locals.validator = validator;
   next();
 });
